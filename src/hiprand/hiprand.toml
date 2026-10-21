@@ -1,0 +1,15 @@
+[general]
+name = "hiprand"
+
+[library]
+prefix = "hiprand"
+opaque_handles = [
+  "hiprandGenerator_t",
+  "hiprandDiscreteDistribution_t",
+]
+
+[clang]
+defines = [
+  "HIPRANDAPI=",
+]
+extra_include_dirs = []

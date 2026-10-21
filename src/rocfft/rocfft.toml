@@ -1,0 +1,19 @@
+[general]
+name = "rocfft"
+
+[library]
+prefix = "rocfft_"
+opaque_handles = [
+  "rocfft_plan",
+  "rocfft_plan_description",
+  "rocfft_execution_info",
+  "rocfft_field",
+  "rocfft_brick",
+]
+
+[clang]
+defines = [
+  "ROCFFT_EXPORT=",
+]
+extra_args = ["-include", "stddef.h"]
+extra_include_dirs = []

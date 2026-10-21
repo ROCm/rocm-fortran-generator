@@ -1,0 +1,45 @@
+# Unit tests and golden compile checks. They need neither ROCm nor a GPU: Clang.jl
+# ships libclang and the fixtures are self-contained. Regenerating the real
+# bindings needs the ROCm headers and stays a local check (see README.md).
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Julia ${{ matrix.julia }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        julia: ['1.11', '1.12', '1.13']   # one pinned src/Manifest-v<minor>.toml each
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32  # v3.0.2
+        with:
+          version: ${{ matrix.julia }}
+      - uses: julia-actions/cache@9353db09a0f2bbbdec6f41791918c75d37391b36  # v3.5.0
+      - name: Install gfortran
+        run: sudo apt-get update && sudo apt-get install -y gfortran
+      - name: Instantiate
+        run: julia --project=src -e 'using Pkg; Pkg.instantiate()'
+      - name: Unit tests
+        run: julia --project=src src/test/runtests.jl
+      - name: Golden compiles
+        run: julia --project=src src/test/compile_golden.jl
+      - name: Array-interface tiers
+        run: julia --project=src src/test/array_ifaces.jl
+      - name: gen.sh options
+        run: bash src/test/gen_sh.sh

@@ -1,0 +1,13 @@
+# The generator's semantic version, see "Versioning" in the README.
+version = "1.0.0"
+
+[deps]
+Clang = "40e3b903-d033-50b4-a0cc-940c62c95e31"
+TOML  = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+
+[compat]
+# Clang.jl 0.18 (libclang 15) returns "" as the spelling of a typedef'd anonymous
+# enum or struct, silently producing unnamed enums and derived types.
+Clang = "0.19"
+# Clang.jl 0.19 requires Julia 1.11; stated here so Pkg fails clearly on 1.10.
+julia = "1.11"

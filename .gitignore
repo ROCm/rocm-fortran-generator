@@ -1,0 +1,22 @@
+# Generated bindings (./gen.sh); committed upstream, not here.
+/fortran/
+# Default output of a library's generator.jl run on its own.
+/src/*/output/
+*.mod
+*.o
+*.cov
+tests/build/
+
+# From the ROCm repository template: build and editor state, logs, secrets.
+build/
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.env
+.env.*
+secrets.*
+credentials.*

@@ -1,0 +1,17 @@
+[general]
+name = "hipblas"
+
+[library]
+prefix = "hipblas"
+# hipBLAS's enums (HIPBLAS_OP_N, ...) live in hipblas-common.
+own_headers = ["hipblas", "hipblas-common"]
+opaque_handles = [
+  "hipblasHandle_t",
+]
+
+[clang]
+defines = [
+  "HIPBLAS_EXPORT=",
+  "__HIP_PLATFORM_AMD__=1",
+]
+extra_include_dirs = []

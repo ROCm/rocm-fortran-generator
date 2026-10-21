@@ -1,0 +1,22 @@
+[general]
+name = "hipfft"
+
+[library]
+prefix = "hipfft"
+opaque_handles = [
+  "hipfftHandle",
+]
+
+[headers]
+# hipfftMp.h (the multi-process API) includes hipfft.h; hipfftXt.h is force-included
+# ahead of it (see generator.jl). hipfftMp.h's routines exist only in a hipFFT built
+# with HIPFFT_MPI_ENABLE; a bind(C) interface costs nothing until called.
+subdir = "hipfft"
+file   = "hipfftMp.h"
+
+[clang]
+defines = [
+  "HIPFFT_EXPORT=",
+  "__HIP_PLATFORM_AMD__=1",
+]
+extra_include_dirs = []

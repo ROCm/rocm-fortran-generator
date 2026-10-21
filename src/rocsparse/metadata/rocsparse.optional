@@ -1,0 +1,6 @@
+# <function> <nullable-by-reference-arg> ...   (`*`: every function; see apply_arg_overrides)
+#
+# Arguments documented as nullable. The module procedures take them OPTIONAL and
+# pass c_null_ptr when absent (an OPTIONAL dummy in a bind(C) interface needs F2018).
+* p_error
+* error

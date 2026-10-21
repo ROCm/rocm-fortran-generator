@@ -1,0 +1,23 @@
+# <function> [<maxrank> | full]   native-array overloads (maxrank defaults to 1)
+hipfftEstimate1d
+hipfftEstimate2d
+hipfftEstimate3d
+hipfftEstimateMany
+hipfftExecC2C 3
+hipfftExecC2R 3
+hipfftExecD2Z 3
+hipfftExecR2C 3
+hipfftExecZ2D 3
+hipfftExecZ2Z 3
+hipfftGetSize
+hipfftGetSize1d
+hipfftGetSize2d
+hipfftGetSize3d
+hipfftGetSizeMany
+hipfftGetSizeMany64
+hipfftMakePlan1d
+hipfftMakePlan2d
+hipfftMakePlan3d
+hipfftMakePlanMany
+hipfftMakePlanMany64
+hipfftPlanMany

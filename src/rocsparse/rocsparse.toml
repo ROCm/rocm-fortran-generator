@@ -1,0 +1,41 @@
+[general]
+name = "rocsparse"
+
+[library]
+prefix = "rocsparse_"
+opaque_handles = [
+  "rocsparse_handle",
+  "rocsparse_error",
+  "rocsparse_mat_descr",
+  "rocsparse_hyb_mat",
+  "rocsparse_mat_info",
+  "rocsparse_spvec_descr",
+  "rocsparse_const_spvec_descr",
+  "rocsparse_spmat_descr",
+  "rocsparse_const_spmat_descr",
+  "rocsparse_dnvec_descr",
+  "rocsparse_const_dnvec_descr",
+  "rocsparse_dnmat_descr",
+  "rocsparse_const_dnmat_descr",
+  "rocsparse_color_info",
+  "rocsparse_sparse_to_sparse_descr",
+  "rocsparse_extract_descr",
+  "rocsparse_spgeam_descr",
+  "rocsparse_spmv_descr",
+  "rocsparse_sptrsv_descr",
+  "rocsparse_sptrsm_descr",
+  "rocsparse_spic0_descr",
+  "rocsparse_spilu0_descr",
+]
+
+[clang]
+defines = [
+  "ROCSPARSE_EXPORT=",
+  # ROCSPARSE_WITH_* flags enabled in a default CMake build. The headers do not
+  # declare them with #cmakedefine, so auto_feature_defines cannot detect them.
+  "ROCSPARSE_WITH_ILDLT0",
+  "ROCSPARSE_WITH_HANDLE_CREATE",
+  "ROCSPARSE_WITH_ILU0_BOOST_SIGN",
+  "ROCSPARSE_WITH_U16_REMOVED",
+]
+extra_include_dirs = []

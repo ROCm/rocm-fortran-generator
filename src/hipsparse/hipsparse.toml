@@ -1,0 +1,40 @@
+[general]
+name = "hipsparse"
+
+[library]
+prefix = "hipsparse"
+opaque_handles = [
+  "hipsparseHandle_t",
+  "hipsparseMatDescr_t",
+  "hipsparseHybMat_t",
+  "bsrsv2Info_t",
+  "bsrsm2Info_t",
+  "bsrilu02Info_t",
+  "bsric02Info_t",
+  "csrsv2Info_t",
+  "csrsm2Info_t",
+  "csrilu02Info_t",
+  "csric02Info_t",
+  "csrgemm2Info_t",
+  "pruneInfo_t",
+  "csrcolor_t",
+  "hipsparseSpVecDescr_t",
+  "hipsparseConstSpVecDescr_t",
+  "hipsparseSpMatDescr_t",
+  "hipsparseConstSpMatDescr_t",
+  "hipsparseDnVecDescr_t",
+  "hipsparseConstDnVecDescr_t",
+  "hipsparseDnMatDescr_t",
+  "hipsparseConstDnMatDescr_t",
+  "hipsparseSpGEMMDescr_t",
+  "hipsparseSpSVDescr_t",
+  "hipsparseSpSMDescr_t",
+]
+
+[clang]
+defines = [
+  "HIPSPARSE_EXPORT=",
+  "__HIP_PLATFORM_AMD__=1",
+  # HIPSPARSE_WITH_* feature flags are detected by auto_feature_defines.
+]
+extra_include_dirs = []

@@ -1,0 +1,6 @@
+# Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+# Array overloads for the mini fixture (rank 0 and 1).
+mini_cscal
+mini_dscal
+mini_record

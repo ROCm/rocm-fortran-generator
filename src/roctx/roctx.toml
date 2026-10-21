@@ -1,0 +1,22 @@
+[general]
+name = "roctx"
+
+[library]
+prefix = "roctx"
+opaque_handles = []
+# The documented names are forwarding macros (#define roctxMark(message)
+# roctxMarkA(message)): emit roctxMark bound to the symbol roctxMarkA.
+alias_function_macros = true
+# `const char*` arguments also accept a NUL-terminated Fortran string:
+# roctxRangePush("zone"//c_null_char).
+string_args = true
+
+[headers]
+# The rocprofiler-sdk-roctx header, matching the library hipfort links, not the
+# legacy roctracer/roctx.h (different API, versioned symbols).
+subdir = "rocprofiler-sdk-roctx"
+file   = "roctx.h"
+
+[clang]
+defines    = ["ROCTX_API=", "ROCTX_NONNULL(...)="]
+extra_include_dirs = []

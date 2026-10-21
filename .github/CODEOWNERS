@@ -1,0 +1,5 @@
+# This file itself
+/.github/CODEOWNERS     @ROCm/rocm-security-gh-admins
+
+# Default owners for everything in the repository.
+*                       @ROCm/rocm-fortran-maintainers

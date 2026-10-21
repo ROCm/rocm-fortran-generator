@@ -1,0 +1,3 @@
+# <function> <scalar-pointer-arg> ...
+# Every typed pointer not listed here is treated as a data buffer.
+hiprandGetVersion version

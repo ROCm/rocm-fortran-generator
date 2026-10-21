@@ -1,0 +1,26 @@
+version: 2
+updates:
+  # The generator's Julia dependencies (Clang.jl), pinned in src/Manifest-v*.toml.
+  - package-ecosystem: "julia"
+    directory: "/src"
+    schedule:
+      interval: "weekly"
+    # Wait a week before adopting a new release.
+    cooldown:
+      default-days: 7
+  # The SHA-pinned actions of .github/workflows/.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # Wait a week before adopting a new release, except for the ROCm security
+    # workflows, which are bumped as soon as they are released.
+    cooldown:
+      default-days: 7
+      exclude:
+        - "ROCm/rocm-security-gh*"
+    groups:
+      rocm-security-gh:
+        patterns: ["ROCm/rocm-security-gh*"]
+      github-actions:
+        patterns: ["*"]

@@ -1,0 +1,36 @@
+[general]
+name = "hip"
+
+[check]
+# Auto-detection would pick HIP_SUCCESS from a small legacy enum, and hipCheck
+# names failures from the enum of its success constant.
+success = "hipSuccess"
+
+[library]
+prefix = "hip"
+opaque_handles = [
+  "hipStream_t",
+  "hipEvent_t",
+  "hipModule_t",
+  "hipFunction_t",
+  "hipCtx_t",
+  "hipModuleSymbol_t",
+  "hipMemPool_t",
+  "hipGraph_t",
+  "hipGraphNode_t",
+  "hipGraphExec_t",
+  "hipUserObject_t",
+  "hipExternalMemory_t",
+  "hipExternalSemaphore_t",
+]
+
+[headers]
+subdir = "hip"
+file   = "hip_runtime_api.h"
+
+[clang]
+defines = []
+# hip_runtime_api.h does not include <hip/library_types.h>, whose hipDataType and
+# hipLibraryPropertyType enums the math library bindings use.
+extra_args = ["-include", "hip/library_types.h"]
+extra_include_dirs = []

@@ -1,0 +1,309 @@
+hipsparseCbsr2csr descrA descrC
+hipsparseCbsric02 descrA myInfo pBuffer
+hipsparseCbsric02_analysis descrA myInfo pBuffer
+hipsparseCbsric02_bufferSize descrA myInfo
+hipsparseCbsrilu02 descrA myInfo pBuffer
+hipsparseCbsrilu02_analysis descrA myInfo pBuffer
+hipsparseCbsrilu02_bufferSize descrA myInfo
+hipsparseCbsrmm descrA
+hipsparseCbsrmv descrA
+hipsparseCbsrsm2_analysis descrA myInfo pBuffer
+hipsparseCbsrsm2_bufferSize descrA myInfo
+hipsparseCbsrsm2_solve descrA myInfo pBuffer
+hipsparseCbsrsv2_analysis descrA myInfo pBuffer
+hipsparseCbsrsv2_bufferSize descrA myInfo
+hipsparseCbsrsv2_bufferSizeExt descrA myInfo
+hipsparseCbsrsv2_solve descrA myInfo pBuffer
+hipsparseCbsrxmv descr
+hipsparseCcsc2dense descr
+hipsparseCcsr2bsr descrA descrC
+hipsparseCcsr2csr_compress descrA
+hipsparseCcsr2csru descrA myInfo pBuffer
+hipsparseCcsr2dense descr
+hipsparseCcsr2gebsr bsr_descr csr_descr
+hipsparseCcsr2gebsr_bufferSize csr_descr
+hipsparseCcsr2hyb descrA hybA
+hipsparseCcsrcolor descrA fractionToColor myInfo
+hipsparseCcsrgeam descrA descrB descrC
+hipsparseCcsrgeam2 descrA descrB descrC pBuffer
+hipsparseCcsrgeam2_bufferSizeExt descrA descrB descrC
+hipsparseCcsrgemm descrA descrB descrC
+hipsparseCcsrgemm2 descrA descrB descrC descrD myInfo pBuffer
+hipsparseCcsrgemm2_bufferSizeExt descrA descrB descrD myInfo
+hipsparseCcsric02 descrA myInfo pBuffer
+hipsparseCcsric02_analysis descrA myInfo pBuffer
+hipsparseCcsric02_bufferSize descrA myInfo
+hipsparseCcsric02_bufferSizeExt descrA myInfo
+hipsparseCcsrilu02 descrA myInfo pBuffer
+hipsparseCcsrilu02_analysis descrA myInfo pBuffer
+hipsparseCcsrilu02_bufferSize descrA myInfo
+hipsparseCcsrilu02_bufferSizeExt descrA myInfo
+hipsparseCcsrmm descrA
+hipsparseCcsrmm2 descrA
+hipsparseCcsrmv descrA
+hipsparseCcsrsm2_analysis descrA myInfo pBuffer
+hipsparseCcsrsm2_bufferSizeExt descrA myInfo
+hipsparseCcsrsm2_solve descrA myInfo pBuffer
+hipsparseCcsrsv2_analysis descrA myInfo pBuffer
+hipsparseCcsrsv2_bufferSize descrA myInfo
+hipsparseCcsrsv2_bufferSizeExt descrA myInfo
+hipsparseCcsrsv2_solve descrA myInfo pBuffer
+hipsparseCcsru2csr descrA myInfo pBuffer
+hipsparseCcsru2csr_bufferSizeExt myInfo
+hipsparseCdense2csc descr
+hipsparseCdense2csr descr
+hipsparseCgebsr2csr descrA descrC
+hipsparseCgebsr2gebsr buffer descrA descrC
+hipsparseCgebsr2gebsr_bufferSize descrA
+hipsparseCgemvi pBuffer
+hipsparseCgpsvInterleavedBatch pBuffer
+hipsparseCgtsv2 pBuffer
+hipsparseCgtsv2StridedBatch pBuffer
+hipsparseCgtsv2_nopivot pBuffer
+hipsparseChyb2csr descrA hybA
+hipsparseChybmv descrA hybA
+hipsparseCnnz descrA
+hipsparseCnnz_compress descrA
+hipsparseDbsr2csr descrA descrC
+hipsparseDbsric02 descrA myInfo pBuffer
+hipsparseDbsric02_analysis descrA myInfo pBuffer
+hipsparseDbsric02_bufferSize descrA myInfo
+hipsparseDbsrilu02 descrA myInfo pBuffer
+hipsparseDbsrilu02_analysis descrA myInfo pBuffer
+hipsparseDbsrilu02_bufferSize descrA myInfo
+hipsparseDbsrmm descrA
+hipsparseDbsrmv descrA
+hipsparseDbsrsm2_analysis descrA myInfo pBuffer
+hipsparseDbsrsm2_bufferSize descrA myInfo
+hipsparseDbsrsm2_solve descrA myInfo pBuffer
+hipsparseDbsrsv2_analysis descrA myInfo pBuffer
+hipsparseDbsrsv2_bufferSize descrA myInfo
+hipsparseDbsrsv2_bufferSizeExt descrA myInfo
+hipsparseDbsrsv2_solve descrA myInfo pBuffer
+hipsparseDbsrxmv descr
+hipsparseDcsc2dense descr
+hipsparseDcsr2bsr descrA descrC
+hipsparseDcsr2csr_compress descrA
+hipsparseDcsr2csru descrA myInfo pBuffer
+hipsparseDcsr2dense descr
+hipsparseDcsr2gebsr bsr_descr csr_descr
+hipsparseDcsr2gebsr_bufferSize csr_descr
+hipsparseDcsr2hyb descrA hybA
+hipsparseDcsrcolor descrA fractionToColor myInfo
+hipsparseDcsrgeam descrA descrB descrC
+hipsparseDcsrgeam2 descrA descrB descrC pBuffer
+hipsparseDcsrgeam2_bufferSizeExt descrA descrB descrC
+hipsparseDcsrgemm descrA descrB descrC
+hipsparseDcsrgemm2 descrA descrB descrC descrD myInfo pBuffer
+hipsparseDcsrgemm2_bufferSizeExt descrA descrB descrD myInfo
+hipsparseDcsric02 descrA myInfo pBuffer
+hipsparseDcsric02_analysis descrA myInfo pBuffer
+hipsparseDcsric02_bufferSize descrA myInfo
+hipsparseDcsric02_bufferSizeExt descrA myInfo
+hipsparseDcsrilu02 descrA myInfo pBuffer
+hipsparseDcsrilu02_analysis descrA myInfo pBuffer
+hipsparseDcsrilu02_bufferSize descrA myInfo
+hipsparseDcsrilu02_bufferSizeExt descrA myInfo
+hipsparseDcsrmm descrA
+hipsparseDcsrmm2 descrA
+hipsparseDcsrmv descrA
+hipsparseDcsrsm2_analysis descrA myInfo pBuffer
+hipsparseDcsrsm2_bufferSizeExt descrA myInfo
+hipsparseDcsrsm2_solve descrA myInfo pBuffer
+hipsparseDcsrsv2_analysis descrA myInfo pBuffer
+hipsparseDcsrsv2_bufferSize descrA myInfo
+hipsparseDcsrsv2_bufferSizeExt descrA myInfo
+hipsparseDcsrsv2_solve descrA myInfo pBuffer
+hipsparseDcsru2csr descrA myInfo pBuffer
+hipsparseDcsru2csr_bufferSizeExt myInfo
+hipsparseDdense2csc descr
+hipsparseDdense2csr descr
+hipsparseDenseToSparse_bufferSize matA matB
+hipsparseDgebsr2csr descrA descrC
+hipsparseDgebsr2gebsr buffer descrA descrC
+hipsparseDgebsr2gebsr_bufferSize descrA
+hipsparseDgemvi pBuffer
+hipsparseDgpsvInterleavedBatch pBuffer
+hipsparseDgtsv2 pBuffer
+hipsparseDgtsv2StridedBatch pBuffer
+hipsparseDgtsv2_nopivot pBuffer
+hipsparseDhyb2csr descrA hybA
+hipsparseDhybmv descrA hybA
+hipsparseDnnz descrA
+hipsparseDnnz_compress descrA
+hipsparseDpruneCsr2csr buffer descrA descrC
+hipsparseDpruneCsr2csrByPercentage buffer descrA descrC myInfo
+hipsparseDpruneCsr2csrByPercentage_bufferSize descrA descrC myInfo
+hipsparseDpruneCsr2csrByPercentage_bufferSizeExt descrA descrC myInfo
+hipsparseDpruneCsr2csrNnz buffer descrA descrC
+hipsparseDpruneCsr2csrNnzByPercentage buffer descrA descrC myInfo
+hipsparseDpruneCsr2csr_bufferSize descrA descrC
+hipsparseDpruneCsr2csr_bufferSizeExt descrA descrC
+hipsparseDpruneDense2csr buffer descr
+hipsparseDpruneDense2csrByPercentage buffer descr myInfo
+hipsparseDpruneDense2csrByPercentage_bufferSize descr myInfo
+hipsparseDpruneDense2csrByPercentage_bufferSizeExt descr myInfo
+hipsparseDpruneDense2csrNnz buffer descr
+hipsparseDpruneDense2csrNnzByPercentage buffer descr myInfo
+hipsparseDpruneDense2csr_bufferSize descr
+hipsparseDpruneDense2csr_bufferSizeExt descr
+hipsparseSbsr2csr descrA descrC
+hipsparseSbsric02 descrA myInfo pBuffer
+hipsparseSbsric02_analysis descrA myInfo pBuffer
+hipsparseSbsric02_bufferSize descrA myInfo
+hipsparseSbsrilu02 descrA myInfo pBuffer
+hipsparseSbsrilu02_analysis descrA myInfo pBuffer
+hipsparseSbsrilu02_bufferSize descrA myInfo
+hipsparseSbsrmm descrA
+hipsparseSbsrmv descrA
+hipsparseSbsrsm2_analysis descrA myInfo pBuffer
+hipsparseSbsrsm2_bufferSize descrA myInfo
+hipsparseSbsrsm2_solve descrA myInfo pBuffer
+hipsparseSbsrsv2_analysis descrA myInfo pBuffer
+hipsparseSbsrsv2_bufferSize descrA myInfo
+hipsparseSbsrsv2_bufferSizeExt descrA myInfo
+hipsparseSbsrsv2_solve descrA myInfo pBuffer
+hipsparseSbsrxmv descr
+hipsparseScsc2dense descr
+hipsparseScsr2bsr descrA descrC
+hipsparseScsr2csr_compress descrA
+hipsparseScsr2csru descrA myInfo pBuffer
+hipsparseScsr2dense descr
+hipsparseScsr2gebsr bsr_descr csr_descr
+hipsparseScsr2gebsr_bufferSize csr_descr
+hipsparseScsr2hyb descrA hybA
+hipsparseScsrcolor descrA fractionToColor myInfo
+hipsparseScsrgeam descrA descrB descrC
+hipsparseScsrgeam2 descrA descrB descrC pBuffer
+hipsparseScsrgeam2_bufferSizeExt descrA descrB descrC
+hipsparseScsrgemm descrA descrB descrC
+hipsparseScsrgemm2 descrA descrB descrC descrD myInfo pBuffer
+hipsparseScsrgemm2_bufferSizeExt descrA descrB descrD myInfo
+hipsparseScsric02 descrA myInfo pBuffer
+hipsparseScsric02_analysis descrA myInfo pBuffer
+hipsparseScsric02_bufferSize descrA myInfo
+hipsparseScsric02_bufferSizeExt descrA myInfo
+hipsparseScsrilu02 descrA myInfo pBuffer
+hipsparseScsrilu02_analysis descrA myInfo pBuffer
+hipsparseScsrilu02_bufferSize descrA myInfo
+hipsparseScsrilu02_bufferSizeExt descrA myInfo
+hipsparseScsrmm descrA
+hipsparseScsrmm2 descrA
+hipsparseScsrmv descrA
+hipsparseScsrsm2_analysis descrA myInfo pBuffer
+hipsparseScsrsm2_bufferSizeExt descrA myInfo
+hipsparseScsrsm2_solve descrA myInfo pBuffer
+hipsparseScsrsv2_analysis descrA myInfo pBuffer
+hipsparseScsrsv2_bufferSize descrA myInfo
+hipsparseScsrsv2_bufferSizeExt descrA myInfo
+hipsparseScsrsv2_solve descrA myInfo pBuffer
+hipsparseScsru2csr descrA myInfo pBuffer
+hipsparseScsru2csr_bufferSizeExt myInfo
+hipsparseSdense2csc descr
+hipsparseSdense2csr descr
+hipsparseSgebsr2csr descrA descrC
+hipsparseSgebsr2gebsr buffer descrA descrC
+hipsparseSgebsr2gebsr_bufferSize descrA
+hipsparseSgemvi pBuffer
+hipsparseSgpsvInterleavedBatch pBuffer
+hipsparseSgtsv2 pBuffer
+hipsparseSgtsv2StridedBatch pBuffer
+hipsparseSgtsv2_nopivot pBuffer
+hipsparseShyb2csr descrA hybA
+hipsparseShybmv descrA hybA
+hipsparseSnnz descrA
+hipsparseSnnz_compress descrA
+hipsparseSparseToDense_bufferSize matA matB
+hipsparseSpruneCsr2csr buffer descrA descrC
+hipsparseSpruneCsr2csrByPercentage buffer descrA descrC myInfo
+hipsparseSpruneCsr2csrByPercentage_bufferSize descrA descrC myInfo
+hipsparseSpruneCsr2csrByPercentage_bufferSizeExt descrA descrC myInfo
+hipsparseSpruneCsr2csrNnz buffer descrA descrC
+hipsparseSpruneCsr2csrNnzByPercentage buffer descrA descrC myInfo
+hipsparseSpruneCsr2csr_bufferSize descrA descrC
+hipsparseSpruneCsr2csr_bufferSizeExt descrA descrC
+hipsparseSpruneDense2csr buffer descr
+hipsparseSpruneDense2csrByPercentage buffer descr myInfo
+hipsparseSpruneDense2csrByPercentage_bufferSize descr myInfo
+hipsparseSpruneDense2csrByPercentage_bufferSizeExt descr myInfo
+hipsparseSpruneDense2csrNnz buffer descr
+hipsparseSpruneDense2csrNnzByPercentage buffer descr myInfo
+hipsparseSpruneDense2csr_bufferSize descr
+hipsparseSpruneDense2csr_bufferSizeExt descr
+hipsparseXcoosortByColumn pBuffer
+hipsparseXcoosortByRow pBuffer
+hipsparseXcscsort descrA pBuffer
+hipsparseXcsr2bsrNnz descrA descrC
+hipsparseXcsr2gebsrNnz bsr_descr csr_descr
+hipsparseXcsrgeam2Nnz descrA descrB descrC workspace
+hipsparseXcsrgeamNnz descrA descrB descrC
+hipsparseXcsrgemm2Nnz descrA descrB descrC descrD myInfo pBuffer
+hipsparseXcsrgemmNnz descrA descrB descrC
+hipsparseXcsrsort descrA pBuffer
+hipsparseXgebsr2gebsrNnz buffer descrA descrC
+hipsparseZbsr2csr descrA descrC
+hipsparseZbsric02 descrA myInfo pBuffer
+hipsparseZbsric02_analysis descrA myInfo pBuffer
+hipsparseZbsric02_bufferSize descrA myInfo
+hipsparseZbsrilu02 descrA myInfo pBuffer
+hipsparseZbsrilu02_analysis descrA myInfo pBuffer
+hipsparseZbsrilu02_bufferSize descrA myInfo
+hipsparseZbsrmm descrA
+hipsparseZbsrmv descrA
+hipsparseZbsrsm2_analysis descrA myInfo pBuffer
+hipsparseZbsrsm2_bufferSize descrA myInfo
+hipsparseZbsrsm2_solve descrA myInfo pBuffer
+hipsparseZbsrsv2_analysis descrA myInfo pBuffer
+hipsparseZbsrsv2_bufferSize descrA myInfo
+hipsparseZbsrsv2_bufferSizeExt descrA myInfo
+hipsparseZbsrsv2_solve descrA myInfo pBuffer
+hipsparseZbsrxmv descr
+hipsparseZcsc2dense descr
+hipsparseZcsr2bsr descrA descrC
+hipsparseZcsr2csr_compress descrA
+hipsparseZcsr2csru descrA myInfo pBuffer
+hipsparseZcsr2dense descr
+hipsparseZcsr2gebsr bsr_descr csr_descr
+hipsparseZcsr2gebsr_bufferSize csr_descr
+hipsparseZcsr2hyb descrA hybA
+hipsparseZcsrcolor descrA fractionToColor myInfo
+hipsparseZcsrgeam descrA descrB descrC
+hipsparseZcsrgeam2 descrA descrB descrC pBuffer
+hipsparseZcsrgeam2_bufferSizeExt descrA descrB descrC
+hipsparseZcsrgemm descrA descrB descrC
+hipsparseZcsrgemm2 descrA descrB descrC descrD myInfo pBuffer
+hipsparseZcsrgemm2_bufferSizeExt descrA descrB descrD myInfo
+hipsparseZcsric02 descrA myInfo pBuffer
+hipsparseZcsric02_analysis descrA myInfo pBuffer
+hipsparseZcsric02_bufferSize descrA myInfo
+hipsparseZcsric02_bufferSizeExt descrA myInfo
+hipsparseZcsrilu02 descrA myInfo pBuffer
+hipsparseZcsrilu02_analysis descrA myInfo pBuffer
+hipsparseZcsrilu02_bufferSize descrA myInfo
+hipsparseZcsrilu02_bufferSizeExt descrA myInfo
+hipsparseZcsrmm descrA
+hipsparseZcsrmm2 descrA
+hipsparseZcsrmv descrA
+hipsparseZcsrsm2_analysis descrA myInfo pBuffer
+hipsparseZcsrsm2_bufferSizeExt descrA myInfo
+hipsparseZcsrsm2_solve descrA myInfo pBuffer
+hipsparseZcsrsv2_analysis descrA myInfo pBuffer
+hipsparseZcsrsv2_bufferSize descrA myInfo
+hipsparseZcsrsv2_bufferSizeExt descrA myInfo
+hipsparseZcsrsv2_solve descrA myInfo pBuffer
+hipsparseZcsru2csr descrA myInfo pBuffer
+hipsparseZcsru2csr_bufferSizeExt myInfo
+hipsparseZdense2csc descr
+hipsparseZdense2csr descr
+hipsparseZgebsr2csr descrA descrC
+hipsparseZgebsr2gebsr buffer descrA descrC
+hipsparseZgebsr2gebsr_bufferSize descrA
+hipsparseZgemvi pBuffer
+hipsparseZgpsvInterleavedBatch pBuffer
+hipsparseZgtsv2 pBuffer
+hipsparseZgtsv2StridedBatch pBuffer
+hipsparseZgtsv2_nopivot pBuffer
+hipsparseZhyb2csr descrA hybA
+hipsparseZhybmv descrA hybA
+hipsparseZnnz descrA
+hipsparseZnnz_compress descrA

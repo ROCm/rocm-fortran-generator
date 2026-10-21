@@ -1,0 +1,14 @@
+[general]
+name = "rocblas"
+
+[library]
+prefix = "rocblas_"
+opaque_handles = [
+  "rocblas_handle",
+]
+
+[clang]
+defines = [
+  "ROCBLAS_EXPORT=",
+]
+extra_include_dirs = []

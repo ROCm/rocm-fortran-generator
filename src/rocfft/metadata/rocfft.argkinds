@@ -1,0 +1,4 @@
+# <function> <scalar-pointer-arg> ...
+# Every typed pointer not listed here is treated as a data buffer.
+rocfft_cache_serialize buffer_len_bytes
+rocfft_plan_get_work_buffer_size size_in_bytes

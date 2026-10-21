@@ -1,0 +1,16 @@
+# <function> <array-of-derived-type-arg> ...   (see apply_arg_overrides)
+#
+# Pointers to an emitted derived type that are arrays, declared `type(T) :: x(*)`:
+# the guru interface's dims (length rank) and howmany_dims (length howmany_rank).
+fftw_plan_guru64_dft dims howmany_dims
+fftw_plan_guru64_dft_c2r dims howmany_dims
+fftw_plan_guru64_dft_r2c dims howmany_dims
+fftw_plan_guru_dft dims howmany_dims
+fftw_plan_guru_dft_c2r dims howmany_dims
+fftw_plan_guru_dft_r2c dims howmany_dims
+fftwf_plan_guru64_dft dims howmany_dims
+fftwf_plan_guru64_dft_c2r dims howmany_dims
+fftwf_plan_guru64_dft_r2c dims howmany_dims
+fftwf_plan_guru_dft dims howmany_dims
+fftwf_plan_guru_dft_c2r dims howmany_dims
+fftwf_plan_guru_dft_r2c dims howmany_dims

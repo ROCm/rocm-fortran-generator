@@ -1,0 +1,24 @@
+# <function> <scalar-pointer-arg> ...
+# Every typed pointer not listed here is treated as a data buffer.
+# workSize of the plan and size routines stays a scalar, which is right for a plan on
+# one GPU. On a plan spread over several GPUs (hipfftXtSetGPUs), hipFFT writes one
+# work size per GPU: such a caller passes c_loc of an array to the bind(C) form.
+hipfftEstimate1d workSize
+hipfftEstimate2d workSize
+hipfftEstimate3d workSize
+hipfftEstimateMany workSize
+hipfftGetProperty value
+hipfftGetSize workSize
+hipfftGetSize1d workSize
+hipfftGetSize2d workSize
+hipfftGetSize3d workSize
+hipfftGetSizeMany workSize
+hipfftGetSizeMany64 workSize
+hipfftGetVersion version
+hipfftMakePlan1d workSize
+hipfftMakePlan2d workSize
+hipfftMakePlan3d workSize
+hipfftMakePlanMany workSize
+hipfftMakePlanMany64 workSize
+hipfftXtGetSizeMany workSize
+hipfftXtMakePlanMany workSize

@@ -1,0 +1,29 @@
+[general]
+name = "rocsolver"
+
+[check]
+# rocSOLVER returns rocblas_status and has no status enum of its own.
+success = "ROCBLAS_STATUS_SUCCESS"
+
+[library]
+reexport_enums = ["rocblas"]
+prefix = "rocsolver_"
+own_headers = ["rocsolver", "rocblas"]
+opaque_handles = [
+  "rocblas_handle",
+  "rocsolver_rfinfo",
+]
+
+[headers]
+# rocsolver-functions.h, not rocsolver.h: rocsolver-aliases.h needs the
+# CMake-generated rocsolver-export.h.
+file = "rocsolver-functions.h"
+
+[clang]
+defines = [
+  "ROCSOLVER_EXPORT=",
+  "ROCBLAS_EXPORT=",
+  "ROCSOLVER_DEPRECATED_X(x)=",
+  "ROCSOLVER_DEPRECATED=",
+]
+extra_include_dirs = []

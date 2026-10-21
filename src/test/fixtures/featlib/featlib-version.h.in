@@ -1,0 +1,9 @@
+// Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
+// SPDX-License-Identifier: MIT
+// Fixture version header template for auto_feature_defines. Each #cmakedefine is
+// a build-time feature flag the generator must resolve against CMake defaults.
+#cmakedefine FEATLIB_WITH_FOO
+#cmakedefine FEATLIB_WITH_BAR
+#cmakedefine FEATLIB_WITH_OFF
+#cmakedefine FEATLIB_WITH_BUILD
+#cmakedefine FEATLIB_WITH_MISSING

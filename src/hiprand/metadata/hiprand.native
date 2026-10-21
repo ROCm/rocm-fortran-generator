@@ -1,0 +1,10 @@
+# <function> [<maxrank> | full]   native-array overloads (maxrank defaults to 1)
+hiprandGenerate
+hiprandGenerateLogNormal
+hiprandGenerateLogNormalDouble
+hiprandGenerateLongLong
+hiprandGenerateNormal
+hiprandGenerateNormalDouble
+hiprandGeneratePoisson
+hiprandGenerateUniform
+hiprandGenerateUniformDouble

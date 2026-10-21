@@ -1,0 +1,5 @@
+// Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
+// SPDX-License-Identifier: MIT
+// Fixture config template for synth_generated_headers (flat source layout).
+#cmakedefine VERLIB_WITH_BAR
+#define VERLIB_HAS_CONFIG 1

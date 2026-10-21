@@ -1,0 +1,11 @@
+// Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
+// SPDX-License-Identifier: MIT
+// Fixture version template for synth_generated_headers.
+#ifndef VERLIB_VERSION_H_
+#define VERLIB_VERSION_H_
+#define VERLIB_VERSION @verlib_VERSION_NUMBER@
+#define VERLIB_VERSION_MAJOR @verlib_VERSION_MAJOR@
+#define VERLIB_VERSION_TWEAK @verlib_VERSION_TWEAK@
+#define VERLIB_COMMIT_ID "@verlib_VERSION_COMMIT_ID@"
+#cmakedefine VERLIB_WITH_FOO
+#endif

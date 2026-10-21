@@ -1,0 +1,18 @@
+[general]
+name = "rocrand"
+
+[library]
+prefix = "rocrand_"
+opaque_handles = [
+  "rocrand_generator",
+]
+# HIP vector types are skipped by default, but rocrand_set_seed_uint4 takes a
+# uint4 by value; without the derived type it would degrade to type(c_ptr),value.
+keep_structs = ["uint4"]
+
+[clang]
+defines = [
+  "ROCRANDAPI=",
+  "ROCRAND_KERNEL_ATTRS=",
+]
+extra_include_dirs = []

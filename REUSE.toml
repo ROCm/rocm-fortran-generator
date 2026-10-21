@@ -1,0 +1,9 @@
+# Licensing of the files that cannot carry an SPDX comment
+# (https://reuse.software/spec-3.3/#reusetoml).
+version = 1
+
+# A HIP VERSION file as rocm-systems ships it: line-based, with no comment syntax.
+[[annotations]]
+path = "src/test/fixtures/rocm-systems/projects/hip/VERSION"
+SPDX-FileCopyrightText = "2026 Advanced Micro Devices, Inc."
+SPDX-License-Identifier = "MIT"

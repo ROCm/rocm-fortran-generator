@@ -1,0 +1,21 @@
+[general]
+name = "hipsolver"
+
+[library]
+enum_rename = ["HIPBLAS_", "HIPSOLVER_"]
+prefix = "hipsolver"
+opaque_handles = [
+  "hipsolverHandle_t",
+  "hipsolverDnHandle_t",
+  "hipsolverRfHandle_t",
+  "hipsolverSpHandle_t",
+  "hipsolverSyevjInfo_t",
+  "hipsolverGesvdjInfo_t",
+]
+
+[clang]
+defines = [
+  "HIPSOLVER_EXPORT=",
+  "__HIP_PLATFORM_AMD__=1",
+]
+extra_include_dirs = []

@@ -1,0 +1,18 @@
+[general]
+name = "hipfftw"
+
+[library]
+# "fftw" matches both fftw_* and fftwf_*.
+prefix = "fftw"
+own_headers = ["hipfft"]          # hipfftw.h lives under include/hipfft/
+opaque_handles = ["fftw_plan", "fftwf_plan"]
+
+[headers]
+subdir = "hipfft"
+file   = "hipfftw.h"
+
+[clang]
+defines    = ["HIPFFT_EXPORT="]
+# size_t, otherwise missing when parsing as C.
+extra_args = ["-include", "stddef.h"]
+extra_include_dirs = []
