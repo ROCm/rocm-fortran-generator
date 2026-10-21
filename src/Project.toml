@@ -9,5 +9,6 @@ TOML  = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 # Clang.jl 0.18 (libclang 15) returns "" as the spelling of a typedef'd anonymous
 # enum or struct, silently producing unnamed enums and derived types.
 Clang = "0.19"
+TOML = "1"
 # Clang.jl 0.19 requires Julia 1.11; stated here so Pkg fails clearly on 1.10.
 julia = "1.11"
