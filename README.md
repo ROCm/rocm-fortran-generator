@@ -203,7 +203,7 @@ replaces the generator's copy.
 | `<lib>.arrayargs` | `func arg ...` | a `const T*` to a derived type is an array, `type(T) :: x(*)` |
 | `<lib>.byvalue` | `func arg ...` | the argument is passed by value |
 | `<lib>.funptrargs` | `func arg ...` | the argument is a `type(c_funptr)` |
-| `<lib>.ptrmode`, `<lib>.devonly` | generated | scalars read per the library's pointer mode, and scalars written by the device; refresh with `./refresh_ptrmode.sh` |
+| `<lib>.ptrmode`, `<lib>.devonly` | `func arg ...` | scalars read per the library's pointer mode (a subset of `.argkinds`), and scalars written by the device |
 
 An ILP64 (`_64`) or `_v2` variant inherits its base function's entry in `.argkinds`, `.native`,
 `.cptrargs`, `.ptrmode` and `.devonly`, so the base name is listed once for all of them.

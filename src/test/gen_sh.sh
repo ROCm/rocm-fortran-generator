@@ -69,7 +69,6 @@ expect 1 "projects/rocblas/fortran does not exist" \
 expect 1 "not a ROCm include dir" env ROCM_INCLUDE="$TMP/empty" ./gen.sh
 expect 1 "Include dir not found for rocblas" env ROCM_INCLUDE="$INST" ./gen.sh rocblas
 expect 1 "FAILED to generate" env ROCM_INCLUDE="$INST" ./gen.sh   # an empty hip/: no longer exit 0
-expect 1 "not a rocm-libraries checkout" env ROCM_LIBRARIES="$TMP/empty" bash refresh_ptrmode.sh
 [ ! -e "$ROCM_FORTRAN_OUT/rocm-libraries/rocblas" ] || { echo "FAIL  a failed run left a module"; fail=1; }
 
 exit "$fail"
