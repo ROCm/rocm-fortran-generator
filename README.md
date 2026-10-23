@@ -196,17 +196,32 @@ replaces the generator's copy.
 A missing or empty file means no metadata.
 
 The file holds one table per C function, keyed by its arguments, and a `["*"]` table for every function.
-An ILP64 (`_64`), `_v2` or `_spt` variant inherits its base function's table.
+A key may name several functions with braces, as in a shell: `["hipsolver{S,D,C,Z}gebrd"]`,
+or `["x{,_64}"]` with an empty alternative. A function named by two keys is an error.
+A variant without a table of its own takes its base function's whole table:
+an `_spt` variant that of the same function without `_spt`, an ILP64 `_64` variant that of the 32-bit one.
+A table of its own replaces the base's entirely, and a `_v2`, a new API, inherits nothing.
 
 ```toml
 format = 1
 
-[hipsolverCgebrd]
+["hipsolver{S,D,C,Z}gebrd"]
 work = "always-c-ptr"
 devInfo = "scalar-device"
 
-[rocblas_srotg_strided_batched]
+["rocblas_{s,d}rotg_strided_batched"]
 a = "1d"
+```
+
+`./gen.sh --explain <c-function> ...` prints the table that applies to each function and where it comes from
+(the key that names it, the base it inherits from, the `["*"]` entries), from the checkouts' metadata with
+`ROCM_SYSTEMS` / `ROCM_LIBRARIES`:
+
+```text
+$ ./gen.sh --explain rocblas_ddot_64
+rocblas_ddot_64: src/rocblas/metadata/rocblas.toml
+  ["rocblas_{s,d,h,bf}dot"] (inherited from rocblas_ddot)
+    myResult = ["scalar-host-or-device", "always-c-ptr"]
 ```
 
 An argument takes one value, or a list of values that answer different questions.

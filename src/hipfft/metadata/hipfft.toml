@@ -1,12 +1,12 @@
 # Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
-# What the hipfft C headers cannot express. One section per C function
-# (`_64` and `_v2` variants inherit their base function's section), and
-# `["*"]` for every function. See "Fixing a binding" in the generator README.
+# What the hipfft C headers cannot express. One table per C function, and
+# `["*"]` for every function; a key with braces names several. A _64 or _spt
+# variant without a table takes its base's. See "Fixing a binding" in the
+# generator README; `gen.sh --explain <function>` shows what applies.
 
 format = 1
-
 # argkinds:
 #   workSize of the plan and size routines stays a scalar, which is right for a plan on
 #   one GPU. On a plan spread over several GPUs (hipfftXtSetGPUs), hipFFT writes one

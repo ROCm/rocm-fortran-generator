@@ -1,12 +1,12 @@
 # Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
-# What the rocsparse C headers cannot express. One section per C function
-# (`_64` and `_v2` variants inherit their base function's section), and
-# `["*"]` for every function. See "Fixing a binding" in the generator README.
+# What the rocsparse C headers cannot express. One table per C function, and
+# `["*"]` for every function; a key with braces names several. A _64 or _spt
+# variant without a table takes its base's. See "Fixing a binding" in the
+# generator README; `gen.sh --explain <function>` shows what applies.
 
 format = 1
-
 # argkinds:
 #   A few *_buffer_size / *_bufferSizeExt routines do not list the alpha/beta/threshold
 #   their compute twin lists, so they get no _typed form for them.
@@ -61,197 +61,197 @@ position = "scalar-host-or-device"
 [rocsparse_bsrsv_zero_pivot]
 position = "scalar-host-or-device"
 
-[rocsparse_caxpyi]
+["rocsparse_{s,d,c,z}axpyi"]
 alpha = "scalar-host-or-device"
 
-[rocsparse_cbsr2csr]
+["rocsparse_{s,d,c,z}bsr2csr"]
 bsr_descr = "always-c-ptr"
 csr_descr = "always-c-ptr"
 
-[rocsparse_cbsrgeam]
+["rocsparse_{s,d,c,z}bsrgeam"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocsparse_cbsrgemm]
+["rocsparse_{s,d,c,z}bsrgemm"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocsparse_cbsrgemm_buffer_size]
+["rocsparse_{s,d,c,z}bsrgemm_buffer_size"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 buffer_size = "scalar-host"
 
-[rocsparse_cbsric0]
+["rocsparse_{s,d,c,z}bsric0"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_cbsric0_analysis]
+["rocsparse_{s,d,c,z}bsric0_analysis"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_cbsric0_buffer_size]
+["rocsparse_{s,d,c,z}bsric0_buffer_size"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 buffer_size = "scalar-host"
 
-[rocsparse_cbsrilu0]
+["rocsparse_{s,d,c,z}bsrilu0"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_cbsrilu0_analysis]
+["rocsparse_{s,d,c,z}bsrilu0_analysis"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_cbsrilu0_buffer_size]
+["rocsparse_{s,d,c,z}bsrilu0_buffer_size"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 buffer_size = "scalar-host"
 
-[rocsparse_cbsrilu0_numeric_boost]
+["rocsparse_{s,d,c,z,dc,ds}bsrilu0_numeric_boost"]
 boost_tol = "scalar-host-or-device"
 boost_val = "scalar-host-or-device"
 
-[rocsparse_cbsrmm]
+["rocsparse_{s,d,c,z}bsrmm"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
 beta = "scalar-host-or-device"
 
-[rocsparse_cbsrmv]
+["rocsparse_{s,d,c,z}bsrmv"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
 beta = "scalar-host-or-device"
 
-[rocsparse_cbsrsm_analysis]
+["rocsparse_{s,d,c,z}bsrsm_analysis"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_cbsrsm_buffer_size]
+["rocsparse_{s,d,c,z}bsrsm_buffer_size"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 buffer_size = "scalar-host"
 
-[rocsparse_cbsrsm_solve]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_cbsrsv_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_cbsrsv_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_cbsrsv_solve]
+["rocsparse_{s,d,c,z}bsrsm_solve"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_cbsrxmv]
+["rocsparse_{s,d,c,z}bsrsv_analysis"]
+descr = "always-c-ptr"
+myInfo = "always-c-ptr"
+temp_buffer = "always-c-ptr"
+
+["rocsparse_{s,d,c,z}bsrsv_buffer_size"]
+descr = "always-c-ptr"
+myInfo = "always-c-ptr"
+buffer_size = "scalar-host"
+
+["rocsparse_{s,d,c,z}bsrsv_solve"]
+alpha = "scalar-host-or-device"
+descr = "always-c-ptr"
+myInfo = "always-c-ptr"
+temp_buffer = "always-c-ptr"
+
+["rocsparse_{s,d,c,z}bsrxmv"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
 beta = "scalar-host-or-device"
 
-[rocsparse_ccheck_matrix_coo]
+["rocsparse_{s,d,c,z}check_matrix_coo"]
 data_status = "scalar-host"
 
-[rocsparse_ccheck_matrix_coo_buffer_size]
+["rocsparse_{s,d,c,z}check_matrix_coo_buffer_size"]
 buffer_size = "scalar-host"
 
-[rocsparse_ccheck_matrix_csc]
+["rocsparse_{s,d,c,z}check_matrix_csc"]
 data_status = "scalar-host"
 
-[rocsparse_ccheck_matrix_csc_buffer_size]
+["rocsparse_{s,d,c,z}check_matrix_csc_buffer_size"]
 buffer_size = "scalar-host"
 
-[rocsparse_ccheck_matrix_csr]
+["rocsparse_{s,d,c,z}check_matrix_csr"]
 data_status = "scalar-host"
 
-[rocsparse_ccheck_matrix_csr_buffer_size]
+["rocsparse_{s,d,c,z}check_matrix_csr_buffer_size"]
 buffer_size = "scalar-host"
 
-[rocsparse_ccheck_matrix_ell]
+["rocsparse_{s,d,c,z}check_matrix_ell"]
 data_status = "scalar-host"
 
-[rocsparse_ccheck_matrix_ell_buffer_size]
+["rocsparse_{s,d,c,z}check_matrix_ell_buffer_size"]
 buffer_size = "scalar-host"
 
-[rocsparse_ccheck_matrix_gebsc]
+["rocsparse_{s,d,c,z}check_matrix_gebsc"]
 data_status = "scalar-host"
 
-[rocsparse_ccheck_matrix_gebsc_buffer_size]
+["rocsparse_{s,d,c,z}check_matrix_gebsc_buffer_size"]
 buffer_size = "scalar-host"
 
-[rocsparse_ccheck_matrix_gebsr]
+["rocsparse_{s,d,c,z}check_matrix_gebsr"]
 data_status = "scalar-host"
 
-[rocsparse_ccheck_matrix_gebsr_buffer_size]
+["rocsparse_{s,d,c,z}check_matrix_gebsr_buffer_size"]
 buffer_size = "scalar-host"
 
-[rocsparse_ccoo2dense]
+["rocsparse_{s,d,c,z}coo2dense"]
 descr = "always-c-ptr"
 
-[rocsparse_ccoomv]
+["rocsparse_{s,d,c,z}coomv"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
 beta = "scalar-host-or-device"
 
-[rocsparse_ccsc2dense]
+["rocsparse_{s,d,c,z}csc2dense"]
 descr = "always-c-ptr"
 
-[rocsparse_ccsr2bsr]
+["rocsparse_{s,d,c,z}csr2bsr"]
 csr_descr = "always-c-ptr"
 bsr_descr = "always-c-ptr"
 
-[rocsparse_ccsr2csc]
+["rocsparse_{s,d,c,z}csr2csc"]
 temp_buffer = "always-c-ptr"
 
-[rocsparse_ccsr2csr_compress]
+["rocsparse_{s,d,c,z}csr2csr_compress"]
 descr_A = "always-c-ptr"
 
-[rocsparse_ccsr2dense]
+["rocsparse_{s,d,c,z}csr2dense"]
 descr = "always-c-ptr"
 
-[rocsparse_ccsr2ell]
+["rocsparse_{s,d,c,z}csr2ell"]
 csr_descr = "always-c-ptr"
 ell_descr = "always-c-ptr"
 
-[rocsparse_ccsr2gebsr]
+["rocsparse_{s,d,c,z}csr2gebsr"]
 csr_descr = "always-c-ptr"
 bsr_descr = "always-c-ptr"
 
-[rocsparse_ccsr2gebsr_buffer_size]
+["rocsparse_{s,d,c,z}csr2gebsr_buffer_size"]
 csr_descr = "always-c-ptr"
 buffer_size = "scalar-host"
 
-[rocsparse_ccsr2hyb]
+["rocsparse_{s,d,c,z}csr2hyb"]
 descr = "always-c-ptr"
 hyb = "always-c-ptr"
 
-[rocsparse_ccsrcolor]
+["rocsparse_{s,d,c,z}csrcolor"]
 descr = "always-c-ptr"
 fraction_to_color = "scalar-host"
 ncolors = "scalar-host"
 myInfo = "always-c-ptr"
 
-[rocsparse_ccsrgeam]
+["rocsparse_{s,d,c,z}csrgeam"]
 alpha = "scalar-host-or-device"
 descr_A = "always-c-ptr"
 beta = "scalar-host-or-device"
 descr_B = "always-c-ptr"
 descr_C = "always-c-ptr"
 
-[rocsparse_ccsrgemm]
+["rocsparse_{s,d,c,z}csrgemm"]
 alpha = "scalar-host-or-device"
 descr_A = "always-c-ptr"
 descr_B = "always-c-ptr"
@@ -261,7 +261,7 @@ descr_C = "always-c-ptr"
 info_C = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_ccsrgemm_buffer_size]
+["rocsparse_{s,d,c,z}csrgemm_buffer_size"]
 alpha = "scalar-host-or-device"
 descr_A = "always-c-ptr"
 descr_B = "always-c-ptr"
@@ -270,191 +270,191 @@ descr_D = "always-c-ptr"
 info_C = "always-c-ptr"
 buffer_size = "scalar-host"
 
-[rocsparse_ccsrgemm_numeric]
+["rocsparse_{s,d,c,z}csrgemm_numeric"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocsparse_ccsric0]
+["rocsparse_{s,d,c,z}csric0"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_ccsric0_analysis]
+["rocsparse_{s,d,c,z}csric0_analysis"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_ccsric0_buffer_size]
+["rocsparse_{s,d,c,z}csric0_buffer_size"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 buffer_size = "scalar-host"
 
-[rocsparse_ccsrilu0]
+["rocsparse_{s,d,c,z}csrilu0"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_ccsrilu0_analysis]
+["rocsparse_{s,d,c,z}csrilu0_analysis"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_ccsrilu0_buffer_size]
+["rocsparse_{s,d,c,z}csrilu0_buffer_size"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 buffer_size = "scalar-host"
 
-[rocsparse_ccsrilu0_numeric_boost]
+["rocsparse_{s,d,c,z,dc,ds}csrilu0_numeric_boost"]
 boost_tol = "scalar-host-or-device"
 boost_val = "scalar-host-or-device"
 
-[rocsparse_ccsritsv_buffer_size]
+["rocsparse_{s,d,c,z}csritsv_buffer_size"]
 buffer_size = "scalar-host"
 
-[rocsparse_ccsritsv_solve]
+["rocsparse_{s,d,c,z}csritsv_solve"]
 host_nmaxiter = "scalar-host"
 alpha = "scalar-host-or-device"
 
-[rocsparse_ccsritsv_solve_ex]
+["rocsparse_{s,d,c,z}csritsv_solve_ex"]
 host_nmaxiter = "scalar-host"
 alpha = "scalar-host-or-device"
 
-[rocsparse_ccsrmm]
+["rocsparse_{s,d,c,z}csrmm"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
 beta = "scalar-host-or-device"
 
-[rocsparse_ccsrmv]
+["rocsparse_{s,d,c,z}csrmv"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 beta = "scalar-host-or-device"
 
-[rocsparse_ccsrmv_analysis]
+["rocsparse_{s,d,c,z}csrmv_analysis"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 
-[rocsparse_ccsrsm_analysis]
+["rocsparse_{s,d,c,z}csrsm_analysis"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_ccsrsm_buffer_size]
+["rocsparse_{s,d,c,z}csrsm_buffer_size"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 buffer_size = "scalar-host"
 
-[rocsparse_ccsrsm_solve]
+["rocsparse_{s,d,c,z}csrsm_solve"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_ccsrsv_analysis]
+["rocsparse_{s,d,c,z}csrsv_analysis"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_ccsrsv_buffer_size]
+["rocsparse_{s,d,c,z}csrsv_buffer_size"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 buffer_size = "scalar-host"
 
-[rocsparse_ccsrsv_solve]
+["rocsparse_{s,d,c,z}csrsv_solve"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_cdense2coo]
+["rocsparse_{s,d,c,z}dense2coo"]
 descr = "always-c-ptr"
 
-[rocsparse_cdense2csc]
+["rocsparse_{s,d,c,z}dense2csc"]
 descr = "always-c-ptr"
 
-[rocsparse_cdense2csr]
+["rocsparse_{s,d,c,z}dense2csr"]
 descr = "always-c-ptr"
 
-[rocsparse_cdotci]
+["rocsparse_{c,z}dotci"]
 myResult = "scalar-host-or-device"
 
-[rocsparse_cdoti]
+["rocsparse_{s,d,c,z}doti"]
 myResult = "scalar-host-or-device"
 
-[rocsparse_cell2csr]
+["rocsparse_{s,d,c,z}ell2csr"]
 ell_descr = "always-c-ptr"
 csr_descr = "always-c-ptr"
 
-[rocsparse_cellmv]
+["rocsparse_{s,d,c,z}ellmv"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
 beta = "scalar-host-or-device"
 
-[rocsparse_cgebsr2csr]
+["rocsparse_{s,d,c,z}gebsr2csr"]
 bsr_descr = "always-c-ptr"
 csr_descr = "always-c-ptr"
 
-[rocsparse_cgebsr2gebsc]
+["rocsparse_{s,d,c,z}gebsr2gebsc"]
 temp_buffer = "always-c-ptr"
 
-[rocsparse_cgebsr2gebsc_buffer_size]
+["rocsparse_{s,d,c,z}gebsr2gebsc_buffer_size"]
 p_buffer_size = ["scalar-host", "always-c-ptr"]
 
-[rocsparse_cgebsr2gebsr_buffer_size]
+["rocsparse_{s,d,c,z}gebsr2gebsr_buffer_size"]
 buffer_size = "scalar-host"
 
-[rocsparse_cgebsrmm]
+["rocsparse_{s,d,c,z}gebsrmm"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
 beta = "scalar-host-or-device"
 
-[rocsparse_cgebsrmv]
+["rocsparse_{s,d,c,z}gebsrmv"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
 beta = "scalar-host-or-device"
 
-[rocsparse_cgemmi]
+["rocsparse_{s,d,c,z}gemmi"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
 beta = "scalar-host-or-device"
 
-[rocsparse_cgemvi]
+["rocsparse_{s,d,c,z}gemvi"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_cgemvi_buffer_size]
+["rocsparse_{s,d,c,z}gemvi_buffer_size"]
 buffer_size = "scalar-host"
 
-[rocsparse_cgpsv_interleaved_batch]
+["rocsparse_{s,d,c,z}gpsv_interleaved_batch"]
 temp_buffer = "always-c-ptr"
 
-[rocsparse_cgpsv_interleaved_batch_buffer_size]
+["rocsparse_{s,d,c,z}gpsv_interleaved_batch_buffer_size"]
 buffer_size = "scalar-host"
 
-[rocsparse_cgthrz]
+["rocsparse_{s,d,c,z}gthrz"]
 
-[rocsparse_cgtsv]
+["rocsparse_{s,d,c,z}gtsv"]
 temp_buffer = "always-c-ptr"
 
-[rocsparse_cgtsv_buffer_size]
+["rocsparse_{s,d,c,z}gtsv_buffer_size"]
 buffer_size = "scalar-host"
 
-[rocsparse_cgtsv_interleaved_batch_buffer_size]
+["rocsparse_{s,d,c,z}gtsv_interleaved_batch_buffer_size"]
 buffer_size = "scalar-host"
 
-[rocsparse_cgtsv_no_pivot]
+["rocsparse_{s,d,c,z}gtsv_no_pivot"]
 temp_buffer = "always-c-ptr"
 
-[rocsparse_cgtsv_no_pivot_buffer_size]
+["rocsparse_{s,d,c,z}gtsv_no_pivot_buffer_size"]
 buffer_size = "scalar-host"
 
-[rocsparse_cgtsv_no_pivot_strided_batch]
+["rocsparse_{s,d,c,z}gtsv_no_pivot_strided_batch"]
 temp_buffer = "always-c-ptr"
 
-[rocsparse_cgtsv_no_pivot_strided_batch_buffer_size]
+["rocsparse_{s,d,c,z}gtsv_no_pivot_strided_batch_buffer_size"]
 buffer_size = "scalar-host"
 
 [rocsparse_check_matrix_hyb]
@@ -467,22 +467,22 @@ buffer_size = "scalar-host"
 data_status = "scalar-host"
 buffer_size = "scalar-host"
 
-[rocsparse_chyb2csr]
+["rocsparse_{s,d,c,z}hyb2csr"]
 descr = "always-c-ptr"
 hyb = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_chybmv]
+["rocsparse_{s,d,c,z}hybmv"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
 hyb = "always-c-ptr"
 beta = "scalar-host-or-device"
 
-[rocsparse_cnnz]
+["rocsparse_{s,d,c,z}nnz"]
 descr = "always-c-ptr"
 nnz_total_dev_host_ptr = "scalar-host-or-device"
 
-[rocsparse_cnnz_compress]
+["rocsparse_{s,d,c,z}nnz_compress"]
 descr_A = "always-c-ptr"
 nnz_C = "scalar-host-or-device"
 
@@ -698,420 +698,8 @@ buffer_size = "scalar-host"
 [rocsparse_csrsv_zero_pivot]
 position = "scalar-host-or-device"
 
-[rocsparse_daxpyi]
-alpha = "scalar-host-or-device"
-
-[rocsparse_dbsr2csr]
-bsr_descr = "always-c-ptr"
-csr_descr = "always-c-ptr"
-
-[rocsparse_dbsrgeam]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocsparse_dbsrgemm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocsparse_dbsrgemm_buffer_size]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-buffer_size = "scalar-host"
-
-[rocsparse_dbsric0]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dbsric0_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dbsric0_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_dbsrilu0]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dbsrilu0_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dbsrilu0_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_dbsrilu0_numeric_boost]
-boost_tol = "scalar-host-or-device"
-boost_val = "scalar-host-or-device"
-
-[rocsparse_dbsrmm]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_dbsrmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_dbsrsm_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dbsrsm_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_dbsrsm_solve]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dbsrsv_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dbsrsv_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_dbsrsv_solve]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dbsrxmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_dcbsrilu0_numeric_boost]
-boost_tol = "scalar-host-or-device"
-boost_val = "scalar-host-or-device"
-
-[rocsparse_dccsrilu0_numeric_boost]
-boost_tol = "scalar-host-or-device"
-boost_val = "scalar-host-or-device"
-
-[rocsparse_dcheck_matrix_coo]
-data_status = "scalar-host"
-
-[rocsparse_dcheck_matrix_coo_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_dcheck_matrix_csc]
-data_status = "scalar-host"
-
-[rocsparse_dcheck_matrix_csc_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_dcheck_matrix_csr]
-data_status = "scalar-host"
-
-[rocsparse_dcheck_matrix_csr_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_dcheck_matrix_ell]
-data_status = "scalar-host"
-
-[rocsparse_dcheck_matrix_ell_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_dcheck_matrix_gebsc]
-data_status = "scalar-host"
-
-[rocsparse_dcheck_matrix_gebsc_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_dcheck_matrix_gebsr]
-data_status = "scalar-host"
-
-[rocsparse_dcheck_matrix_gebsr_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_dcoo2dense]
-descr = "always-c-ptr"
-
-[rocsparse_dcoomv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_dcsc2dense]
-descr = "always-c-ptr"
-
-[rocsparse_dcsr2bsr]
-csr_descr = "always-c-ptr"
-bsr_descr = "always-c-ptr"
-
-[rocsparse_dcsr2csc]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dcsr2csr_compress]
-descr_A = "always-c-ptr"
-
-[rocsparse_dcsr2dense]
-descr = "always-c-ptr"
-
-[rocsparse_dcsr2ell]
-csr_descr = "always-c-ptr"
-ell_descr = "always-c-ptr"
-
-[rocsparse_dcsr2gebsr]
-csr_descr = "always-c-ptr"
-bsr_descr = "always-c-ptr"
-
-[rocsparse_dcsr2gebsr_buffer_size]
-csr_descr = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_dcsr2hyb]
-descr = "always-c-ptr"
-hyb = "always-c-ptr"
-
-[rocsparse_dcsrcolor]
-descr = "always-c-ptr"
-fraction_to_color = "scalar-host"
-ncolors = "scalar-host"
-myInfo = "always-c-ptr"
-
-[rocsparse_dcsrgeam]
-alpha = "scalar-host-or-device"
-descr_A = "always-c-ptr"
-beta = "scalar-host-or-device"
-descr_B = "always-c-ptr"
-descr_C = "always-c-ptr"
-
-[rocsparse_dcsrgemm]
-alpha = "scalar-host-or-device"
-descr_A = "always-c-ptr"
-descr_B = "always-c-ptr"
-beta = "scalar-host-or-device"
-descr_D = "always-c-ptr"
-descr_C = "always-c-ptr"
-info_C = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dcsrgemm_buffer_size]
-alpha = "scalar-host-or-device"
-descr_A = "always-c-ptr"
-descr_B = "always-c-ptr"
-beta = "scalar-host-or-device"
-descr_D = "always-c-ptr"
-info_C = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_dcsrgemm_numeric]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocsparse_dcsric0]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dcsric0_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dcsric0_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_dcsrilu0]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dcsrilu0_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dcsrilu0_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_dcsrilu0_numeric_boost]
-boost_tol = "scalar-host-or-device"
-boost_val = "scalar-host-or-device"
-
-[rocsparse_dcsritsv_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_dcsritsv_solve]
-host_nmaxiter = "scalar-host"
-alpha = "scalar-host-or-device"
-
-[rocsparse_dcsritsv_solve_ex]
-host_nmaxiter = "scalar-host"
-alpha = "scalar-host-or-device"
-
-[rocsparse_dcsrmm]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_dcsrmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_dcsrmv_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-
-[rocsparse_dcsrsm_analysis]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dcsrsm_buffer_size]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_dcsrsm_solve]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dcsrsv_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dcsrsv_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_dcsrsv_solve]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_ddense2coo]
-descr = "always-c-ptr"
-
-[rocsparse_ddense2csc]
-descr = "always-c-ptr"
-
-[rocsparse_ddense2csr]
-descr = "always-c-ptr"
-
-[rocsparse_ddoti]
-myResult = "scalar-host-or-device"
-
-[rocsparse_dell2csr]
-ell_descr = "always-c-ptr"
-csr_descr = "always-c-ptr"
-
-[rocsparse_dellmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
 [rocsparse_dense_to_sparse]
 buffer_size = "scalar-host"
-
-[rocsparse_dgebsr2csr]
-bsr_descr = "always-c-ptr"
-csr_descr = "always-c-ptr"
-
-[rocsparse_dgebsr2gebsc]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dgebsr2gebsc_buffer_size]
-p_buffer_size = ["scalar-host", "always-c-ptr"]
-
-[rocsparse_dgebsr2gebsr_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_dgebsrmm]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_dgebsrmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_dgemmi]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_dgemvi]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dgemvi_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_dgpsv_interleaved_batch]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dgpsv_interleaved_batch_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_dgthrz]
-
-[rocsparse_dgtsv]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dgtsv_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_dgtsv_interleaved_batch_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_dgtsv_no_pivot]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dgtsv_no_pivot_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_dgtsv_no_pivot_strided_batch]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dgtsv_no_pivot_strided_batch_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_dhyb2csr]
-descr = "always-c-ptr"
-hyb = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_dhybmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-hyb = "always-c-ptr"
-beta = "scalar-host-or-device"
 
 [rocsparse_dnmat_get]
 rows = "scalar-host"
@@ -1124,14 +712,6 @@ order = "scalar-host"
 batch_count = "scalar-host"
 batch_stride = "scalar-host"
 
-[rocsparse_dnnz]
-descr = "always-c-ptr"
-nnz_total_dev_host_ptr = "scalar-host-or-device"
-
-[rocsparse_dnnz_compress]
-descr_A = "always-c-ptr"
-nnz_C = "scalar-host-or-device"
-
 [rocsparse_dnvec_get]
 size = "scalar-host"
 data_type = "scalar-host"
@@ -1140,87 +720,79 @@ data_type = "scalar-host"
 batch_count = "scalar-host"
 batch_stride = "scalar-host"
 
-[rocsparse_dprune_csr2csr]
+["rocsparse_{s,d}prune_csr2csr"]
 csr_descr_A = "always-c-ptr"
 threshold = "scalar-host-or-device"
 csr_descr_C = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_dprune_csr2csr_buffer_size]
+["rocsparse_{s,d}prune_csr2csr_buffer_size"]
 csr_descr_A = "always-c-ptr"
 threshold = "scalar-host-or-device"
 csr_descr_C = "always-c-ptr"
 buffer_size = "scalar-host"
 
-[rocsparse_dprune_csr2csr_by_percentage]
+["rocsparse_{s,d}prune_csr2csr_by_percentage"]
 csr_descr_A = "always-c-ptr"
 csr_descr_C = "always-c-ptr"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_dprune_csr2csr_by_percentage_buffer_size]
+["rocsparse_{s,d}prune_csr2csr_by_percentage_buffer_size"]
 csr_descr_A = "always-c-ptr"
 csr_descr_C = "always-c-ptr"
 myInfo = "always-c-ptr"
 buffer_size = "scalar-host"
 
-[rocsparse_dprune_csr2csr_nnz]
+["rocsparse_{s,d}prune_csr2csr_nnz"]
 csr_descr_A = "always-c-ptr"
 threshold = "scalar-host-or-device"
 csr_descr_C = "always-c-ptr"
 nnz_total_dev_host_ptr = "scalar-host-or-device"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_dprune_csr2csr_nnz_by_percentage]
+["rocsparse_{s,d}prune_csr2csr_nnz_by_percentage"]
 csr_descr_A = "always-c-ptr"
 csr_descr_C = "always-c-ptr"
 nnz_total_dev_host_ptr = "scalar-host-or-device"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_dprune_dense2csr]
+["rocsparse_{s,d}prune_dense2csr"]
 threshold = "scalar-host-or-device"
 descr = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_dprune_dense2csr_buffer_size]
+["rocsparse_{s,d}prune_dense2csr_buffer_size"]
 threshold = "scalar-host-or-device"
 descr = "always-c-ptr"
 buffer_size = "scalar-host"
 
-[rocsparse_dprune_dense2csr_by_percentage]
+["rocsparse_{s,d}prune_dense2csr_by_percentage"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_dprune_dense2csr_by_percentage_buffer_size]
+["rocsparse_{s,d}prune_dense2csr_by_percentage_buffer_size"]
 descr = "always-c-ptr"
 myInfo = "always-c-ptr"
 buffer_size = "scalar-host"
 
-[rocsparse_dprune_dense2csr_nnz]
+["rocsparse_{s,d}prune_dense2csr_nnz"]
 threshold = "scalar-host-or-device"
 descr = "always-c-ptr"
 nnz_total_dev_host_ptr = "scalar-host-or-device"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_dprune_dense2csr_nnz_by_percentage]
+["rocsparse_{s,d}prune_dense2csr_nnz_by_percentage"]
 descr = "always-c-ptr"
 nnz_total_dev_host_ptr = "scalar-host-or-device"
 myInfo = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
-[rocsparse_droti]
+["rocsparse_{s,d}roti"]
 c = "scalar-host-or-device"
 s = "scalar-host-or-device"
-
-[rocsparse_dsbsrilu0_numeric_boost]
-boost_tol = "scalar-host-or-device"
-boost_val = "scalar-host-or-device"
-
-[rocsparse_dscsrilu0_numeric_boost]
-boost_tol = "scalar-host-or-device"
-boost_val = "scalar-host-or-device"
 
 [rocsparse_ell2csr_nnz]
 ell_descr = "always-c-ptr"
@@ -1255,313 +827,6 @@ descr = "always-c-ptr"
 hyb = "always-c-ptr"
 buffer_size = "scalar-host"
 
-[rocsparse_saxpyi]
-alpha = "scalar-host-or-device"
-
-[rocsparse_sbsr2csr]
-bsr_descr = "always-c-ptr"
-csr_descr = "always-c-ptr"
-
-[rocsparse_sbsrgeam]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocsparse_sbsrgemm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocsparse_sbsrgemm_buffer_size]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-buffer_size = "scalar-host"
-
-[rocsparse_sbsric0]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sbsric0_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sbsric0_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_sbsrilu0]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sbsrilu0_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sbsrilu0_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_sbsrilu0_numeric_boost]
-boost_tol = "scalar-host-or-device"
-boost_val = "scalar-host-or-device"
-
-[rocsparse_sbsrmm]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_sbsrmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_sbsrsm_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sbsrsm_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_sbsrsm_solve]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sbsrsv_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sbsrsv_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_sbsrsv_solve]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sbsrxmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_scheck_matrix_coo]
-data_status = "scalar-host"
-
-[rocsparse_scheck_matrix_coo_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_scheck_matrix_csc]
-data_status = "scalar-host"
-
-[rocsparse_scheck_matrix_csc_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_scheck_matrix_csr]
-data_status = "scalar-host"
-
-[rocsparse_scheck_matrix_csr_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_scheck_matrix_ell]
-data_status = "scalar-host"
-
-[rocsparse_scheck_matrix_ell_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_scheck_matrix_gebsc]
-data_status = "scalar-host"
-
-[rocsparse_scheck_matrix_gebsc_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_scheck_matrix_gebsr]
-data_status = "scalar-host"
-
-[rocsparse_scheck_matrix_gebsr_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_scoo2dense]
-descr = "always-c-ptr"
-
-[rocsparse_scoomv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_scsc2dense]
-descr = "always-c-ptr"
-
-[rocsparse_scsr2bsr]
-csr_descr = "always-c-ptr"
-bsr_descr = "always-c-ptr"
-
-[rocsparse_scsr2csc]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_scsr2csr_compress]
-descr_A = "always-c-ptr"
-
-[rocsparse_scsr2dense]
-descr = "always-c-ptr"
-
-[rocsparse_scsr2ell]
-csr_descr = "always-c-ptr"
-ell_descr = "always-c-ptr"
-
-[rocsparse_scsr2gebsr]
-csr_descr = "always-c-ptr"
-bsr_descr = "always-c-ptr"
-
-[rocsparse_scsr2gebsr_buffer_size]
-csr_descr = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_scsr2hyb]
-descr = "always-c-ptr"
-hyb = "always-c-ptr"
-
-[rocsparse_scsrcolor]
-descr = "always-c-ptr"
-fraction_to_color = "scalar-host"
-ncolors = "scalar-host"
-myInfo = "always-c-ptr"
-
-[rocsparse_scsrgeam]
-alpha = "scalar-host-or-device"
-descr_A = "always-c-ptr"
-beta = "scalar-host-or-device"
-descr_B = "always-c-ptr"
-descr_C = "always-c-ptr"
-
-[rocsparse_scsrgemm]
-alpha = "scalar-host-or-device"
-descr_A = "always-c-ptr"
-descr_B = "always-c-ptr"
-beta = "scalar-host-or-device"
-descr_D = "always-c-ptr"
-descr_C = "always-c-ptr"
-info_C = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_scsrgemm_buffer_size]
-alpha = "scalar-host-or-device"
-descr_A = "always-c-ptr"
-descr_B = "always-c-ptr"
-beta = "scalar-host-or-device"
-descr_D = "always-c-ptr"
-info_C = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_scsrgemm_numeric]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocsparse_scsric0]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_scsric0_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_scsric0_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_scsrilu0]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_scsrilu0_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_scsrilu0_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_scsrilu0_numeric_boost]
-boost_tol = "scalar-host-or-device"
-boost_val = "scalar-host-or-device"
-
-[rocsparse_scsritsv_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_scsritsv_solve]
-host_nmaxiter = "scalar-host"
-alpha = "scalar-host-or-device"
-
-[rocsparse_scsritsv_solve_ex]
-host_nmaxiter = "scalar-host"
-alpha = "scalar-host-or-device"
-
-[rocsparse_scsrmm]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_scsrmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_scsrmv_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-
-[rocsparse_scsrsm_analysis]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_scsrsm_buffer_size]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_scsrsm_solve]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_scsrsv_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_scsrsv_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_scsrsv_solve]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
 [rocsparse_sddmm]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
@@ -1575,22 +840,6 @@ buffer_size = "scalar-host"
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocsparse_sdense2coo]
-descr = "always-c-ptr"
-
-[rocsparse_sdense2csc]
-descr = "always-c-ptr"
-
-[rocsparse_sdense2csr]
-descr = "always-c-ptr"
-
-[rocsparse_sdoti]
-myResult = "scalar-host-or-device"
-
-[rocsparse_sell2csr]
-ell_descr = "always-c-ptr"
-csr_descr = "always-c-ptr"
-
 [rocsparse_sell_get]
 rows = "scalar-host"
 cols = "scalar-host"
@@ -1601,95 +850,6 @@ sell_slice_offsets_type = "scalar-host"
 sell_col_ind_type = "scalar-host"
 idx_base = "scalar-host"
 data_type = "scalar-host"
-
-[rocsparse_sellmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_sgebsr2csr]
-bsr_descr = "always-c-ptr"
-csr_descr = "always-c-ptr"
-
-[rocsparse_sgebsr2gebsc]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sgebsr2gebsc_buffer_size]
-p_buffer_size = ["scalar-host", "always-c-ptr"]
-
-[rocsparse_sgebsr2gebsr_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_sgebsrmm]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_sgebsrmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_sgemmi]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_sgemvi]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sgemvi_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_sgpsv_interleaved_batch]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sgpsv_interleaved_batch_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_sgthrz]
-
-[rocsparse_sgtsv]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sgtsv_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_sgtsv_interleaved_batch_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_sgtsv_no_pivot]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sgtsv_no_pivot_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_sgtsv_no_pivot_strided_batch]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sgtsv_no_pivot_strided_batch_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_shyb2csr]
-descr = "always-c-ptr"
-hyb = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_shybmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-hyb = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_snnz]
-descr = "always-c-ptr"
-nnz_total_dev_host_ptr = "scalar-host-or-device"
-
-[rocsparse_snnz_compress]
-descr_A = "always-c-ptr"
-nnz_C = "scalar-host-or-device"
 
 [rocsparse_sparse_to_dense]
 buffer_size = "scalar-host"
@@ -1746,76 +906,6 @@ alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 buffer_size = "scalar-host"
 
-[rocsparse_sprune_csr2csr]
-csr_descr_A = "always-c-ptr"
-threshold = "scalar-host-or-device"
-csr_descr_C = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sprune_csr2csr_buffer_size]
-csr_descr_A = "always-c-ptr"
-threshold = "scalar-host-or-device"
-csr_descr_C = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_sprune_csr2csr_by_percentage]
-csr_descr_A = "always-c-ptr"
-csr_descr_C = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sprune_csr2csr_by_percentage_buffer_size]
-csr_descr_A = "always-c-ptr"
-csr_descr_C = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_sprune_csr2csr_nnz]
-csr_descr_A = "always-c-ptr"
-threshold = "scalar-host-or-device"
-csr_descr_C = "always-c-ptr"
-nnz_total_dev_host_ptr = "scalar-host-or-device"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sprune_csr2csr_nnz_by_percentage]
-csr_descr_A = "always-c-ptr"
-csr_descr_C = "always-c-ptr"
-nnz_total_dev_host_ptr = "scalar-host-or-device"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sprune_dense2csr]
-threshold = "scalar-host-or-device"
-descr = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sprune_dense2csr_buffer_size]
-threshold = "scalar-host-or-device"
-descr = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_sprune_dense2csr_by_percentage]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sprune_dense2csr_by_percentage_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_sprune_dense2csr_nnz]
-threshold = "scalar-host-or-device"
-descr = "always-c-ptr"
-nnz_total_dev_host_ptr = "scalar-host-or-device"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_sprune_dense2csr_nnz_by_percentage]
-descr = "always-c-ptr"
-nnz_total_dev_host_ptr = "scalar-host-or-device"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
 [rocsparse_spsm]
 alpha = "scalar-host-or-device"
 buffer_size = "scalar-host"
@@ -1846,428 +936,9 @@ idx_base = "scalar-host"
 [rocsparse_spvv]
 buffer_size = "scalar-host"
 
-[rocsparse_sroti]
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
 [rocsparse_v2_spmv]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
 [rocsparse_v2_spmv_buffer_size]
 buffer_size_in_bytes = "scalar-host"
-
-[rocsparse_zaxpyi]
-alpha = "scalar-host-or-device"
-
-[rocsparse_zbsr2csr]
-bsr_descr = "always-c-ptr"
-csr_descr = "always-c-ptr"
-
-[rocsparse_zbsrgeam]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocsparse_zbsrgemm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocsparse_zbsrgemm_buffer_size]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-buffer_size = "scalar-host"
-
-[rocsparse_zbsric0]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zbsric0_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zbsric0_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_zbsrilu0]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zbsrilu0_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zbsrilu0_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_zbsrilu0_numeric_boost]
-boost_tol = "scalar-host-or-device"
-boost_val = "scalar-host-or-device"
-
-[rocsparse_zbsrmm]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_zbsrmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_zbsrsm_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zbsrsm_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_zbsrsm_solve]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zbsrsv_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zbsrsv_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_zbsrsv_solve]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zbsrxmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_zcheck_matrix_coo]
-data_status = "scalar-host"
-
-[rocsparse_zcheck_matrix_coo_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_zcheck_matrix_csc]
-data_status = "scalar-host"
-
-[rocsparse_zcheck_matrix_csc_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_zcheck_matrix_csr]
-data_status = "scalar-host"
-
-[rocsparse_zcheck_matrix_csr_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_zcheck_matrix_ell]
-data_status = "scalar-host"
-
-[rocsparse_zcheck_matrix_ell_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_zcheck_matrix_gebsc]
-data_status = "scalar-host"
-
-[rocsparse_zcheck_matrix_gebsc_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_zcheck_matrix_gebsr]
-data_status = "scalar-host"
-
-[rocsparse_zcheck_matrix_gebsr_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_zcoo2dense]
-descr = "always-c-ptr"
-
-[rocsparse_zcoomv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_zcsc2dense]
-descr = "always-c-ptr"
-
-[rocsparse_zcsr2bsr]
-csr_descr = "always-c-ptr"
-bsr_descr = "always-c-ptr"
-
-[rocsparse_zcsr2csc]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zcsr2csr_compress]
-descr_A = "always-c-ptr"
-
-[rocsparse_zcsr2dense]
-descr = "always-c-ptr"
-
-[rocsparse_zcsr2ell]
-csr_descr = "always-c-ptr"
-ell_descr = "always-c-ptr"
-
-[rocsparse_zcsr2gebsr]
-csr_descr = "always-c-ptr"
-bsr_descr = "always-c-ptr"
-
-[rocsparse_zcsr2gebsr_buffer_size]
-csr_descr = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_zcsr2hyb]
-descr = "always-c-ptr"
-hyb = "always-c-ptr"
-
-[rocsparse_zcsrcolor]
-descr = "always-c-ptr"
-fraction_to_color = "scalar-host"
-ncolors = "scalar-host"
-myInfo = "always-c-ptr"
-
-[rocsparse_zcsrgeam]
-alpha = "scalar-host-or-device"
-descr_A = "always-c-ptr"
-beta = "scalar-host-or-device"
-descr_B = "always-c-ptr"
-descr_C = "always-c-ptr"
-
-[rocsparse_zcsrgemm]
-alpha = "scalar-host-or-device"
-descr_A = "always-c-ptr"
-descr_B = "always-c-ptr"
-beta = "scalar-host-or-device"
-descr_D = "always-c-ptr"
-descr_C = "always-c-ptr"
-info_C = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zcsrgemm_buffer_size]
-alpha = "scalar-host-or-device"
-descr_A = "always-c-ptr"
-descr_B = "always-c-ptr"
-beta = "scalar-host-or-device"
-descr_D = "always-c-ptr"
-info_C = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_zcsrgemm_numeric]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocsparse_zcsric0]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zcsric0_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zcsric0_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_zcsrilu0]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zcsrilu0_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zcsrilu0_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_zcsrilu0_numeric_boost]
-boost_tol = "scalar-host-or-device"
-boost_val = "scalar-host-or-device"
-
-[rocsparse_zcsritsv_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_zcsritsv_solve]
-host_nmaxiter = "scalar-host"
-alpha = "scalar-host-or-device"
-
-[rocsparse_zcsritsv_solve_ex]
-host_nmaxiter = "scalar-host"
-alpha = "scalar-host-or-device"
-
-[rocsparse_zcsrmm]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_zcsrmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_zcsrmv_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-
-[rocsparse_zcsrsm_analysis]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zcsrsm_buffer_size]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_zcsrsm_solve]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zcsrsv_analysis]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zcsrsv_buffer_size]
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-buffer_size = "scalar-host"
-
-[rocsparse_zcsrsv_solve]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-myInfo = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zdense2coo]
-descr = "always-c-ptr"
-
-[rocsparse_zdense2csc]
-descr = "always-c-ptr"
-
-[rocsparse_zdense2csr]
-descr = "always-c-ptr"
-
-[rocsparse_zdotci]
-myResult = "scalar-host-or-device"
-
-[rocsparse_zdoti]
-myResult = "scalar-host-or-device"
-
-[rocsparse_zell2csr]
-ell_descr = "always-c-ptr"
-csr_descr = "always-c-ptr"
-
-[rocsparse_zellmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_zgebsr2csr]
-bsr_descr = "always-c-ptr"
-csr_descr = "always-c-ptr"
-
-[rocsparse_zgebsr2gebsc]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zgebsr2gebsc_buffer_size]
-p_buffer_size = ["scalar-host", "always-c-ptr"]
-
-[rocsparse_zgebsr2gebsr_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_zgebsrmm]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_zgebsrmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_zgemmi]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_zgemvi]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zgemvi_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_zgpsv_interleaved_batch]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zgpsv_interleaved_batch_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_zgthrz]
-
-[rocsparse_zgtsv]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zgtsv_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_zgtsv_interleaved_batch_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_zgtsv_no_pivot]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zgtsv_no_pivot_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_zgtsv_no_pivot_strided_batch]
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zgtsv_no_pivot_strided_batch_buffer_size]
-buffer_size = "scalar-host"
-
-[rocsparse_zhyb2csr]
-descr = "always-c-ptr"
-hyb = "always-c-ptr"
-temp_buffer = "always-c-ptr"
-
-[rocsparse_zhybmv]
-alpha = "scalar-host-or-device"
-descr = "always-c-ptr"
-hyb = "always-c-ptr"
-beta = "scalar-host-or-device"
-
-[rocsparse_znnz]
-descr = "always-c-ptr"
-nnz_total_dev_host_ptr = "scalar-host-or-device"
-
-[rocsparse_znnz_compress]
-descr_A = "always-c-ptr"
-nnz_C = "scalar-host-or-device"

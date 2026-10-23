@@ -32,7 +32,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 usage_spec() { cat <<'SPEC'
 name:  gen.sh
 brief: generate the Fortran bindings into fortran/, a build artifact of this repo
-usage: ./gen.sh [--overwrite] [library ...]
+usage: ./gen.sh [--overwrite] [library ...] | --explain <c-function> ...
 env:   ROCM_INCLUDE | /opt/rocm/include | installed ROCm headers, read unless ROCM_SYSTEMS is set
 env:   ROCM_SYSTEMS | - | rocm-systems checkout: generate HIP and ROCTx from it
 env:   ROCM_LIBRARIES | - | rocm-libraries checkout: generate the math libraries from it
@@ -40,6 +40,9 @@ env:   ROCM_FORTRAN_OUT | fortran/ | the directory to generate into
 exit:  0 | generated; fortran/.provenance records the libraries, header sources and HIP version
 exit:  1 | bad header source, or a library failed to generate
 exit:  2 | unknown option
+note:  --explain prints the metadata that applies to each C function named, and the
+note:  table it comes from (brace expansion, _64/_spt inheritance, ["*"]); with
+note:  ROCM_SYSTEMS/ROCM_LIBRARIES, from the checkouts' metadata.
 note:  Neither checkout set: all libraries, from ROCM_INCLUDE.
 note:  ROCM_SYSTEMS alone: HIP and ROCTx, from the checkout only (no ROCm installation).
 note:  ROCM_LIBRARIES alone: the math libraries, from the checkout, with only the
@@ -62,6 +65,12 @@ note:  C headers in rocm-systems/ and rocm-libraries/.
 SPEC
 }
 usage_peek "$@"
+
+if [ "${1:-}" = --explain ]; then
+  shift
+  [ $# -gt 0 ] || usage_error "--explain needs a C function name"
+  exec julia --project="$ROOT/src" "$ROOT/src/explain_metadata.jl" "$@"
+fi
 
 OUT="${ROCM_FORTRAN_OUT:-$ROOT/fortran}"
 

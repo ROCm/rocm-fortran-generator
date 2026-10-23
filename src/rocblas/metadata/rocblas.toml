@@ -1,9 +1,10 @@
 # Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
-# What the rocblas C headers cannot express. One section per C function
-# (`_64` and `_v2` variants inherit their base function's section), and
-# `["*"]` for every function. See "Fixing a binding" in the generator README.
+# What the rocblas C headers cannot express. One table per C function, and
+# `["*"]` for every function; a key with braces names several. A _64 or _spt
+# variant without a table takes its base's. See "Fixing a binding" in the
+# generator README; `gen.sh --explain <function>` shows what applies.
 
 format = 1
 
@@ -16,804 +17,450 @@ alpha = "scalar-host-or-device"
 [rocblas_axpy_strided_batched_ex]
 alpha = "scalar-host-or-device"
 
-[rocblas_bfdot]
+["rocblas_{s,d,h,bf}dot"]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
 
-[rocblas_bfdot_batched]
+["rocblas_{s,d,h,bf}dot_batched"]
 myResult = "always-c-ptr"
 
-[rocblas_bfdot_strided_batched]
+["rocblas_{s,d,h,bf}dot_strided_batched"]
 myResult = "always-c-ptr"
 
-[rocblas_caxpy]
+["rocblas_{s,d,c,z,h}axpy"]
 alpha = "scalar-host-or-device"
 
-[rocblas_caxpy_batched]
+["rocblas_{s,d,c,z,h}axpy_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_caxpy_strided_batched]
+["rocblas_{s,d,c,z,h}axpy_strided_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_ccopy_batched]
+["rocblas_{s,d,c,z}copy_batched"]
 
-[rocblas_cdgmm]
+["rocblas_{s,d,c,z}dgmm"]
 
-[rocblas_cdgmm_strided_batched]
+["rocblas_{s,d,c,z}dgmm_strided_batched"]
 
-[rocblas_cdotc]
+["rocblas_{c,z}dotc"]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
 
-[rocblas_cdotc_64]
-myResult = "scalar-host-or-device"
-
-[rocblas_cdotc_batched]
+["rocblas_{c,z}dotc_batched"]
 myResult = "always-c-ptr"
 
-[rocblas_cdotc_strided_batched]
+["rocblas_{c,z}dotc_strided_batched"]
 myResult = "always-c-ptr"
 
-[rocblas_cdotu]
+["rocblas_{c,z}dotu"]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
 
-[rocblas_cdotu_64]
-myResult = "scalar-host-or-device"
-
-[rocblas_cdotu_batched]
+["rocblas_{c,z}dotu_batched"]
 myResult = "always-c-ptr"
 
-[rocblas_cdotu_strided_batched]
+["rocblas_{c,z}dotu_strided_batched"]
 myResult = "always-c-ptr"
 
-[rocblas_cgbmv]
+["rocblas_{s,d,c,z}gbmv"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cgbmv_batched]
+["rocblas_{s,d,c,z}gbmv_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cgbmv_strided_batched]
+["rocblas_{s,d,c,z}gbmv_strided_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cgeam]
+["rocblas_{s,d,c,z}geam"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cgeam_batched]
+["rocblas_{s,d,c,z}geam_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cgeam_strided_batched]
+["rocblas_{s,d,c,z}geam_strided_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cgemm]
+["rocblas_{s,d,c,z,h}gemm"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cgemm_batched]
+["rocblas_{s,d,c,z,h}gemm_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cgemm_strided_batched]
+["rocblas_{s,d,c,z,h}gemm_strided_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cgemmt]
+["rocblas_{s,d,c,z}gemmt"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cgemmt_batched]
+["rocblas_{s,d,c,z}gemmt_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cgemmt_strided_batched]
+["rocblas_{s,d,c,z}gemmt_strided_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cgemv]
+["rocblas_{s,d,c,z}gemv"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cgemv_batched]
+["rocblas_{s,d,c,z,hsh,hss,tss,tst}gemv_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cgemv_strided_batched]
+["rocblas_{s,d,c,z,hsh,hss,tss,tst}gemv_strided_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cgerc]
+["rocblas_{c,z}gerc"]
 alpha = "scalar-host-or-device"
 
-[rocblas_cgerc_batched]
+["rocblas_{c,z}gerc_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_cgerc_strided_batched]
+["rocblas_{c,z}gerc_strided_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_cgeru]
+["rocblas_{c,z}geru"]
 alpha = "scalar-host-or-device"
 
-[rocblas_cgeru_batched]
+["rocblas_{c,z}geru_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_cgeru_strided_batched]
+["rocblas_{c,z}geru_strided_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_chbmv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_chbmv_batched]
+["rocblas_{ch,ds,ss,zh}bmv"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_chbmv_strided_batched]
+["rocblas_{ch,ds,ss,zh}bmv_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_chemm]
+["rocblas_{ch,ds,ss,zh}bmv_strided_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_chemm_batched]
+["rocblas_{c,z}hemm"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_chemm_strided_batched]
+["rocblas_{c,z}hemm_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_chemv]
+["rocblas_{c,z}hemm_strided_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_chemv_batched]
+["rocblas_{c,z}hemv"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_chemv_strided_batched]
+["rocblas_{c,z}hemv_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cher]
-alpha = "scalar-host-or-device"
-
-[rocblas_cher2]
-alpha = "scalar-host-or-device"
-
-[rocblas_cher2_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_cher2_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_cher2k]
+["rocblas_{c,z}hemv_strided_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cher2k_batched]
+["rocblas_{c,z}her"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}her2"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}her2_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}her2_strided_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}her2k"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cher2k_strided_batched]
+["rocblas_{c,z}her2k_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cher_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_cher_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_cherk]
+["rocblas_{c,z}her2k_strided_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cherk_batched]
+["rocblas_{c,z}her_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}her_strided_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}herk"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cherk_strided_batched]
+["rocblas_{c,z}herk_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cherkx]
+["rocblas_{c,z}herk_strided_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cherkx_batched]
+["rocblas_{c,z}herkx"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_cherkx_strided_batched]
+["rocblas_{c,z}herkx_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_chpmv]
+["rocblas_{c,z}herkx_strided_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_chpmv_batched]
+["rocblas_{ch,ds,ss,zh}pmv"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_chpmv_strided_batched]
+["rocblas_{ch,ds,ss,zh}pmv_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_chpr]
+["rocblas_{ch,ds,ss,zh}pmv_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{ch,cs,ds,ss,zh,zs}pr"]
 alpha = "scalar-host-or-device"
 
-[rocblas_chpr2]
+["rocblas_{ch,ds,ss,zh}pr2"]
 alpha = "scalar-host-or-device"
 
-[rocblas_chpr2_batched]
+["rocblas_{ch,ds,ss,zh}pr2_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_chpr2_strided_batched]
+["rocblas_{ch,ds,ss,zh}pr2_strided_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_chpr_batched]
+["rocblas_{ch,cs,ds,ss,zh,zs}pr_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_chpr_strided_batched]
+["rocblas_{ch,cs,ds,ss,zh,zs}pr_strided_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_crot]
+["rocblas_{s,d,c,z,cs,zd}rot"]
 c = ["scalar-host-or-device", "always-c-ptr"]
 s = ["scalar-host-or-device", "always-c-ptr"]
 
-[rocblas_crot_batched]
+["rocblas_{s,d,c,z,cs,zd}rot_batched"]
 c = ["scalar-host-or-device", "always-c-ptr"]
 s = ["scalar-host-or-device", "always-c-ptr"]
 
-[rocblas_crot_strided_batched]
+["rocblas_{s,d,c,z,cs,zd}rot_strided_batched"]
 c = ["scalar-host-or-device", "always-c-ptr"]
 s = ["scalar-host-or-device", "always-c-ptr"]
 
-[rocblas_crotg]
+["rocblas_{s,d,c,z}rotg"]
 a = "scalar-host-or-device"
 b = "scalar-host-or-device"
 c = "scalar-host-or-device"
 s = "scalar-host-or-device"
 
-[rocblas_crotg_64]
-a = "scalar-host-or-device"
-b = "scalar-host-or-device"
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[rocblas_crotg_strided_batched]
+["rocblas_{s,d,c,z}rotg_strided_batched"]
 a = "1d"
 b = "1d"
 c = "1d"
 s = "1d"
 
-[rocblas_cscal]
+["rocblas_{s,d,c,z,cs,zd}scal"]
 alpha = "scalar-host-or-device"
 
-[rocblas_cscal_batched]
+["rocblas_{s,d,c,z,cs,zd}scal_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_cscal_strided_batched]
+["rocblas_{s,d,c,z,cs,zd}scal_strided_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_cspr]
-alpha = "scalar-host-or-device"
+["rocblas_{c,z}swap_batched"]
 
-[rocblas_cspr_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_cspr_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_csrot]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_csrot_batched]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_csrot_strided_batched]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_csscal]
-alpha = "scalar-host-or-device"
-
-[rocblas_csscal_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_csscal_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_cswap_batched]
-
-[rocblas_csymm]
+["rocblas_{s,d,c,z}symm"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_csymm_batched]
+["rocblas_{s,d,c,z}symm_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_csymm_strided_batched]
+["rocblas_{s,d,c,z}symm_strided_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_csymv]
+["rocblas_{s,d,c,z}symv"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_csymv_batched]
+["rocblas_{s,d,c,z}symv_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_csymv_strided_batched]
+["rocblas_{s,d,c,z}symv_strided_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_csyr]
+["rocblas_{s,d,c,z}syr"]
 alpha = "scalar-host-or-device"
 
-[rocblas_csyr2]
+["rocblas_{s,d,c,z}syr2"]
 alpha = "scalar-host-or-device"
 
-[rocblas_csyr2_batched]
+["rocblas_{s,d,c,z}syr2_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_csyr2_strided_batched]
+["rocblas_{s,d,c,z}syr2_strided_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_csyr2k]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_csyr2k_batched]
+["rocblas_{s,d,c,z}syr2k"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_csyr2k_strided_batched]
+["rocblas_{s,d,c,z}syr2k_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_csyr_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_csyr_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_csyrk]
+["rocblas_{s,d,c,z}syr2k_strided_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_csyrk_batched]
+["rocblas_{s,d,c,z}syr_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}syr_strided_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}syrk"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_csyrk_strided_batched]
+["rocblas_{s,d,c,z}syrk_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_csyrkx]
+["rocblas_{s,d,c,z}syrk_strided_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_csyrkx_batched]
+["rocblas_{s,d,c,z}syrkx"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_csyrkx_strided_batched]
+["rocblas_{s,d,c,z}syrkx_batched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[rocblas_ctbmv_batched]
+["rocblas_{s,d,c,z}syrkx_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
 
-[rocblas_ctbsv]
+["rocblas_{s,d,c,z}tbmv_batched"]
 
-[rocblas_ctbsv_strided_batched]
+["rocblas_{s,d,c,z}tbsv"]
 
-[rocblas_ctpmv_strided_batched]
+["rocblas_{s,d,c,z}tbsv_strided_batched"]
 
-[rocblas_ctpsv_batched]
+["rocblas_{s,d,c,z}tpmv_strided_batched"]
 
-[rocblas_ctrmm]
+["rocblas_{s,d,c,z}tpsv_batched"]
+
+["rocblas_{s,d,c,z}trmm"]
 alpha = "scalar-host-or-device"
 
-[rocblas_ctrmm_batched]
+["rocblas_{s,d,c,z}trmm_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_ctrmm_strided_batched]
+["rocblas_{s,d,c,z}trmm_strided_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_ctrmv_strided_batched]
+["rocblas_{s,d,c,z}trmv_strided_batched"]
 
-[rocblas_ctrsm]
+["rocblas_{s,d,c,z}trsm"]
 alpha = "scalar-host-or-device"
 
-[rocblas_ctrsm_batched]
+["rocblas_{s,d,c,z}trsm_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_ctrsm_strided_batched]
+["rocblas_{s,d,c,z}trsm_strided_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_ctrsv_batched]
+["rocblas_{s,d,c,z}trsv_batched"]
 
-[rocblas_ctrtri]
+["rocblas_{s,d,c,z}trtri"]
 
-[rocblas_ctrtri_strided_batched]
+["rocblas_{s,d,c,z}trtri_strided_batched"]
 
-[rocblas_dasum]
+["rocblas_{s,d}asum"]
 myResult = "scalar-host-or-device"
 
-[rocblas_dasum_64]
-myResult = "scalar-host-or-device"
-
-[rocblas_dasum_batched]
+["rocblas_{s,d,dz,sc}asum_batched"]
 results = "always-c-ptr"
 
-[rocblas_dasum_strided_batched]
+["rocblas_{s,d,dz,sc}asum_strided_batched"]
 results = "always-c-ptr"
 
-[rocblas_daxpy]
+["rocblas_{s,d}ger"]
 alpha = "scalar-host-or-device"
 
-[rocblas_daxpy_batched]
+["rocblas_{s,d}ger_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_daxpy_strided_batched]
+["rocblas_{s,d}ger_strided_batched"]
 alpha = "scalar-host-or-device"
 
-[rocblas_dcopy_batched]
-
-[rocblas_ddgmm]
-
-[rocblas_ddgmm_strided_batched]
-
-[rocblas_ddot]
-myResult = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_ddot_64]
+["rocblas_{s,d}nrm2"]
 myResult = "scalar-host-or-device"
 
-[rocblas_ddot_batched]
-myResult = "always-c-ptr"
-
-[rocblas_ddot_strided_batched]
-myResult = "always-c-ptr"
-
-[rocblas_dgbmv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dgbmv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dgbmv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dgeam]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dgeam_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dgeam_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dgemm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dgemm_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dgemm_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dgemmt]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dgemmt_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dgemmt_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dgemv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dgemv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dgemv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dger]
-alpha = "scalar-host-or-device"
-
-[rocblas_dger_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_dger_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_dnrm2]
-myResult = "scalar-host-or-device"
-
-[rocblas_dnrm2_64]
-myResult = "scalar-host-or-device"
-
-[rocblas_dnrm2_batched]
+["rocblas_{s,d,dz,sc}nrm2_batched"]
 results = "always-c-ptr"
 
-[rocblas_dnrm2_strided_batched]
+["rocblas_{s,d,dz,sc}nrm2_strided_batched"]
 results = "always-c-ptr"
 
-[rocblas_drot]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_drot_batched]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_drot_strided_batched]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_drotg]
-a = "scalar-host-or-device"
-b = "scalar-host-or-device"
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[rocblas_drotg_64]
-a = "scalar-host-or-device"
-b = "scalar-host-or-device"
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[rocblas_drotg_strided_batched]
-a = "1d"
-b = "1d"
-c = "1d"
-s = "1d"
-
-[rocblas_drotm]
+["rocblas_{s,d}rotm"]
 param = "always-c-ptr"
 
-[rocblas_drotm_batched]
+["rocblas_{s,d}rotm_batched"]
 param = "always-c-ptr"
 
-[rocblas_drotm_strided_batched]
+["rocblas_{s,d}rotm_strided_batched"]
 param = "always-c-ptr"
 
-[rocblas_drotmg]
+["rocblas_{s,d}rotmg"]
 d1 = "scalar-host-or-device"
 d2 = "scalar-host-or-device"
 x1 = "scalar-host-or-device"
 y1 = "scalar-host-or-device"
 
-[rocblas_drotmg_64]
-d1 = "scalar-host-or-device"
-d2 = "scalar-host-or-device"
-x1 = "scalar-host-or-device"
-y1 = "scalar-host-or-device"
-
-[rocblas_drotmg_strided_batched]
+["rocblas_{s,d}rotmg_strided_batched"]
 d1 = "1d"
 d2 = "1d"
 x1 = "1d"
 y1 = "1d"
 
-[rocblas_dsbmv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
+["rocblas_{s,d}swap_strided_batched"]
 
-[rocblas_dsbmv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dsbmv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dscal]
-alpha = "scalar-host-or-device"
-
-[rocblas_dscal_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_dscal_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_dspmv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dspmv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dspmv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dspr]
-alpha = "scalar-host-or-device"
-
-[rocblas_dspr2]
-alpha = "scalar-host-or-device"
-
-[rocblas_dspr2_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_dspr2_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_dspr_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_dspr_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_dswap_strided_batched]
-
-[rocblas_dsymm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dsymm_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dsymm_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dsymv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dsymv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dsymv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dsyr]
-alpha = "scalar-host-or-device"
-
-[rocblas_dsyr2]
-alpha = "scalar-host-or-device"
-
-[rocblas_dsyr2_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_dsyr2_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_dsyr2k]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dsyr2k_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dsyr2k_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dsyr_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_dsyr_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_dsyrk]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dsyrk_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dsyrk_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dsyrkx]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dsyrkx_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dsyrkx_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_dtbmv_batched]
-
-[rocblas_dtbsv]
-
-[rocblas_dtbsv_strided_batched]
-
-[rocblas_dtpmv_strided_batched]
-
-[rocblas_dtpsv_batched]
-
-[rocblas_dtrmm]
-alpha = "scalar-host-or-device"
-
-[rocblas_dtrmm_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_dtrmm_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_dtrmv_strided_batched]
-
-[rocblas_dtrsm]
-alpha = "scalar-host-or-device"
-
-[rocblas_dtrsm_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_dtrsm_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_dtrsv_batched]
-
-[rocblas_dtrtri]
-
-[rocblas_dtrtri_strided_batched]
-
-[rocblas_dzasum]
+["rocblas_{dz,sc}asum"]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
 
-[rocblas_dzasum_64]
-myResult = "scalar-host-or-device"
-
-[rocblas_dzasum_batched]
-results = "always-c-ptr"
-
-[rocblas_dzasum_strided_batched]
-results = "always-c-ptr"
-
-[rocblas_dznrm2]
+["rocblas_{dz,sc}nrm2"]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_dznrm2_64]
-myResult = "scalar-host-or-device"
-
-[rocblas_dznrm2_batched]
-results = "always-c-ptr"
-
-[rocblas_dznrm2_strided_batched]
-results = "always-c-ptr"
 
 [rocblas_geam_ex]
 alpha = "scalar-host-or-device"
@@ -858,61 +505,12 @@ pointer_mode = "scalar-host"
 [rocblas_get_version_string_size]
 len = "scalar-host"
 
-[rocblas_haxpy]
-alpha = "scalar-host-or-device"
-
-[rocblas_haxpy_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_haxpy_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_hdot]
-myResult = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_hdot_batched]
-myResult = "always-c-ptr"
-
-[rocblas_hdot_strided_batched]
-myResult = "always-c-ptr"
-
 [rocblas_herk_ex]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_hgemm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_hgemm_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_hgemm_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_hshgemv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_hshgemv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_hssgemv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_hssgemv_strided_batched]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
 [rocblas_icamax]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_icamax_64]
-myResult = "scalar-host-or-device"
 
 [rocblas_icamax_batched]
 myResult = "always-c-ptr"
@@ -923,9 +521,6 @@ myResult = "always-c-ptr"
 [rocblas_icamin]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
 
-[rocblas_icamin_64]
-myResult = "scalar-host-or-device"
-
 [rocblas_icamin_batched]
 myResult = "always-c-ptr"
 
@@ -933,9 +528,6 @@ myResult = "always-c-ptr"
 myResult = "always-c-ptr"
 
 [rocblas_idamax]
-myResult = "scalar-host-or-device"
-
-[rocblas_idamax_64]
 myResult = "scalar-host-or-device"
 
 [rocblas_idamax_batched]
@@ -947,9 +539,6 @@ myResult = "always-c-ptr"
 [rocblas_idamin]
 myResult = "scalar-host-or-device"
 
-[rocblas_idamin_64]
-myResult = "scalar-host-or-device"
-
 [rocblas_idamin_batched]
 myResult = "always-c-ptr"
 
@@ -957,9 +546,6 @@ myResult = "always-c-ptr"
 myResult = "always-c-ptr"
 
 [rocblas_isamax]
-myResult = "scalar-host-or-device"
-
-[rocblas_isamax_64]
 myResult = "scalar-host-or-device"
 
 [rocblas_isamax_batched]
@@ -971,9 +557,6 @@ myResult = "always-c-ptr"
 [rocblas_isamin]
 myResult = "scalar-host-or-device"
 
-[rocblas_isamin_64]
-myResult = "scalar-host-or-device"
-
 [rocblas_isamin_batched]
 myResult = "always-c-ptr"
 
@@ -982,9 +565,6 @@ myResult = "always-c-ptr"
 
 [rocblas_izamax]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_izamax_64]
-myResult = "scalar-host-or-device"
 
 [rocblas_izamax_batched]
 myResult = "always-c-ptr"
@@ -995,35 +575,11 @@ myResult = "always-c-ptr"
 [rocblas_izamin]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
 
-[rocblas_izamin_64]
-myResult = "scalar-host-or-device"
-
 [rocblas_izamin_batched]
 myResult = "always-c-ptr"
 
 [rocblas_izamin_strided_batched]
 myResult = "always-c-ptr"
-
-[rocblas_sasum]
-myResult = "scalar-host-or-device"
-
-[rocblas_sasum_64]
-myResult = "scalar-host-or-device"
-
-[rocblas_sasum_batched]
-results = "always-c-ptr"
-
-[rocblas_sasum_strided_batched]
-results = "always-c-ptr"
-
-[rocblas_saxpy]
-alpha = "scalar-host-or-device"
-
-[rocblas_saxpy_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_saxpy_strided_batched]
-alpha = "scalar-host-or-device"
 
 [rocblas_scal_batched_ex]
 alpha = "scalar-host-or-device"
@@ -1034,358 +590,11 @@ alpha = "scalar-host-or-device"
 [rocblas_scal_strided_batched_ex]
 alpha = "scalar-host-or-device"
 
-[rocblas_scasum]
-myResult = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_scasum_64]
-myResult = "scalar-host-or-device"
-
-[rocblas_scasum_batched]
-results = "always-c-ptr"
-
-[rocblas_scasum_strided_batched]
-results = "always-c-ptr"
-
-[rocblas_scnrm2]
-myResult = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_scnrm2_64]
-myResult = "scalar-host-or-device"
-
-[rocblas_scnrm2_batched]
-results = "always-c-ptr"
-
-[rocblas_scnrm2_strided_batched]
-results = "always-c-ptr"
-
-[rocblas_scopy_batched]
-
-[rocblas_sdgmm]
-
-[rocblas_sdgmm_strided_batched]
-
-[rocblas_sdot]
-myResult = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_sdot_64]
-myResult = "scalar-host-or-device"
-
-[rocblas_sdot_batched]
-myResult = "always-c-ptr"
-
-[rocblas_sdot_strided_batched]
-myResult = "always-c-ptr"
-
 [rocblas_set_solution_fitness_query]
 fitness = "scalar-host"
 
-[rocblas_sgbmv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sgbmv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sgbmv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sgeam]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sgeam_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sgeam_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sgemm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sgemm_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sgemm_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sgemmt]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sgemmt_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sgemmt_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sgemv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sgemv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sgemv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sger]
-alpha = "scalar-host-or-device"
-
-[rocblas_sger_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_sger_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_snrm2]
-myResult = "scalar-host-or-device"
-
-[rocblas_snrm2_64]
-myResult = "scalar-host-or-device"
-
-[rocblas_snrm2_batched]
-results = "always-c-ptr"
-
-[rocblas_snrm2_strided_batched]
-results = "always-c-ptr"
-
-[rocblas_srot]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_srot_batched]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_srot_strided_batched]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_srotg]
-a = "scalar-host-or-device"
-b = "scalar-host-or-device"
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[rocblas_srotg_64]
-a = "scalar-host-or-device"
-b = "scalar-host-or-device"
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[rocblas_srotg_strided_batched]
-a = "1d"
-b = "1d"
-c = "1d"
-s = "1d"
-
-[rocblas_srotm]
-param = "always-c-ptr"
-
-[rocblas_srotm_batched]
-param = "always-c-ptr"
-
-[rocblas_srotm_strided_batched]
-param = "always-c-ptr"
-
-[rocblas_srotmg]
-d1 = "scalar-host-or-device"
-d2 = "scalar-host-or-device"
-x1 = "scalar-host-or-device"
-y1 = "scalar-host-or-device"
-
-[rocblas_srotmg_64]
-d1 = "scalar-host-or-device"
-d2 = "scalar-host-or-device"
-x1 = "scalar-host-or-device"
-y1 = "scalar-host-or-device"
-
-[rocblas_srotmg_strided_batched]
-d1 = "1d"
-d2 = "1d"
-x1 = "1d"
-y1 = "1d"
-
-[rocblas_ssbmv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_ssbmv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_ssbmv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sscal]
-alpha = "scalar-host-or-device"
-
-[rocblas_sscal_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_sscal_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_sspmv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sspmv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sspmv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_sspr]
-alpha = "scalar-host-or-device"
-
-[rocblas_sspr2]
-alpha = "scalar-host-or-device"
-
-[rocblas_sspr2_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_sspr2_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_sspr_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_sspr_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_sswap_strided_batched]
-
-[rocblas_ssymm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_ssymm_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_ssymm_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_ssymv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_ssymv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_ssymv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_ssyr]
-alpha = "scalar-host-or-device"
-
-[rocblas_ssyr2]
-alpha = "scalar-host-or-device"
-
-[rocblas_ssyr2_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_ssyr2_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_ssyr2k]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_ssyr2k_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_ssyr2k_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_ssyr_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_ssyr_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_ssyrk]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_ssyrk_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_ssyrk_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_ssyrkx]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_ssyrkx_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_ssyrkx_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_stbmv_batched]
-
-[rocblas_stbsv]
-
-[rocblas_stbsv_strided_batched]
-
 [rocblas_stop_device_memory_size_query]
 mySize = "scalar-host"
-
-[rocblas_stpmv_strided_batched]
-
-[rocblas_stpsv_batched]
-
-[rocblas_strmm]
-alpha = "scalar-host-or-device"
-
-[rocblas_strmm_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_strmm_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_strmv_strided_batched]
-
-[rocblas_strsm]
-alpha = "scalar-host-or-device"
-
-[rocblas_strsm_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_strsm_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_strsv_batched]
-
-[rocblas_strtri]
-
-[rocblas_strtri_strided_batched]
 
 [rocblas_syrk_ex]
 alpha = "scalar-host-or-device"
@@ -1399,441 +608,3 @@ alpha = "scalar-host-or-device"
 
 [rocblas_trsm_strided_batched_ex]
 alpha = "scalar-host-or-device"
-
-[rocblas_tssgemv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_tssgemv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_tstgemv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_tstgemv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zaxpy]
-alpha = "scalar-host-or-device"
-
-[rocblas_zaxpy_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zaxpy_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zcopy_batched]
-
-[rocblas_zdgmm]
-
-[rocblas_zdgmm_strided_batched]
-
-[rocblas_zdotc]
-myResult = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_zdotc_64]
-myResult = "scalar-host-or-device"
-
-[rocblas_zdotc_batched]
-myResult = "always-c-ptr"
-
-[rocblas_zdotc_strided_batched]
-myResult = "always-c-ptr"
-
-[rocblas_zdotu]
-myResult = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_zdotu_64]
-myResult = "scalar-host-or-device"
-
-[rocblas_zdotu_batched]
-myResult = "always-c-ptr"
-
-[rocblas_zdotu_strided_batched]
-myResult = "always-c-ptr"
-
-[rocblas_zdrot]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_zdrot_batched]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_zdrot_strided_batched]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_zdscal]
-alpha = "scalar-host-or-device"
-
-[rocblas_zdscal_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zdscal_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zgbmv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zgbmv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zgbmv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zgeam]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zgeam_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zgeam_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zgemm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zgemm_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zgemm_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zgemmt]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zgemmt_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zgemmt_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zgemv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zgemv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zgemv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zgerc]
-alpha = "scalar-host-or-device"
-
-[rocblas_zgerc_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zgerc_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zgeru]
-alpha = "scalar-host-or-device"
-
-[rocblas_zgeru_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zgeru_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zhbmv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zhbmv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zhbmv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zhemm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zhemm_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zhemm_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zhemv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zhemv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zhemv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zher]
-alpha = "scalar-host-or-device"
-
-[rocblas_zher2]
-alpha = "scalar-host-or-device"
-
-[rocblas_zher2_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zher2_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zher2k]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zher2k_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zher2k_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zher_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zher_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zherk]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zherk_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zherk_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zherkx]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zherkx_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zherkx_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zhpmv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zhpmv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zhpmv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zhpr]
-alpha = "scalar-host-or-device"
-
-[rocblas_zhpr2]
-alpha = "scalar-host-or-device"
-
-[rocblas_zhpr2_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zhpr2_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zhpr_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zhpr_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zrot]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_zrot_batched]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_zrot_strided_batched]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[rocblas_zrotg]
-a = "scalar-host-or-device"
-b = "scalar-host-or-device"
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[rocblas_zrotg_64]
-a = "scalar-host-or-device"
-b = "scalar-host-or-device"
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[rocblas_zrotg_strided_batched]
-a = "1d"
-b = "1d"
-c = "1d"
-s = "1d"
-
-[rocblas_zscal]
-alpha = "scalar-host-or-device"
-
-[rocblas_zscal_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zscal_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zspr]
-alpha = "scalar-host-or-device"
-
-[rocblas_zspr_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zspr_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zswap_batched]
-
-[rocblas_zsymm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zsymm_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zsymm_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zsymv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zsymv_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zsymv_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zsyr]
-alpha = "scalar-host-or-device"
-
-[rocblas_zsyr2]
-alpha = "scalar-host-or-device"
-
-[rocblas_zsyr2_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zsyr2_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zsyr2k]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zsyr2k_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zsyr2k_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zsyr_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zsyr_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_zsyrk]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zsyrk_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zsyrk_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zsyrkx]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zsyrkx_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_zsyrkx_strided_batched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[rocblas_ztbmv_batched]
-
-[rocblas_ztbsv]
-
-[rocblas_ztbsv_strided_batched]
-
-[rocblas_ztpmv_strided_batched]
-
-[rocblas_ztpsv_batched]
-
-[rocblas_ztrmm]
-alpha = "scalar-host-or-device"
-
-[rocblas_ztrmm_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_ztrmm_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_ztrmv_strided_batched]
-
-[rocblas_ztrsm]
-alpha = "scalar-host-or-device"
-
-[rocblas_ztrsm_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_ztrsm_strided_batched]
-alpha = "scalar-host-or-device"
-
-[rocblas_ztrsv_batched]
-
-[rocblas_ztrtri]
-
-[rocblas_ztrtri_strided_batched]

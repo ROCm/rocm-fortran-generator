@@ -36,8 +36,8 @@ Function-keyed entries map a C function name to argument names.
 Base.@kwdef struct LibMeta
   "Argument rank in the array forms, where the metadata imposes one (1d/2d/3d/any-rank)."
   dims::Dict{String,Dict{String,Int}} = Dict{String,Dict{String,Int}}()
-  "Functions withheld from the array forms (`fortran-arrays = false`)."
-  no_arrays::Set{String} = Set{String}()
+  "Per function with a table: whether it withholds the array forms (`fortran-arrays = false`)."
+  no_arrays_by::Dict{String,Bool} = Dict{String,Bool}()
   "The scalar pointer arguments (`scalar`, `ptrmode`, `device`), reclassified from buffer to scalar."
   scalar_ptrs::Dict{String,Set{String}} = Dict{String,Set{String}}()
   "The pointer-mode subset of `scalar_ptrs` (`ptrmode`, and `device`)."
@@ -62,9 +62,10 @@ end
 
 """
 The metadata file of one library, metadata/<lib>.toml: what its C headers cannot
-express. One table per C function (an ILP64 `_64` or `_v2` variant inherits its
-base function's table), whose keys are argument names, plus a `["*"]` table that
-applies to every function.
+express. One table per C function, whose keys are argument names, plus a `["*"]`
+table that applies to every function. A key may name several functions with
+braces (`["hipsolver{S,D,C,Z}gebrd"]`); a function named twice is an error. A `_64`
+or `_spt` variant without a table of its own takes its base's whole table.
 
     format = 1
 
@@ -113,6 +114,10 @@ struct Metadata
   dims::Dict{String,Dict{String,Int}}
   "Functions whose table sets `fortran-arrays = false`."
   no_arrays::Set{String}
+  "Every function name with a table, after brace expansion => the table."
+  tables::Dict{String,Dict{String,Any}}
+  "Every function name with a table => the key it was written as."
+  origin::Dict{String,String}
   path::String
 end
 
@@ -130,7 +135,7 @@ const STAR_VALUES = ("struct-array", "function-pointer", PASSING_VALUES..., "nul
 function empty_metadata(path::String="")
   d() = Dict{String,Set{String}}()
   Metadata(d(), d(), d(), d(), d(), d(), d(), d(), d(), Dict{String,Dict{String,Int}}(),
-           Set{String}(), path)
+           Set{String}(), Dict{String,Dict{String,Any}}(), Dict{String,String}(), path)
 end
 
 # Read metadata/<lib>.toml; a missing or empty file is empty metadata. Malformed
@@ -147,9 +152,23 @@ function load_metadata(path::String) :: Metadata
   fmt = get(t, "format", nothing)
   fmt == METADATA_FORMAT || bad("`format = $(METADATA_FORMAT)` is required, found $(repr(fmt))")
   add!(d, fn, a) = push!(get!(d, fn, Set{String}()), a)
-  for (fn, tbl) in t
-    fn == "format" && continue
-    tbl isa AbstractDict || bad("`$(fn)` must be a table, [$(fn)]")
+  for (k, tbl) in t
+    k == "format" && continue
+    tbl isa AbstractDict || bad("`$(k)` must be a table, [$(k)]")
+    names = try
+      expand_braces(k)
+    catch e
+      bad("[$(k)]: $(sprint(showerror, e))")
+    end
+    for fn in names
+      fn == "*" || occursin(r"^[A-Za-z_][A-Za-z0-9_]*$", fn) ||
+        bad("[$(k)] names `$(fn)`, which is not a C function name")
+      haskey(md.origin, fn) && bad("`$(fn)` has two tables, [$(md.origin[fn])] and [$(k)]")
+      md.origin[fn] = k
+      md.tables[fn] = tbl
+    end
+  end
+  for (fn, tbl) in md.tables
     for (key, v) in tbl
       if key == "fortran-arrays"
         fn == "*" && bad("[\"*\"] cannot set fortran-arrays")
@@ -186,24 +205,62 @@ function load_metadata(path::String) :: Metadata
       end
     end
   end
+  # A function's own table replaces its base's entirely: give every table an entry,
+  # empty where it says nothing, so meta_get stops there instead of falling back.
+  for fn in keys(md.tables)
+    fn == "*" && continue
+    for d in (md.scalar, md.ptrmode, md.devonly, md.cptr, md.optional, md.byvalue,
+              md.funptr, md.arrays, md.byref)
+      get!(d, fn, Set{String}())
+    end
+    get!(md.dims, fn, Dict{String,Int}())
+  end
   return md
+end
+
+# Brace expansion of a table key, as in a shell: "rocblas_{s,d}dot" names
+# rocblas_sdot and rocblas_ddot, and an empty alternative is allowed ("x{,_64}").
+function expand_braces(k::AbstractString) :: Vector{String}
+  i = findfirst('{', k)
+  if i === nothing
+    occursin('}', k) && throw(ArgumentError("unbalanced braces"))
+    return [String(k)]
+  end
+  j = findnext('}', k, i)
+  j === nothing && throw(ArgumentError("unbalanced braces"))
+  inner = k[nextind(k, i):prevind(k, j)]
+  occursin('{', inner) && throw(ArgumentError("nested braces"))
+  occursin(',', inner) || throw(ArgumentError("braces with one alternative"))
+  head, tail = k[1:prevind(k, i)], k[nextind(k, j):end]
+  return [x for alt in split(inner, ',') for x in expand_braces(head * alt * tail)]
 end
 
 # -1 means no array overloads.
 # An ILP64 (_64) or _v2 variant inherits its base function's entry in every
 # per-function metadata file, so the base name is curated once for all of them.
-# _spt (per-thread default stream) first: hipStreamGetCaptureInfo_v2_spt takes the
-# table of hipStreamGetCaptureInfo_v2, whose arguments differ from the unversioned one.
-variant_base(name) = replace(name, r"(_v2)?(_64)?(_spt)?$" => "")
+# A variant without a table of its own takes its base function's: an _spt
+# (per-thread default stream) variant first that of the same function without
+# _spt, then an ILP64 _64 variant that of the 32-bit one. A _v2 is a new API, not a
+# variant: it inherits nothing.
+variant_chain(name) = unique([name, replace(name, r"_spt$" => ""),
+                              replace(replace(name, r"_spt$" => ""), r"_64$" => "")])
+variant_base(name) = last(variant_chain(name))
 function meta_get(d, name, default)
-  haskey(d, name) && return d[name]
-  n = replace(name, r"_spt$" => "")
-  haskey(d, n) && return d[n]
-  return get(d, variant_base(name), default)
+  for n in variant_chain(name)
+    haskey(d, n) && return d[n]
+  end
+  return default
+end
+# The table that applies to `name`, and the name it belongs to; nothing if none.
+function applying_table(md::Metadata, name)
+  for n in variant_chain(name)
+    haskey(md.tables, n) && return (n, md.tables[n])
+  end
+  return nothing
 end
 
 imposed_dims(f::FuncInfo, meta::LibMeta) = meta_get(meta.dims, f.name, Dict{String,Int}())
-withheld(f::FuncInfo, meta::LibMeta) = f.name in meta.no_arrays || variant_base(f.name) in meta.no_arrays
+withheld(f::FuncInfo, meta::LibMeta) = meta_get(meta.no_arrays_by, f.name, false)
 # The rank_N array forms go up to rank 1, or to 3 when a buffer is any-rank (an
 # FFT's data, whose rank the plan decides); -1 means no array forms.
 function native_maxrank(f::FuncInfo, meta::LibMeta)
@@ -351,24 +408,25 @@ only its _64/_v2 variant is declared. Run on the functions as parsed, before any
 metadata applies.
 """
 function check_metadata_names(funcs::Vector{FuncInfo}, md::Metadata)
-  isfile(md.path) || return
+  isempty(md.tables) && return
   args_of = Dict{String,Set{String}}()
   for f in funcs
-    for n in (f.name, variant_base(f.name))
+    for n in variant_chain(f.name)
       union!(get!(args_of, n, Set{String}()), (a.name for a in f.args))
     end
   end
-  t = TOML.parsefile(md.path)
   stale_keys, stale_args = String[], String[]
-  for fn in sort!(collect(keys(t)))
-    (fn == "format" || fn == "*") && continue
+  for fn in sort!(collect(keys(md.tables)))
+    fn == "*" && continue
+    k = md.origin[fn]
+    where = k == fn ? fn : "$(fn) (from [$(k)])"
     if !haskey(args_of, fn)
-      push!(stale_keys, fn)
+      push!(stale_keys, where)
       continue
     end
-    for a in sort!(collect(keys(t[fn])))
+    for a in sort!(collect(keys(md.tables[fn])))
       a == "fortran-arrays" && continue
-      safe_argname(a) in args_of[fn] || push!(stale_args, "$(fn) $(a)")
+      safe_argname(a) in args_of[fn] || push!(stale_args, "$(where) $(a)")
     end
   end
   file = basename(md.path)

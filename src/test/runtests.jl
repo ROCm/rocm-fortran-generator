@@ -717,14 +717,17 @@ overlong_fortran_lines(s::AbstractString) =
             let g64 = FuncInfo("mat_64", "integer(c_int)", false,
                                [ArgInfo("A", "real(c_double)", "(*)", false), ArgInfo("lda", "integer(c_int64_t)", ", value", false)])
                 @test wants_fullrank(g64, LibMeta()) && native_maxrank(g64, LibMeta()) == 1
-                @test native_maxrank(g64, LibMeta(no_arrays = Set(["mat"]))) == -1
+                @test native_maxrank(g64, LibMeta(no_arrays_by = Dict("mat" => true))) == -1
                 # An any-rank buffer: rank 0 to 3, and no _full_rank form.
                 ar = LibMeta(dims = Dict("mat" => Dict("A" => ANY_RANK)))
                 @test native_maxrank(g64, ar) == 3 && !wants_fullrank(g64, ar)
             end
-            # A _spt variant takes the table of its own base first (_v2 before plain).
+            # A _spt variant takes the table of the same function without _spt, then
+            # of the 32-bit one; a _v2 is a new API and inherits nothing.
             @test meta_get(Dict("f_v2" => 2, "f" => 1), "f_v2_spt", 0) == 2
-            @test meta_get(Dict("f" => 1), "f_v2_spt", 0) == 1
+            @test meta_get(Dict("f" => 1), "f_v2_spt", 0) == 0
+            @test meta_get(Dict("f" => 1), "f_64_spt", 0) == 1
+            @test meta_get(Dict("f" => 1), "f_v2", 0) == 0
         end
 
         # anonymous-enum spellings lose the absolute include path
@@ -1092,12 +1095,46 @@ overlong_fortran_lines(s::AbstractString) =
     end
 
     @testset "gen_files metadata helpers + rename/no-success paths" begin
+        # Brace expansion: every name of a key gets the table; a name in two keys is
+        # an error; a variant's own table replaces its base's entirely.
+        @test expand_braces("rocblas_{s,d}dot{,_64}") ==
+              ["rocblas_sdot", "rocblas_sdot_64", "rocblas_ddot", "rocblas_ddot_64"]
+        for k in ("x{a", "x}a", "x{a{b,c}}", "x{a}")
+            @test_throws ArgumentError expand_braces(k)
+        end
+        mktemp() do path, io
+            write(io, """
+                format = 1
+                ["lib_{s,d}dot"]
+                r = ["scalar-host-or-device", "always-c-ptr"]
+                [lib_ddot_64]
+                r = "scalar-host-or-device"
+                """); close(io)
+            md = load_metadata(path)
+            @test md.origin["lib_sdot"] == "lib_{s,d}dot" && md.cptr["lib_ddot"] == Set(["r"])
+            @test meta_get(md.cptr, "lib_sdot_64", nothing) == Set(["r"])      # inherited whole
+            @test isempty(meta_get(md.cptr, "lib_ddot_64", nothing))            # replaced whole
+            @test applying_table(md, "lib_sdot_64")[1] == "lib_sdot"
+        end
+        for dup in ("format = 1\n[\"f{a,b}\"]\nx = \"1d\"\n[fa]\nx = \"2d\"\n",
+                    "format = 1\n[\"f{a,a}\"]\nx = \"1d\"\n",
+                    "format = 1\n[\"f{a,b-c}\"]\nx = \"1d\"\n")
+            mktemp() do path, io
+                write(io, dup); close(io)
+                @test_throws ErrorException load_metadata(path)
+            end
+        end
+
         # Imposed ranks and the opt-out.
         mktemp() do path, io
             write(io, "format = 1\n[foo]\nx = \"1d\"\ny = \"3d\"\n[bar]\nz = \"any-rank\"\n[baz]\nfortran-arrays = false\n"); close(io)
             md = load_metadata(path)
             @test md.dims["foo"] == Dict("x" => 1, "y" => 3) && md.dims["bar"]["z"] == ANY_RANK
             @test md.no_arrays == Set(["baz"])
+            # The opt-out applies to the function's variants, not to the others.
+            nm = LibMeta(no_arrays_by = Dict(fn => fn in md.no_arrays for fn in keys(md.tables)))
+            mk(n) = FuncInfo(n, "integer(c_int)", false, [ArgInfo("x", "real(c_double)", "(*)", false)])
+            @test withheld(mk("baz_64"), nm) && !withheld(mk("foo_64"), nm)
         end
         let md = load_metadata(joinpath(@__DIR__, "nope.toml"))
             @test isempty(md.dims) && isempty(md.scalar) && isempty(md.no_arrays)

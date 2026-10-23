@@ -66,6 +66,8 @@ expect 1 "--overwrite needs ROCM_LIBRARIES or ROCM_SYSTEMS" \
   env ROCM_INCLUDE="$INST" ./gen.sh --overwrite rocblas
 expect 1 "projects/rocblas/fortran does not exist" \
   env ROCM_INCLUDE="$INST" ROCM_LIBRARIES="$LIBS" ./gen.sh --overwrite rocblas
+expect 0 "rocblas_srot_64: " ./gen.sh --explain rocblas_srot_64
+expect 2 "needs a C function name" ./gen.sh --explain
 expect 1 "not a ROCm include dir" env ROCM_INCLUDE="$TMP/empty" ./gen.sh
 expect 1 "Include dir not found for rocblas" env ROCM_INCLUDE="$INST" ./gen.sh rocblas
 expect 1 "FAILED to generate" env ROCM_INCLUDE="$INST" ./gen.sh   # an empty hip/: no longer exit 0

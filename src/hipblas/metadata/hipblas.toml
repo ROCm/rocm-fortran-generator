@@ -1,9 +1,10 @@
 # Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
-# What the hipblas C headers cannot express. One section per C function
-# (`_64` and `_v2` variants inherit their base function's section), and
-# `["*"]` for every function. See "Fixing a binding" in the generator README.
+# What the hipblas C headers cannot express. One table per C function, and
+# `["*"]` for every function; a key with braces names several. A _64 or _spt
+# variant without a table takes its base's. See "Fixing a binding" in the
+# generator README; `gen.sh --explain <function>` shows what applies.
 
 format = 1
 
@@ -16,336 +17,320 @@ alpha = "scalar-host-or-device"
 [hipblasAxpyStridedBatchedEx]
 alpha = "scalar-host-or-device"
 
-[hipblasBfdot]
+["hipblas{S,D,Bf}dot"]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
 
-[hipblasBfdotBatched]
+["hipblas{S,D,Bf}dotBatched"]
 myResult = "always-c-ptr"
 
-[hipblasBfdotStridedBatched]
+["hipblas{S,D,Bf}dotStridedBatched"]
 myResult = "always-c-ptr"
 
-[hipblasCaxpy]
+["hipblas{S,D,C,Z,H}axpy"]
 alpha = "scalar-host-or-device"
 
-[hipblasCaxpyBatched]
+["hipblas{S,D,C,Z,H}axpyBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCaxpyStridedBatched]
+["hipblas{S,D,C,Z,H}axpyStridedBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCcopyBatched]
+["hipblas{S,D,C,Z}copyBatched"]
 
-[hipblasCdgmm]
+["hipblas{S,D,C,Z}dgmm"]
 
-[hipblasCdgmmStridedBatched]
+["hipblas{S,D,C,Z}dgmmStridedBatched"]
 
-[hipblasCdotc]
+["hipblas{C,Z}dotc"]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
 
-[hipblasCdotcBatched]
+["hipblas{C,Z}dotcBatched"]
 myResult = "always-c-ptr"
 
-[hipblasCdotcStridedBatched]
+["hipblas{C,Z}dotcStridedBatched"]
 myResult = "always-c-ptr"
 
-[hipblasCdotc_64]
-myResult = "scalar-host-or-device"
-
-[hipblasCdotu]
+["hipblas{C,Z}dotu"]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
 
-[hipblasCdotuBatched]
+["hipblas{C,Z}dotuBatched"]
 myResult = "always-c-ptr"
 
-[hipblasCdotuStridedBatched]
+["hipblas{C,Z}dotuStridedBatched"]
 myResult = "always-c-ptr"
 
-[hipblasCdotu_64]
-myResult = "scalar-host-or-device"
-
-[hipblasCgbmv]
+["hipblas{S,D,C,Z}gbmv"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCgbmvBatched]
+["hipblas{S,D,C,Z}gbmvBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCgbmvStridedBatched]
+["hipblas{S,D,C,Z}gbmvStridedBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCgeam]
+["hipblas{S,D,C,Z}geam"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCgeamBatched]
+["hipblas{S,D,C,Z}geamBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCgeamStridedBatched]
+["hipblas{S,D,C,Z}geamStridedBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCgels]
+["hipblas{S,D,C,Z}gels"]
 deviceInfo = "scalar-device"
 myInfo = "scalar-host"
 
-[hipblasCgelsBatched]
+["hipblas{S,D,C,Z}gelsBatched"]
 deviceInfo = "scalar-device"
 myInfo = "scalar-host"
 
-[hipblasCgelsStridedBatched]
+["hipblas{S,D,C,Z}gelsStridedBatched"]
 deviceInfo = "scalar-device"
 myInfo = "scalar-host"
 
-[hipblasCgemm]
+["hipblas{S,D,C,Z,H}gemm"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCgemmBatched]
+["hipblas{S,D,C,Z,H}gemmBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCgemmStridedBatched]
+["hipblas{S,D,C,Z,H}gemmStridedBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCgemv]
+["hipblas{S,D,C,Z}gemv"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCgemvBatched]
+["hipblas{S,D,C,Z}gemvBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCgemvStridedBatched]
+["hipblas{S,D,C,Z}gemvStridedBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCgeqrf]
+["hipblas{S,D,C,Z}geqrf"]
 myInfo = ["scalar-host", "always-c-ptr"]
 
-[hipblasCgeqrfBatched]
+["hipblas{S,D,C,Z}geqrfBatched"]
 ipiv = "always-c-ptr"
 myInfo = ["scalar-host", "always-c-ptr"]
 
-[hipblasCgeqrfStridedBatched]
+["hipblas{S,D,C,Z}geqrfStridedBatched"]
 myInfo = ["scalar-host", "always-c-ptr"]
 
-[hipblasCgerc]
+["hipblas{C,Z}gerc"]
 alpha = "scalar-host-or-device"
 
-[hipblasCgercBatched]
+["hipblas{C,Z}gercBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCgercStridedBatched]
+["hipblas{C,Z}gercStridedBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCgeru]
+["hipblas{C,Z}geru"]
 alpha = "scalar-host-or-device"
 
-[hipblasCgeruBatched]
+["hipblas{C,Z}geruBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCgeruStridedBatched]
+["hipblas{C,Z}geruStridedBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCgetrf]
+["hipblas{S,D,C,Z}getrf"]
 myInfo = "always-c-ptr"
 
-[hipblasCgetrfBatched]
+["hipblas{S,D,C,Z}getrfBatched"]
 ipiv = "always-c-ptr"
 myInfo = "always-c-ptr"
 
-[hipblasCgetrfStridedBatched]
+["hipblas{S,D,C,Z}getrfStridedBatched"]
 myInfo = "always-c-ptr"
 
-[hipblasCgetriBatched]
+["hipblas{S,D,C,Z}getriBatched"]
 ipiv = "always-c-ptr"
 myInfo = "always-c-ptr"
 
-[hipblasCgetrs]
+["hipblas{S,D,C,Z}getrs"]
 myInfo = ["scalar-host", "always-c-ptr"]
 
-[hipblasCgetrsBatched]
+["hipblas{S,D,C,Z}getrsBatched"]
 ipiv = "always-c-ptr"
 myInfo = ["scalar-host", "always-c-ptr"]
 
-[hipblasCgetrsStridedBatched]
+["hipblas{S,D,C,Z}getrsStridedBatched"]
 myInfo = ["scalar-host", "always-c-ptr"]
 
-[hipblasChbmv]
+["hipblas{C,Z}hbmv"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasChbmvBatched]
+["hipblas{C,Z}hbmvBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasChbmvStridedBatched]
+["hipblas{C,Z}hbmvStridedBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasChemm]
+["hipblas{C,Z}hemm"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasChemmBatched]
+["hipblas{C,Z}hemmBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasChemmStridedBatched]
+["hipblas{C,Z}hemmStridedBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasChemv]
+["hipblas{C,Z}hemv"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasChemvBatched]
+["hipblas{C,Z}hemvBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasChemvStridedBatched]
+["hipblas{C,Z}hemvStridedBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCher]
+["hipblas{C,Z}her"]
 alpha = "scalar-host-or-device"
 
-[hipblasCher2]
+["hipblas{C,Z}her2"]
 alpha = "scalar-host-or-device"
 
-[hipblasCher2Batched]
+["hipblas{C,Z}her2Batched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCher2StridedBatched]
+["hipblas{C,Z}her2StridedBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCher2k]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasCher2kBatched]
+["hipblas{C,Z}her2k"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCher2kStridedBatched]
+["hipblas{C,Z}her2kBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCherBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasCherStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasCherk]
+["hipblas{C,Z}her2kStridedBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCherkBatched]
+["hipblas{C,Z}herBatched"]
+alpha = "scalar-host-or-device"
+
+["hipblas{C,Z}herStridedBatched"]
+alpha = "scalar-host-or-device"
+
+["hipblas{C,Z}herk"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCherkStridedBatched]
+["hipblas{C,Z}herkBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCherkx]
+["hipblas{C,Z}herkStridedBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCherkxBatched]
+["hipblas{C,Z}herkx"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCherkxStridedBatched]
+["hipblas{C,Z}herkxBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasChpmv]
+["hipblas{C,Z}herkxStridedBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasChpmvBatched]
+["hipblas{C,Z}hpmv"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasChpmvStridedBatched]
+["hipblas{C,Z}hpmvBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasChpr]
+["hipblas{C,Z}hpmvStridedBatched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["hipblas{C,Z}hpr"]
 alpha = "scalar-host-or-device"
 
-[hipblasChpr2]
+["hipblas{C,Z}hpr2"]
 alpha = "scalar-host-or-device"
 
-[hipblasChpr2Batched]
+["hipblas{C,Z}hpr2Batched"]
 alpha = "scalar-host-or-device"
 
-[hipblasChpr2StridedBatched]
+["hipblas{C,Z}hpr2StridedBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasChprBatched]
+["hipblas{C,Z}hprBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasChprStridedBatched]
+["hipblas{C,Z}hprStridedBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCrot]
+["hipblas{S,D,C,Z}rot"]
 c = ["scalar-host-or-device", "always-c-ptr"]
 s = ["scalar-host-or-device", "always-c-ptr"]
 
-[hipblasCrotBatched]
+["hipblas{S,D,C,Z}rotBatched"]
 c = "always-c-ptr"
 s = "always-c-ptr"
 
-[hipblasCrotStridedBatched]
+["hipblas{S,D,C,Z}rotStridedBatched"]
 c = "always-c-ptr"
 s = "always-c-ptr"
 
-[hipblasCrot_64]
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[hipblasCrotg]
+["hipblas{S,D,C,Z}rotg"]
 a = "scalar-host-or-device"
 b = "scalar-host-or-device"
 c = "scalar-host-or-device"
 s = "scalar-host-or-device"
 
-[hipblasCrotgStridedBatched]
+["hipblas{S,D,C,Z}rotgStridedBatched"]
 a = "1d"
 b = "1d"
 c = "1d"
 s = "1d"
 
-[hipblasCrotg_64]
-a = "scalar-host-or-device"
-b = "scalar-host-or-device"
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[hipblasCscal]
+["hipblas{S,D,C,Z}scal"]
 alpha = "scalar-host-or-device"
 
-[hipblasCscalBatched]
+["hipblas{S,D,C,Z}scalBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCscalStridedBatched]
+["hipblas{S,D,C,Z}scalStridedBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCspr]
+["hipblas{S,D,C,Z}spr"]
 alpha = "scalar-host-or-device"
 
-[hipblasCsprBatched]
+["hipblas{S,D,C,Z}sprBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCsprStridedBatched]
+["hipblas{S,D,C,Z}sprStridedBatched"]
 alpha = "scalar-host-or-device"
 
 [hipblasCsrot]
@@ -360,10 +345,6 @@ s = "always-c-ptr"
 c = "always-c-ptr"
 s = "always-c-ptr"
 
-[hipblasCsrot_64]
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
 [hipblasCsscal]
 alpha = "scalar-host-or-device"
 
@@ -373,507 +354,204 @@ alpha = "scalar-host-or-device"
 [hipblasCsscalStridedBatched]
 alpha = "scalar-host-or-device"
 
-[hipblasCswapBatched]
+["hipblas{S,D,C,Z}swapBatched"]
 
-[hipblasCsymm]
+["hipblas{S,D,C,Z}symm"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCsymmBatched]
+["hipblas{S,D,C,Z}symmBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCsymmStridedBatched]
+["hipblas{S,D,C,Z}symmStridedBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCsymv]
+["hipblas{S,D,C,Z}symv"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCsymvBatched]
+["hipblas{S,D,C,Z}symvBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCsymvStridedBatched]
+["hipblas{S,D,C,Z}symvStridedBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCsyr]
+["hipblas{S,D,C,Z}syr"]
 alpha = "scalar-host-or-device"
 
-[hipblasCsyr2]
+["hipblas{S,D,C,Z}syr2"]
 alpha = "scalar-host-or-device"
 
-[hipblasCsyr2Batched]
+["hipblas{S,D,C,Z}syr2Batched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCsyr2StridedBatched]
+["hipblas{S,D,C,Z}syr2StridedBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCsyr2k]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasCsyr2kBatched]
+["hipblas{S,D,C,Z}syr2k"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCsyr2kStridedBatched]
+["hipblas{S,D,C,Z}syr2kBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCsyrBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasCsyrStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasCsyrk]
+["hipblas{S,D,C,Z}syr2kStridedBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCsyrkBatched]
+["hipblas{S,D,C,Z}syrBatched"]
+alpha = "scalar-host-or-device"
+
+["hipblas{S,D,C,Z}syrStridedBatched"]
+alpha = "scalar-host-or-device"
+
+["hipblas{S,D,C,Z}syrk"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCsyrkStridedBatched]
+["hipblas{S,D,C,Z}syrkBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCsyrkx]
+["hipblas{S,D,C,Z}syrkStridedBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCsyrkxBatched]
+["hipblas{S,D,C,Z}syrkx"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCsyrkxStridedBatched]
+["hipblas{S,D,C,Z}syrkxBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasCtbmvBatched]
+["hipblas{S,D,C,Z}syrkxStridedBatched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
 
-[hipblasCtbsv]
+["hipblas{S,D,C,Z}tbmvBatched"]
 
-[hipblasCtbsvStridedBatched]
+["hipblas{S,D,C,Z}tbsv"]
 
-[hipblasCtpmvBatched]
+["hipblas{S,D,C,Z}tbsvStridedBatched"]
 
-[hipblasCtpsv]
+["hipblas{S,D,C,Z}tpmvBatched"]
 
-[hipblasCtpsvStridedBatched]
+["hipblas{S,D,C,Z}tpsv"]
 
-[hipblasCtrmm]
+["hipblas{S,D,C,Z}tpsvStridedBatched"]
+
+["hipblas{S,D,C,Z}trmm"]
 alpha = "scalar-host-or-device"
 
-[hipblasCtrmmBatched]
+["hipblas{S,D,C,Z}trmmBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCtrmmStridedBatched]
+["hipblas{S,D,C,Z}trmmStridedBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCtrmvBatched]
+["hipblas{S,D,C,Z}trmvBatched"]
 
-[hipblasCtrsm]
+["hipblas{S,D,C,Z}trsm"]
 alpha = "scalar-host-or-device"
 
-[hipblasCtrsmBatched]
+["hipblas{S,D,C,Z}trsmBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCtrsmStridedBatched]
+["hipblas{S,D,C,Z}trsmStridedBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasCtrsvBatched]
+["hipblas{S,D,C,Z}trsvBatched"]
 
-[hipblasCtrtri]
+["hipblas{S,D,C,Z}trtri"]
 
-[hipblasCtrtriStridedBatched]
+["hipblas{S,D,C,Z}trtriStridedBatched"]
 
-[hipblasDasum]
+["hipblas{S,D}asum"]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
 
-[hipblasDasumBatched]
+["hipblas{S,D}asumBatched"]
 myResult = "always-c-ptr"
 
-[hipblasDasumStridedBatched]
+["hipblas{S,D}asumStridedBatched"]
 myResult = "always-c-ptr"
 
-[hipblasDasum_64]
-myResult = "scalar-host-or-device"
-
-[hipblasDaxpy]
+["hipblas{S,D}ger"]
 alpha = "scalar-host-or-device"
 
-[hipblasDaxpyBatched]
+["hipblas{S,D}gerBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasDaxpyStridedBatched]
+["hipblas{S,D}gerStridedBatched"]
 alpha = "scalar-host-or-device"
 
-[hipblasDcopyBatched]
-
-[hipblasDdgmm]
-
-[hipblasDdgmmStridedBatched]
-
-[hipblasDdot]
+["hipblas{S,D}nrm2"]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
 
-[hipblasDdotBatched]
+["hipblas{S,D}nrm2Batched"]
 myResult = "always-c-ptr"
 
-[hipblasDdotStridedBatched]
+["hipblas{S,D}nrm2StridedBatched"]
 myResult = "always-c-ptr"
 
-[hipblasDdot_64]
-myResult = "scalar-host-or-device"
-
-[hipblasDgbmv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDgbmvBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDgbmvStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDgeam]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDgeamBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDgeamStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDgels]
-deviceInfo = "scalar-device"
-myInfo = "scalar-host"
-
-[hipblasDgelsBatched]
-deviceInfo = "scalar-device"
-myInfo = "scalar-host"
-
-[hipblasDgelsStridedBatched]
-deviceInfo = "scalar-device"
-myInfo = "scalar-host"
-
-[hipblasDgemm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDgemmBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDgemmStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDgemv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDgemvBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDgemvStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDgeqrf]
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasDgeqrfBatched]
-ipiv = "always-c-ptr"
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasDgeqrfStridedBatched]
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasDger]
-alpha = "scalar-host-or-device"
-
-[hipblasDgerBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasDgerStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasDgetrf]
-myInfo = "always-c-ptr"
-
-[hipblasDgetrfBatched]
-ipiv = "always-c-ptr"
-myInfo = "always-c-ptr"
-
-[hipblasDgetrfStridedBatched]
-myInfo = "always-c-ptr"
-
-[hipblasDgetriBatched]
-ipiv = "always-c-ptr"
-myInfo = "always-c-ptr"
-
-[hipblasDgetrs]
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasDgetrsBatched]
-ipiv = "always-c-ptr"
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasDgetrsStridedBatched]
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasDnrm2]
-myResult = ["scalar-host-or-device", "always-c-ptr"]
-
-[hipblasDnrm2Batched]
-myResult = "always-c-ptr"
-
-[hipblasDnrm2StridedBatched]
-myResult = "always-c-ptr"
-
-[hipblasDnrm2_64]
-myResult = "scalar-host-or-device"
-
-[hipblasDrot]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[hipblasDrotBatched]
-c = "always-c-ptr"
-s = "always-c-ptr"
-
-[hipblasDrotStridedBatched]
-c = "always-c-ptr"
-s = "always-c-ptr"
-
-[hipblasDrot_64]
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[hipblasDrotg]
-a = "scalar-host-or-device"
-b = "scalar-host-or-device"
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[hipblasDrotgStridedBatched]
-a = "1d"
-b = "1d"
-c = "1d"
-s = "1d"
-
-[hipblasDrotg_64]
-a = "scalar-host-or-device"
-b = "scalar-host-or-device"
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[hipblasDrotm]
+["hipblas{S,D}rotm"]
 param = "always-c-ptr"
 
-[hipblasDrotmBatched]
+["hipblas{S,D}rotmBatched"]
 param = "always-c-ptr"
 
-[hipblasDrotmStridedBatched]
+["hipblas{S,D}rotmStridedBatched"]
 param = "always-c-ptr"
 
-[hipblasDrotmg]
+["hipblas{S,D}rotmg"]
 d1 = "scalar-host-or-device"
 d2 = "scalar-host-or-device"
 x1 = "scalar-host-or-device"
 y1 = "scalar-host-or-device"
 
-[hipblasDrotmgStridedBatched]
+["hipblas{S,D}rotmgStridedBatched"]
 d1 = "1d"
 d2 = "1d"
 x1 = "1d"
 y1 = "1d"
 
-[hipblasDrotmg_64]
-d1 = "scalar-host-or-device"
-d2 = "scalar-host-or-device"
-x1 = "scalar-host-or-device"
-y1 = "scalar-host-or-device"
-
-[hipblasDsbmv]
+["hipblas{S,D}sbmv"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasDsbmvBatched]
+["hipblas{S,D}sbmvBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasDsbmvStridedBatched]
+["hipblas{S,D}sbmvStridedBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasDscal]
-alpha = "scalar-host-or-device"
-
-[hipblasDscalBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasDscalStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasDspmv]
+["hipblas{S,D}spmv"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasDspmvBatched]
+["hipblas{S,D}spmvBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasDspmvStridedBatched]
+["hipblas{S,D}spmvStridedBatched"]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
-[hipblasDspr]
+["hipblas{S,D}spr2"]
 alpha = "scalar-host-or-device"
 
-[hipblasDspr2]
+["hipblas{S,D}spr2Batched"]
 alpha = "scalar-host-or-device"
 
-[hipblasDspr2Batched]
+["hipblas{S,D}spr2StridedBatched"]
 alpha = "scalar-host-or-device"
-
-[hipblasDspr2StridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasDsprBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasDsprStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasDswapBatched]
-
-[hipblasDsymm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDsymmBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDsymmStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDsymv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDsymvBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDsymvStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDsyr]
-alpha = "scalar-host-or-device"
-
-[hipblasDsyr2]
-alpha = "scalar-host-or-device"
-
-[hipblasDsyr2Batched]
-alpha = "scalar-host-or-device"
-
-[hipblasDsyr2StridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasDsyr2k]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDsyr2kBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDsyr2kStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDsyrBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasDsyrStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasDsyrk]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDsyrkBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDsyrkStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDsyrkx]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDsyrkxBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDsyrkxStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasDtbmvBatched]
-
-[hipblasDtbsv]
-
-[hipblasDtbsvStridedBatched]
-
-[hipblasDtpmvBatched]
-
-[hipblasDtpsv]
-
-[hipblasDtpsvStridedBatched]
-
-[hipblasDtrmm]
-alpha = "scalar-host-or-device"
-
-[hipblasDtrmmBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasDtrmmStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasDtrmvBatched]
-
-[hipblasDtrsm]
-alpha = "scalar-host-or-device"
-
-[hipblasDtrsmBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasDtrsmStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasDtrsvBatched]
-
-[hipblasDtrtri]
-
-[hipblasDtrtriStridedBatched]
 
 [hipblasDzasum]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
@@ -884,9 +562,6 @@ myResult = "always-c-ptr"
 [hipblasDzasumStridedBatched]
 myResult = "always-c-ptr"
 
-[hipblasDzasum_64]
-myResult = "scalar-host-or-device"
-
 [hipblasDznrm2]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
 
@@ -895,9 +570,6 @@ myResult = "always-c-ptr"
 
 [hipblasDznrm2StridedBatched]
 myResult = "always-c-ptr"
-
-[hipblasDznrm2_64]
-myResult = "scalar-host-or-device"
 
 [hipblasGemmBatchedEx]
 alpha = "scalar-host-or-device"
@@ -944,28 +616,7 @@ value = "scalar-host"
 [hipblasGetVersion]
 version = "scalar-host"
 
-[hipblasHaxpy]
-alpha = "scalar-host-or-device"
-
-[hipblasHaxpyBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasHaxpyStridedBatched]
-alpha = "scalar-host-or-device"
-
 [hipblasHerkEx]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasHgemm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasHgemmBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasHgemmStridedBatched]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
@@ -978,9 +629,6 @@ myResult = "always-c-ptr"
 [hipblasIcamaxStridedBatched]
 myResult = "always-c-ptr"
 
-[hipblasIcamax_64]
-myResult = "scalar-host-or-device"
-
 [hipblasIcamin]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
 
@@ -989,9 +637,6 @@ myResult = "always-c-ptr"
 
 [hipblasIcaminStridedBatched]
 myResult = "always-c-ptr"
-
-[hipblasIcamin_64]
-myResult = "scalar-host-or-device"
 
 [hipblasIdamax]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
@@ -1002,9 +647,6 @@ myResult = "always-c-ptr"
 [hipblasIdamaxStridedBatched]
 myResult = "always-c-ptr"
 
-[hipblasIdamax_64]
-myResult = "scalar-host-or-device"
-
 [hipblasIdamin]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
 
@@ -1013,9 +655,6 @@ myResult = "always-c-ptr"
 
 [hipblasIdaminStridedBatched]
 myResult = "always-c-ptr"
-
-[hipblasIdamin_64]
-myResult = "scalar-host-or-device"
 
 [hipblasIsamax]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
@@ -1026,9 +665,6 @@ myResult = "always-c-ptr"
 [hipblasIsamaxStridedBatched]
 myResult = "always-c-ptr"
 
-[hipblasIsamax_64]
-myResult = "scalar-host-or-device"
-
 [hipblasIsamin]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
 
@@ -1037,9 +673,6 @@ myResult = "always-c-ptr"
 
 [hipblasIsaminStridedBatched]
 myResult = "always-c-ptr"
-
-[hipblasIsamin_64]
-myResult = "scalar-host-or-device"
 
 [hipblasIzamax]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
@@ -1050,9 +683,6 @@ myResult = "always-c-ptr"
 [hipblasIzamaxStridedBatched]
 myResult = "always-c-ptr"
 
-[hipblasIzamax_64]
-myResult = "scalar-host-or-device"
-
 [hipblasIzamin]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
 
@@ -1061,30 +691,6 @@ myResult = "always-c-ptr"
 
 [hipblasIzaminStridedBatched]
 myResult = "always-c-ptr"
-
-[hipblasIzamin_64]
-myResult = "scalar-host-or-device"
-
-[hipblasSasum]
-myResult = ["scalar-host-or-device", "always-c-ptr"]
-
-[hipblasSasumBatched]
-myResult = "always-c-ptr"
-
-[hipblasSasumStridedBatched]
-myResult = "always-c-ptr"
-
-[hipblasSasum_64]
-myResult = "scalar-host-or-device"
-
-[hipblasSaxpy]
-alpha = "scalar-host-or-device"
-
-[hipblasSaxpyBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasSaxpyStridedBatched]
-alpha = "scalar-host-or-device"
 
 [hipblasScalBatchedEx]
 alpha = "scalar-host-or-device"
@@ -1104,9 +710,6 @@ myResult = "always-c-ptr"
 [hipblasScasumStridedBatched]
 myResult = "always-c-ptr"
 
-[hipblasScasum_64]
-myResult = "scalar-host-or-device"
-
 [hipblasScnrm2]
 myResult = ["scalar-host-or-device", "always-c-ptr"]
 
@@ -1115,372 +718,6 @@ myResult = "always-c-ptr"
 
 [hipblasScnrm2StridedBatched]
 myResult = "always-c-ptr"
-
-[hipblasScnrm2_64]
-myResult = "scalar-host-or-device"
-
-[hipblasScopyBatched]
-
-[hipblasSdgmm]
-
-[hipblasSdgmmStridedBatched]
-
-[hipblasSdot]
-myResult = ["scalar-host-or-device", "always-c-ptr"]
-
-[hipblasSdotBatched]
-myResult = "always-c-ptr"
-
-[hipblasSdotStridedBatched]
-myResult = "always-c-ptr"
-
-[hipblasSdot_64]
-myResult = "scalar-host-or-device"
-
-[hipblasSgbmv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSgbmvBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSgbmvStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSgeam]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSgeamBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSgeamStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSgels]
-deviceInfo = "scalar-device"
-myInfo = "scalar-host"
-
-[hipblasSgelsBatched]
-deviceInfo = "scalar-device"
-myInfo = "scalar-host"
-
-[hipblasSgelsStridedBatched]
-deviceInfo = "scalar-device"
-myInfo = "scalar-host"
-
-[hipblasSgemm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSgemmBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSgemmStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSgemv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSgemvBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSgemvStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSgeqrf]
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasSgeqrfBatched]
-ipiv = "always-c-ptr"
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasSgeqrfStridedBatched]
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasSger]
-alpha = "scalar-host-or-device"
-
-[hipblasSgerBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasSgerStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasSgetrf]
-myInfo = "always-c-ptr"
-
-[hipblasSgetrfBatched]
-ipiv = "always-c-ptr"
-myInfo = "always-c-ptr"
-
-[hipblasSgetrfStridedBatched]
-myInfo = "always-c-ptr"
-
-[hipblasSgetriBatched]
-ipiv = "always-c-ptr"
-myInfo = "always-c-ptr"
-
-[hipblasSgetrs]
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasSgetrsBatched]
-ipiv = "always-c-ptr"
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasSgetrsStridedBatched]
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasSnrm2]
-myResult = ["scalar-host-or-device", "always-c-ptr"]
-
-[hipblasSnrm2Batched]
-myResult = "always-c-ptr"
-
-[hipblasSnrm2StridedBatched]
-myResult = "always-c-ptr"
-
-[hipblasSnrm2_64]
-myResult = "scalar-host-or-device"
-
-[hipblasSrot]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[hipblasSrotBatched]
-c = "always-c-ptr"
-s = "always-c-ptr"
-
-[hipblasSrotStridedBatched]
-c = "always-c-ptr"
-s = "always-c-ptr"
-
-[hipblasSrot_64]
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[hipblasSrotg]
-a = "scalar-host-or-device"
-b = "scalar-host-or-device"
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[hipblasSrotgStridedBatched]
-a = "1d"
-b = "1d"
-c = "1d"
-s = "1d"
-
-[hipblasSrotg_64]
-a = "scalar-host-or-device"
-b = "scalar-host-or-device"
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[hipblasSrotm]
-param = "always-c-ptr"
-
-[hipblasSrotmBatched]
-param = "always-c-ptr"
-
-[hipblasSrotmStridedBatched]
-param = "always-c-ptr"
-
-[hipblasSrotmg]
-d1 = "scalar-host-or-device"
-d2 = "scalar-host-or-device"
-x1 = "scalar-host-or-device"
-y1 = "scalar-host-or-device"
-
-[hipblasSrotmgStridedBatched]
-d1 = "1d"
-d2 = "1d"
-x1 = "1d"
-y1 = "1d"
-
-[hipblasSrotmg_64]
-d1 = "scalar-host-or-device"
-d2 = "scalar-host-or-device"
-x1 = "scalar-host-or-device"
-y1 = "scalar-host-or-device"
-
-[hipblasSsbmv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSsbmvBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSsbmvStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSscal]
-alpha = "scalar-host-or-device"
-
-[hipblasSscalBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasSscalStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasSspmv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSspmvBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSspmvStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSspr]
-alpha = "scalar-host-or-device"
-
-[hipblasSspr2]
-alpha = "scalar-host-or-device"
-
-[hipblasSspr2Batched]
-alpha = "scalar-host-or-device"
-
-[hipblasSspr2StridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasSsprBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasSsprStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasSswapBatched]
-
-[hipblasSsymm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSsymmBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSsymmStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSsymv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSsymvBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSsymvStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSsyr]
-alpha = "scalar-host-or-device"
-
-[hipblasSsyr2]
-alpha = "scalar-host-or-device"
-
-[hipblasSsyr2Batched]
-alpha = "scalar-host-or-device"
-
-[hipblasSsyr2StridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasSsyr2k]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSsyr2kBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSsyr2kStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSsyrBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasSsyrStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasSsyrk]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSsyrkBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSsyrkStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSsyrkx]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSsyrkxBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasSsyrkxStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasStbmvBatched]
-
-[hipblasStbsv]
-
-[hipblasStbsvStridedBatched]
-
-[hipblasStpmvBatched]
-
-[hipblasStpsv]
-
-[hipblasStpsvStridedBatched]
-
-[hipblasStrmm]
-alpha = "scalar-host-or-device"
-
-[hipblasStrmmBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasStrmmStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasStrmvBatched]
-
-[hipblasStrsm]
-alpha = "scalar-host-or-device"
-
-[hipblasStrsmBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasStrsmStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasStrsvBatched]
-
-[hipblasStrtri]
-
-[hipblasStrtriStridedBatched]
 
 [hipblasSyrkEx]
 alpha = "scalar-host-or-device"
@@ -1495,45 +732,6 @@ alpha = "scalar-host-or-device"
 [hipblasTrsmStridedBatchedEx]
 alpha = "scalar-host-or-device"
 
-[hipblasZaxpy]
-alpha = "scalar-host-or-device"
-
-[hipblasZaxpyBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZaxpyStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZcopyBatched]
-
-[hipblasZdgmm]
-
-[hipblasZdgmmStridedBatched]
-
-[hipblasZdotc]
-myResult = ["scalar-host-or-device", "always-c-ptr"]
-
-[hipblasZdotcBatched]
-myResult = "always-c-ptr"
-
-[hipblasZdotcStridedBatched]
-myResult = "always-c-ptr"
-
-[hipblasZdotc_64]
-myResult = "scalar-host-or-device"
-
-[hipblasZdotu]
-myResult = ["scalar-host-or-device", "always-c-ptr"]
-
-[hipblasZdotuBatched]
-myResult = "always-c-ptr"
-
-[hipblasZdotuStridedBatched]
-myResult = "always-c-ptr"
-
-[hipblasZdotu_64]
-myResult = "scalar-host-or-device"
-
 [hipblasZdrot]
 c = ["scalar-host-or-device", "always-c-ptr"]
 s = ["scalar-host-or-device", "always-c-ptr"]
@@ -1546,10 +744,6 @@ s = "always-c-ptr"
 c = "always-c-ptr"
 s = "always-c-ptr"
 
-[hipblasZdrot_64]
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
 [hipblasZdscal]
 alpha = "scalar-host-or-device"
 
@@ -1558,405 +752,3 @@ alpha = "scalar-host-or-device"
 
 [hipblasZdscalStridedBatched]
 alpha = "scalar-host-or-device"
-
-[hipblasZgbmv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZgbmvBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZgbmvStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZgeam]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZgeamBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZgeamStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZgels]
-deviceInfo = "scalar-device"
-myInfo = "scalar-host"
-
-[hipblasZgelsBatched]
-deviceInfo = "scalar-device"
-myInfo = "scalar-host"
-
-[hipblasZgelsStridedBatched]
-deviceInfo = "scalar-device"
-myInfo = "scalar-host"
-
-[hipblasZgemm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZgemmBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZgemmStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZgemv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZgemvBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZgemvStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZgeqrf]
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasZgeqrfBatched]
-ipiv = "always-c-ptr"
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasZgeqrfStridedBatched]
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasZgerc]
-alpha = "scalar-host-or-device"
-
-[hipblasZgercBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZgercStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZgeru]
-alpha = "scalar-host-or-device"
-
-[hipblasZgeruBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZgeruStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZgetrf]
-myInfo = "always-c-ptr"
-
-[hipblasZgetrfBatched]
-ipiv = "always-c-ptr"
-myInfo = "always-c-ptr"
-
-[hipblasZgetrfStridedBatched]
-myInfo = "always-c-ptr"
-
-[hipblasZgetriBatched]
-ipiv = "always-c-ptr"
-myInfo = "always-c-ptr"
-
-[hipblasZgetrs]
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasZgetrsBatched]
-ipiv = "always-c-ptr"
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasZgetrsStridedBatched]
-myInfo = ["scalar-host", "always-c-ptr"]
-
-[hipblasZhbmv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZhbmvBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZhbmvStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZhemm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZhemmBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZhemmStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZhemv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZhemvBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZhemvStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZher]
-alpha = "scalar-host-or-device"
-
-[hipblasZher2]
-alpha = "scalar-host-or-device"
-
-[hipblasZher2Batched]
-alpha = "scalar-host-or-device"
-
-[hipblasZher2StridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZher2k]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZher2kBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZher2kStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZherBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZherStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZherk]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZherkBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZherkStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZherkx]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZherkxBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZherkxStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZhpmv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZhpmvBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZhpmvStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZhpr]
-alpha = "scalar-host-or-device"
-
-[hipblasZhpr2]
-alpha = "scalar-host-or-device"
-
-[hipblasZhpr2Batched]
-alpha = "scalar-host-or-device"
-
-[hipblasZhpr2StridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZhprBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZhprStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZrot]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
-
-[hipblasZrotBatched]
-c = "always-c-ptr"
-s = "always-c-ptr"
-
-[hipblasZrotStridedBatched]
-c = "always-c-ptr"
-s = "always-c-ptr"
-
-[hipblasZrot_64]
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[hipblasZrotg]
-a = "scalar-host-or-device"
-b = "scalar-host-or-device"
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[hipblasZrotgStridedBatched]
-a = "1d"
-b = "1d"
-c = "1d"
-s = "1d"
-
-[hipblasZrotg_64]
-a = "scalar-host-or-device"
-b = "scalar-host-or-device"
-c = "scalar-host-or-device"
-s = "scalar-host-or-device"
-
-[hipblasZscal]
-alpha = "scalar-host-or-device"
-
-[hipblasZscalBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZscalStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZspr]
-alpha = "scalar-host-or-device"
-
-[hipblasZsprBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZsprStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZswapBatched]
-
-[hipblasZsymm]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZsymmBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZsymmStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZsymv]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZsymvBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZsymvStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZsyr]
-alpha = "scalar-host-or-device"
-
-[hipblasZsyr2]
-alpha = "scalar-host-or-device"
-
-[hipblasZsyr2Batched]
-alpha = "scalar-host-or-device"
-
-[hipblasZsyr2StridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZsyr2k]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZsyr2kBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZsyr2kStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZsyrBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZsyrStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZsyrk]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZsyrkBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZsyrkStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZsyrkx]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZsyrkxBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZsyrkxStridedBatched]
-alpha = "scalar-host-or-device"
-beta = "scalar-host-or-device"
-
-[hipblasZtbmvBatched]
-
-[hipblasZtbsv]
-
-[hipblasZtbsvStridedBatched]
-
-[hipblasZtpmvBatched]
-
-[hipblasZtpsv]
-
-[hipblasZtpsvStridedBatched]
-
-[hipblasZtrmm]
-alpha = "scalar-host-or-device"
-
-[hipblasZtrmmBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZtrmmStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZtrmvBatched]
-
-[hipblasZtrsm]
-alpha = "scalar-host-or-device"
-
-[hipblasZtrsmBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZtrsmStridedBatched]
-alpha = "scalar-host-or-device"
-
-[hipblasZtrsvBatched]
-
-[hipblasZtrtri]
-
-[hipblasZtrtriStridedBatched]

@@ -59,7 +59,9 @@ function gen_files(output_dir::String, cfg::Dict, funcs::Vector{FuncInfo},
   own_consts = Set{String}(nm for e in enums for (nm, _) in e.constants)
   for (nm, _) in macros; push!(own_consts, nm); end
 
-  meta = LibMeta(; dims = md.dims, no_arrays = md.no_arrays, scalar_ptrs, ptrmode,
+  meta = LibMeta(; dims = md.dims,
+                 no_arrays_by = Dict(fn => fn in md.no_arrays for fn in keys(md.tables) if fn != "*"),
+                 scalar_ptrs, ptrmode,
                  cptr_args = md.cptr,
                  # `device` scalars are also scalar_ptrs (so stay type(c_ptr)); this
                  # only withholds their _typed form.
