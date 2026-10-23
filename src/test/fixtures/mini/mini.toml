@@ -1,0 +1,11 @@
+# Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+#
+# Metadata of the mini fixture. Every function with a data buffer gets array
+# forms; mini_dscal's info is a scalar output: type(c_ptr) in the bind(C)
+# specific, its Fortran type in mini_dscal_typed.
+
+format = 1
+
+[mini_dscal]
+info = "scalar-host"

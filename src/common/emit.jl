@@ -174,7 +174,7 @@ raw_func(f::FuncInfo, meta::LibMeta) =
                    for a in f.args])
 
 # The generic X: its bind(C) specific `X_` plus the module procedures that apply:
-#   X_rank_N / X_full_rank / X_assumed_rank  buffers as Fortran arrays (.native)
+#   X_rank_N / X_full_rank / X_assumed_rank  buffers as Fortran arrays
 #   X_typed   the .argkinds scalars by their Fortran type
 #   X_devptr  the pointer-mode scalars as pointers, the host-only ones typed
 #   X_opt     the nullable arguments as OPTIONAL dummies
@@ -218,10 +218,24 @@ function emit_wrapper_uses(io)
   println(io, "      implicit none")
 end
 
-# A buffer immediately followed by a leading dimension (lda/ldb/...) is a 2-D
-# matrix in the _full_rank overload; any other buffer is 1-D.
-arg_natural_rank(args::Vector{ArgInfo}, idx::Int) =
-  (idx < length(args) && startswith(lowercase(args[idx + 1].name), "ld")) ? 2 : 1
+# A buffer's rank in the _full_rank form: the metadata's 1d/2d/3d when it imposes
+# one; otherwise 1, plus 1 when a leading dimension (lda, ldb, ...) follows it, plus 1
+# when a batch stride (stride_A, stridex, ...) follows that or its increment: the
+# matrices and vectors of a strided-batched routine are 3-D and 2-D.
+function arg_natural_rank(f::FuncInfo, meta::LibMeta, idx::Int)
+  args = f.args
+  d = get(imposed_dims(f, meta), args[idx].name, 0)
+  d > 0 && return d
+  starts(j, p) = j <= length(args) && startswith(lowercase(args[j].name), p)
+  r, j = 1, idx + 1
+  if starts(j, "ld")
+    r += 1; j += 1
+  elseif starts(j, "inc")
+    j += 1
+  end
+  starts(j, "stride") && (r += 1)
+  return r
+end
 
 # Typed pointers kept as an opaque c_ptr in the array overloads instead of becoming
 # a Fortran array (per function, from <lib>.cptrargs).
@@ -235,10 +249,10 @@ is_cptr_passthrough(f::FuncInfo, a::ArgInfo, meta::LibMeta) =
 devonly_args(f::FuncInfo, meta::LibMeta) =
   meta_get(meta.devonly, f.name, EMPTY_STRSET)
 
-# Without a 2-D buffer, _full_rank would duplicate _rank_1 (ambiguous generic).
+# Without a buffer above rank 1, _full_rank would duplicate _rank_1 (ambiguous generic).
 has_matrix_buffer(f::FuncInfo, meta::LibMeta) =
   any(i -> is_buffer(f.args[i]) && !is_cptr_passthrough(f, f.args[i], meta) &&
-           arg_natural_rank(f.args, i) == 2, eachindex(f.args))
+           arg_natural_rank(f, meta, i) >= 2, eachindex(f.args))
 emits_fullrank(f::FuncInfo, meta::LibMeta) = wants_fullrank(f, meta) && has_matrix_buffer(f, meta)
 
 # One module procedure of the generic:
@@ -294,7 +308,7 @@ function emit_rank_wrapper(io, f::FuncInfo, meta::LibMeta, rank::Int = 0;
       if assumed
         println(io, "      $(a.ftype),target,dimension(..) :: $(a.name)")
       else
-        nd = natural ? arg_natural_rank(f.args, i) : ndims
+        nd = natural ? arg_natural_rank(f, meta, i) : ndims
         dimattr = nd == 0 ? "" : ",dimension(" * join(fill(":", nd), ",") * ")"
         println(io, "      $(a.ftype),target$(dimattr) :: $(a.name)")
       end

@@ -160,7 +160,7 @@ the checkout, and compile it with `bash check_mods.sh`.
    The others pass `argshook=` to add include directories or force-included headers (see `src/hipfft/generator.jl`).
 3. Add `"<lib>"` to `LIBS` in `src/common/header_sources.jl`
    (and to `proj_of`, `repo_of` and `lib_include` there if its header directory is not `<lib>/` or it ships in rocm-systems).
-4. Run `./gen.sh && bash check_mods.sh`, then add metadata files in `src/<lib>/metadata/` as needed (see [Fixing a binding](#fixing-a-binding)).
+4. Run `./gen.sh && bash check_mods.sh`, then add `src/<lib>/metadata/<lib>.toml` as needed (see [Fixing a binding](#fixing-a-binding)).
 
 If the generator finds far fewer functions than expected, check the `prefix` spelling and the header it parses.
 
@@ -168,7 +168,7 @@ If the generator finds far fewer functions than expected, check the `prefix` spe
 
 | Key | Default | Effect |
 |---|---|---|
-| `[general] name` | required | the library and module name, and the metadata file prefix |
+| `[general] name` | required | the library and module name, and the metadata file name |
 | `[library] prefix` | required | only functions whose name starts with it are bound |
 | `[library] opaque_handles` | required (may be `[]`) | struct tags never emitted as derived types (handles) |
 | `[library] own_headers` | `[name]` | header-path markers of the files whose enums, structs and macros are this library's |
@@ -177,7 +177,7 @@ If the generator finds far fewer functions than expected, check the `prefix` spe
 | `[library] string_args` | `false` | `const char*` inputs also take a Fortran string in the `_typed` form |
 | `[library] alias_function_macros` | `false` | bind the documented name of a forwarding macro to its ABI symbol (ROCTx: `roctxMark` to `roctxMarkA`) |
 | `[library] enum_rename` | none | `["FROM_", "TO_"]`: respell the module's enumerators (hipSOLVER: `HIPBLAS_` to `HIPSOLVER_`) |
-| `[library] metadata_dir` | `src/<lib>/metadata/` | the metadata files' directory (`generate_all.jl` passes a checkout's) |
+| `[library] metadata_dir` | `src/<lib>/metadata/` | the directory of `<lib>.toml`, the metadata (`generate_all.jl` passes a checkout's) |
 | `[headers] subdir`, `file` | `name`, `<subdir>.h` | the one header parsed (see step 1) |
 | `[clang] defines` | `[]` | `-D` definitions for the parse |
 | `[clang] extra_include_dirs` | `[]` | `-I` directories, relative to the include dir; missing ones are skipped |
@@ -188,25 +188,87 @@ If the generator finds far fewer functions than expected, check the `prefix` spe
 ## Fixing a binding
 
 The generated Fortran is never edited by hand.
-What the C headers cannot express is supplied by small metadata files in `src/<lib>/metadata/`,
-one entry per line, keyed by the C function name; then regenerate the library.
+What the C headers cannot express is supplied by one metadata file per module, `src/<lib>/metadata/<lib>.toml`;
+then regenerate the library.
 When a run reads a checkout, the `metadata/` directory next to the library's Fortran module in that checkout
 (`projects/fortran/metadata/` in rocm-systems, `projects/<proj>/fortran/metadata/` in rocm-libraries)
 replaces the generator's copy.
+A missing or empty file means no metadata.
 
-| File | Entry | Effect |
-|---|---|---|
-| `<lib>.argkinds` | `func arg ...` | a pointer argument is a scalar, not a buffer: the `bind(C)` form keeps `type(c_ptr)` and a `_typed` form takes the Fortran variable |
-| `<lib>.native` | `func`, `func <rank>`, `func full` | the routine gets overloads that take Fortran arrays (up to that rank, or a full 2-D matrix) |
-| `<lib>.cptrargs` | `func arg ...` | a buffer stays a plain `type(c_ptr)` in the array overloads |
-| `<lib>.optional` | `func arg ...` | a by-reference argument the C API allows to be NULL is `optional` |
-| `<lib>.arrayargs` | `func arg ...` | a `const T*` to a derived type is an array, `type(T) :: x(*)` |
-| `<lib>.byvalue` | `func arg ...` | the argument is passed by value |
-| `<lib>.funptrargs` | `func arg ...` | the argument is a `type(c_funptr)` |
-| `<lib>.ptrmode`, `<lib>.devonly` | generated | scalars read per the library's pointer mode, and scalars written by the device; refresh with `./refresh_ptrmode.sh` |
+The file holds one table per C function, keyed by its arguments, and a `["*"]` table for every function.
+A key may name several functions with braces, as in a shell: `["hipsolver{S,D,C,Z}gebrd"]`,
+or `["x{,_64}"]` with an empty alternative. A function named by two keys is an error.
+A variant without a table of its own takes its base function's whole table:
+an `_spt` variant that of the same function without `_spt`, an ILP64 `_64` variant that of the 32-bit one.
+A table of its own replaces the base's entirely, and a `_v2`, a new API, inherits nothing.
 
-An ILP64 (`_64`) or `_v2` variant inherits its base function's entry in `.argkinds`, `.native`,
-`.cptrargs`, `.ptrmode` and `.devonly`, so the base name is listed once for all of them.
+```toml
+format = 1
+
+["hipsolver{S,D,C,Z}gebrd"]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+["rocblas_{s,d}rotg_strided_batched"]
+a = "1d"
+```
+
+`./gen.sh --explain <c-function> ...` prints the table that applies to each function and where it comes from
+(the key that names it, the base it inherits from, the `["*"]` entries), from the checkouts' metadata with
+`ROCM_SYSTEMS` / `ROCM_LIBRARIES`:
+
+```text
+$ ./gen.sh --explain rocblas_ddot_64
+rocblas_ddot_64: src/rocblas/metadata/rocblas.toml
+  ["rocblas_{s,d,h,bf}dot"] (inherited from rocblas_ddot)
+    myResult = ["scalar-host-or-device", "always-c-ptr"]
+```
+
+An argument takes one value, or a list of values that answer different questions.
+Each question takes at most one answer; without one, the generator goes by the C declaration.
+
+**What is it?**
+
+| Value | Meaning |
+|---|---|
+| `scalar-host` | a pointer to one value, read or written on the host: a `_typed` form takes the Fortran variable |
+| `scalar-device` | a pointer to one value in device memory (hipSOLVER's `devInfo`): no form takes a host variable |
+| `scalar-host-or-device` | a pointer to one value, on the host or the device as the handle's pointer mode says: `_typed` for the host, `_devptr` for the device |
+| `struct-array` | a pointer to a C struct that is an array, `type(T) :: x(*)`, not one element (intrinsic types: see `scalar-*`) |
+| `function-pointer` | a function pointer declared `void*`: `type(c_funptr), value` |
+
+**How is it passed?**
+
+| Value | Meaning |
+|---|---|
+| `by-value` | by value although its C type is a pointer |
+| `by-reference` | an array of pointers kept by reference, so a caller can pass one pointer variable |
+
+An array of pointers written with an explicit `*` (`T* x[]`, `T* const* x`) is passed by value: the caller passes a `c_ptr` to the array.
+A plain `T**` is an output, and an array of a pointer typedef (`const hipGraphNode_t*`) an array of handles: both stay by reference.
+
+**Its rank in the array forms** (F2008 and F2018 only)
+
+| Value | Meaning |
+|---|---|
+| `1d`, `2d`, `3d` | that rank |
+| `any-rank` | rank 0 to 3, all buffers alike (an FFT's data, whose rank the plan decides) |
+
+Without one, a buffer's rank is 1, plus 1 when a leading dimension (`lda`, ...) follows it,
+plus 1 when a batch stride (`stride_A`, `stridex`, ...) follows that or its increment:
+`gemv`'s `A` is 2-D, `gemm_strided_batched`'s `A` 3-D and `x` of a strided-batched vector routine 2-D.
+
+**Adjustments**
+
+| Value | Meaning |
+|---|---|
+| `nullable` | the C API accepts NULL: `optional` in the forms that take Fortran variables |
+| `always-c-ptr` | stays `type(c_ptr)` in the array forms too (a workspace, an output in device pointer mode) |
+
+Every function with a data buffer gets array forms: `_rank_0` and `_rank_1` (each buffer a scalar, or a vector),
+`_full_rank` (each buffer at its rank above) in F2008, and `_assumed_rank` in F2018.
+`fortran-arrays = false` in a function's table withholds them.
+`format` is the version of this schema, not of the generator: it changes only when the meaning of a file does.
 
 ## Checks
 

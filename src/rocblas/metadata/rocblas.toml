@@ -1,0 +1,582 @@
+# Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+#
+# What the rocblas C headers cannot express. One table per C function, and
+# `["*"]` for every function; a key with braces names several. A _64 or _spt
+# variant without a table takes its base's. See "Fixing a binding" in the
+# generator README; `gen.sh --explain <function>` shows what applies.
+
+format = 1
+
+[rocblas_axpy_batched_ex]
+alpha = "scalar-host-or-device"
+
+[rocblas_axpy_ex]
+alpha = "scalar-host-or-device"
+
+[rocblas_axpy_strided_batched_ex]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,h,bf}dot"]
+result = ["scalar-host-or-device", "always-c-ptr"]
+
+["rocblas_{s,d,h,bf}dot_batched"]
+result = "always-c-ptr"
+
+["rocblas_{s,d,h,bf}dot_strided_batched"]
+result = "always-c-ptr"
+
+["rocblas_{s,d,c,z,h}axpy"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z,h}axpy_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z,h}axpy_strided_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}dotc"]
+result = ["scalar-host-or-device", "always-c-ptr"]
+
+["rocblas_{c,z}dotc_batched"]
+result = "always-c-ptr"
+
+["rocblas_{c,z}dotc_strided_batched"]
+result = "always-c-ptr"
+
+["rocblas_{c,z}dotu"]
+result = ["scalar-host-or-device", "always-c-ptr"]
+
+["rocblas_{c,z}dotu_batched"]
+result = "always-c-ptr"
+
+["rocblas_{c,z}dotu_strided_batched"]
+result = "always-c-ptr"
+
+["rocblas_{s,d,c,z}gbmv"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}gbmv_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}gbmv_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}geam"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}geam_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}geam_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z,h}gemm"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z,h}gemm_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z,h}gemm_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}gemmt"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}gemmt_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}gemmt_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}gemv"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z,hsh,hss,tss,tst}gemv_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z,hsh,hss,tss,tst}gemv_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{c,z}gerc"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}gerc_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}gerc_strided_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}geru"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}geru_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}geru_strided_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{ch,ds,ss,zh}bmv"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{ch,ds,ss,zh}bmv_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{ch,ds,ss,zh}bmv_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{c,z}hemm"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{c,z}hemm_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{c,z}hemm_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{c,z}hemv"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{c,z}hemv_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{c,z}hemv_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{c,z}her"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}her2"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}her2_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}her2_strided_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}her2k"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{c,z}her2k_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{c,z}her2k_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{c,z}her_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}her_strided_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{c,z}herk"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{c,z}herk_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{c,z}herk_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{c,z}herkx"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{c,z}herkx_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{c,z}herkx_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{ch,ds,ss,zh}pmv"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{ch,ds,ss,zh}pmv_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{ch,ds,ss,zh}pmv_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{ch,cs,ds,ss,zh,zs}pr"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{ch,ds,ss,zh}pr2"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{ch,ds,ss,zh}pr2_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{ch,ds,ss,zh}pr2_strided_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{ch,cs,ds,ss,zh,zs}pr_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{ch,cs,ds,ss,zh,zs}pr_strided_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z,cs,zd}rot"]
+c = ["scalar-host-or-device", "always-c-ptr"]
+s = ["scalar-host-or-device", "always-c-ptr"]
+
+["rocblas_{s,d,c,z,cs,zd}rot_batched"]
+c = ["scalar-host-or-device", "always-c-ptr"]
+s = ["scalar-host-or-device", "always-c-ptr"]
+
+["rocblas_{s,d,c,z,cs,zd}rot_strided_batched"]
+c = ["scalar-host-or-device", "always-c-ptr"]
+s = ["scalar-host-or-device", "always-c-ptr"]
+
+["rocblas_{s,d,c,z}rotg"]
+a = "scalar-host-or-device"
+b = "scalar-host-or-device"
+c = "scalar-host-or-device"
+s = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}rotg_strided_batched"]
+a = "1d"
+b = "1d"
+c = "1d"
+s = "1d"
+
+["rocblas_{s,d,c,z,cs,zd}scal"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z,cs,zd}scal_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z,cs,zd}scal_strided_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}symm"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}symm_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}symm_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}symv"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}symv_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}symv_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}syr"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}syr2"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}syr2_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}syr2_strided_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}syr2k"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}syr2k_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}syr2k_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}syr_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}syr_strided_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}syrk"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}syrk_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}syrk_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}syrkx"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}syrkx_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}syrkx_strided_batched"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}trmm"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}trmm_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}trmm_strided_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}trsm"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}trsm_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d,c,z}trsm_strided_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d}asum"]
+result = "scalar-host-or-device"
+
+["rocblas_{s,d,dz,sc}asum_batched"]
+results = "always-c-ptr"
+
+["rocblas_{s,d,dz,sc}asum_strided_batched"]
+results = "always-c-ptr"
+
+["rocblas_{s,d}ger"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d}ger_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d}ger_strided_batched"]
+alpha = "scalar-host-or-device"
+
+["rocblas_{s,d}nrm2"]
+result = "scalar-host-or-device"
+
+["rocblas_{s,d,dz,sc}nrm2_batched"]
+results = "always-c-ptr"
+
+["rocblas_{s,d,dz,sc}nrm2_strided_batched"]
+results = "always-c-ptr"
+
+["rocblas_{s,d}rotm"]
+param = "always-c-ptr"
+
+["rocblas_{s,d}rotm_batched"]
+param = "always-c-ptr"
+
+["rocblas_{s,d}rotm_strided_batched"]
+param = "always-c-ptr"
+
+["rocblas_{s,d}rotmg"]
+d1 = "scalar-host-or-device"
+d2 = "scalar-host-or-device"
+x1 = "scalar-host-or-device"
+y1 = "scalar-host-or-device"
+
+["rocblas_{s,d}rotmg_strided_batched"]
+d1 = "1d"
+d2 = "1d"
+x1 = "1d"
+y1 = "1d"
+
+["rocblas_{dz,sc}asum"]
+result = ["scalar-host-or-device", "always-c-ptr"]
+
+["rocblas_{dz,sc}nrm2"]
+result = ["scalar-host-or-device", "always-c-ptr"]
+
+[rocblas_geam_ex]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+[rocblas_gemm_batched_ex]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+[rocblas_gemm_ex]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+[rocblas_gemm_strided_batched_ex]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+[rocblas_get_atomics_mode]
+atomics_mode = "scalar-host"
+
+[rocblas_get_batch_alpha_stride]
+alpha_stride = "scalar-host"
+
+[rocblas_get_batch_beta_stride]
+beta_stride = "scalar-host"
+
+[rocblas_get_commit_hash_string_size]
+len = "scalar-host"
+
+[rocblas_get_device_memory_size]
+size = "scalar-host"
+
+[rocblas_get_math_mode]
+math_mode = "scalar-host"
+
+[rocblas_get_performance_metric]
+metric = "scalar-host"
+
+[rocblas_get_pointer_mode]
+pointer_mode = "scalar-host"
+
+[rocblas_get_version_string_size]
+len = "scalar-host"
+
+[rocblas_herk_ex]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+[rocblas_icamax]
+result = ["scalar-host-or-device", "always-c-ptr"]
+
+[rocblas_icamax_batched]
+result = "always-c-ptr"
+
+[rocblas_icamax_strided_batched]
+result = "always-c-ptr"
+
+[rocblas_icamin]
+result = ["scalar-host-or-device", "always-c-ptr"]
+
+[rocblas_icamin_batched]
+result = "always-c-ptr"
+
+[rocblas_icamin_strided_batched]
+result = "always-c-ptr"
+
+[rocblas_idamax]
+result = "scalar-host-or-device"
+
+[rocblas_idamax_batched]
+result = "always-c-ptr"
+
+[rocblas_idamax_strided_batched]
+result = "always-c-ptr"
+
+[rocblas_idamin]
+result = "scalar-host-or-device"
+
+[rocblas_idamin_batched]
+result = "always-c-ptr"
+
+[rocblas_idamin_strided_batched]
+result = "always-c-ptr"
+
+[rocblas_isamax]
+result = "scalar-host-or-device"
+
+[rocblas_isamax_batched]
+result = "always-c-ptr"
+
+[rocblas_isamax_strided_batched]
+result = "always-c-ptr"
+
+[rocblas_isamin]
+result = "scalar-host-or-device"
+
+[rocblas_isamin_batched]
+result = "always-c-ptr"
+
+[rocblas_isamin_strided_batched]
+result = "always-c-ptr"
+
+[rocblas_izamax]
+result = ["scalar-host-or-device", "always-c-ptr"]
+
+[rocblas_izamax_batched]
+result = "always-c-ptr"
+
+[rocblas_izamax_strided_batched]
+result = "always-c-ptr"
+
+[rocblas_izamin]
+result = ["scalar-host-or-device", "always-c-ptr"]
+
+[rocblas_izamin_batched]
+result = "always-c-ptr"
+
+[rocblas_izamin_strided_batched]
+result = "always-c-ptr"
+
+[rocblas_scal_batched_ex]
+alpha = "scalar-host-or-device"
+
+[rocblas_scal_ex]
+alpha = "scalar-host-or-device"
+
+[rocblas_scal_strided_batched_ex]
+alpha = "scalar-host-or-device"
+
+[rocblas_set_solution_fitness_query]
+fitness = "scalar-host"
+
+[rocblas_stop_device_memory_size_query]
+size = "scalar-host"
+
+[rocblas_syrk_ex]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
+[rocblas_trsm_batched_ex]
+alpha = "scalar-host-or-device"
+
+[rocblas_trsm_ex]
+alpha = "scalar-host-or-device"
+
+[rocblas_trsm_strided_batched_ex]
+alpha = "scalar-host-or-device"

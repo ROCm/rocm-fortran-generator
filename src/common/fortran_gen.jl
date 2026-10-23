@@ -28,7 +28,7 @@
 # Files, in dependency order:
 #   ir.jl             intermediate representation (ArgInfo, FuncInfo, EnumInfo, ...)
 #   settings.jl       generation settings from the environment, output constants
-#   metadata.jl       LibMeta, per-library metadata loaders (.argkinds, ...)
+#   metadata.jl       LibMeta, the per-library metadata loader (metadata/<lib>.toml)
 #   config.jl         collectors filled by the Clang frontend, small IR helpers
 #   format.jl         Fortran line formatting (continuations, import lists)
 #   type_mapping.jl   C -> Fortran type mapping
@@ -40,6 +40,7 @@
 #   clang_args.jl     header discovery, Clang arguments, run_library_generator
 
 using Clang
+using TOML
 using Clang.Generators
 
 include(joinpath(@__DIR__, "ir.jl"))

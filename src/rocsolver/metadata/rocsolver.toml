@@ -1,0 +1,464 @@
+# Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+#
+# What the rocsolver C headers cannot express. One table per C function, and
+# `["*"]` for every function; a key with braces names several. A _64 or _spt
+# variant without a table takes its base's. See "Fixing a binding" in the
+# generator README; `gen.sh --explain <function>` shows what applies.
+
+format = 1
+
+["rocsolver_{s,d,c,z}bdsqr"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}geblttrf_npvt"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}geblttrf_npvt_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}geblttrf_npvt_interleaved_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}geblttrf_npvt_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gels"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gels_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gels_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gesdd"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gesdd_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gesdd_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gesv"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gesv_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gesv_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gesvd"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gesvd_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gesvd_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gesvdj"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gesvdj_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gesvdj_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gesvdx"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gesvdx_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}gesvdx_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getf2"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getf2_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getf2_npvt"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getf2_npvt_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getf2_npvt_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getf2_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getrf"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getrf_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getrf_npvt"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getrf_npvt_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getrf_npvt_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getrf_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getri"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getri_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getri_npvt"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getri_npvt_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getri_npvt_outofplace"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getri_npvt_outofplace_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getri_npvt_outofplace_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getri_npvt_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getri_outofplace"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getri_outofplace_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getri_outofplace_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}getri_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heev"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heev_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heev_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heevd"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heevd_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heevd_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heevdj"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heevdj_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heevdj_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heevdx"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heevdx_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heevdx_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heevj"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heevj_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heevj_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heevx"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heevx_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}heevx_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}hegv"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}hegv_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}hegv_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}hegvd"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}hegvd_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}hegvd_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}hegvdj"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}hegvdj_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}hegvdj_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}hegvdx_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}hegvdx_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}hegvj"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}hegvj_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}hegvj_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}hegvx"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}hegvx_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{c,z}hegvx_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}larf"]
+alpha = "scalar-device"
+
+["rocsolver_{s,d,c,z}larfg"]
+alpha = "scalar-device"
+tau = "scalar-device"
+
+["rocsolver_{s,d,c,z}lasyf"]
+kb = "always-c-ptr"
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}posv"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}posv_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}posv_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}potf2"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}potf2_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}potf2_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}potrf"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}potrf_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}potrf_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}potri"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}potri_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}potri_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}stedc"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}stein"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}steqr"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}sytf2"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}sytf2_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}sytf2_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}sytrf"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}sytrf_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}sytrf_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}trtri"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}trtri_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d,c,z}trtri_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}bdsvdx"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}stebz"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sterf"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syev"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syev_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syev_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syevd"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syevd_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syevd_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syevdj"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syevdj_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syevdj_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syevdx"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syevdx_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syevdx_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syevj"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syevj_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syevj_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syevx"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syevx_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}syevx_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygv"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygv_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygv_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygvd"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygvd_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygvd_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygvdj"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygvdj_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygvdj_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygvdx"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygvdx_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygvdx_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygvj"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygvj_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygvj_strided_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygvx"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygvx_batched"]
+info = "always-c-ptr"
+
+["rocsolver_{s,d}sygvx_strided_batched"]
+info = "always-c-ptr"
+
+[rocsolver_get_alg_mode]
+mode = "scalar-host"
+
+[rocsolver_get_rfinfo_mode]
+mode = "scalar-host"
+
+[rocsolver_get_version_string_size]
+len = "scalar-host"
