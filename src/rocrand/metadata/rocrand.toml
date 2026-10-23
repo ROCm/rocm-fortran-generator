@@ -1,0 +1,21 @@
+# Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+#
+# What the rocrand C headers cannot express. One section per C function
+# (`_64` and `_v2` variants inherit their base function's section), and
+# `["*"]` for every function. See "Fixing a binding" in the generator README.
+
+format = 1
+
+[rocrand_generate]
+
+[rocrand_generate_log_normal_double]
+
+[rocrand_generate_normal]
+
+[rocrand_generate_poisson]
+
+[rocrand_generate_uniform_double]
+
+[rocrand_get_version]
+version = "scalar-host"

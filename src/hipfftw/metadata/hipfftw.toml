@@ -1,0 +1,60 @@
+# Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+#
+# What the hipfftw C headers cannot express. One section per C function
+# (`_64` and `_v2` variants inherit their base function's section), and
+# `["*"]` for every function. See "Fixing a binding" in the generator README.
+
+format = 1
+
+# struct-array:
+#   Pointers to an emitted derived type that are arrays, declared `type(T) :: x(*)`:
+#   the guru interface's dims (length rank) and howmany_dims (length howmany_rank).
+
+[fftw_plan_guru64_dft]
+dims = "struct-array"
+howmany_dims = "struct-array"
+
+[fftw_plan_guru64_dft_c2r]
+dims = "struct-array"
+howmany_dims = "struct-array"
+
+[fftw_plan_guru64_dft_r2c]
+dims = "struct-array"
+howmany_dims = "struct-array"
+
+[fftw_plan_guru_dft]
+dims = "struct-array"
+howmany_dims = "struct-array"
+
+[fftw_plan_guru_dft_c2r]
+dims = "struct-array"
+howmany_dims = "struct-array"
+
+[fftw_plan_guru_dft_r2c]
+dims = "struct-array"
+howmany_dims = "struct-array"
+
+[fftwf_plan_guru64_dft]
+dims = "struct-array"
+howmany_dims = "struct-array"
+
+[fftwf_plan_guru64_dft_c2r]
+dims = "struct-array"
+howmany_dims = "struct-array"
+
+[fftwf_plan_guru64_dft_r2c]
+dims = "struct-array"
+howmany_dims = "struct-array"
+
+[fftwf_plan_guru_dft]
+dims = "struct-array"
+howmany_dims = "struct-array"
+
+[fftwf_plan_guru_dft_c2r]
+dims = "struct-array"
+howmany_dims = "struct-array"
+
+[fftwf_plan_guru_dft_r2c]
+dims = "struct-array"
+howmany_dims = "struct-array"

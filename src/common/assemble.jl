@@ -47,23 +47,23 @@ function gen_files(output_dir::String, cfg::Dict, funcs::Vector{FuncInfo},
   # generate_all.jl passes the checkout's metadata dir when it has one.
   libdir = get(cfg["library"], "metadata_dir",
                get(ENV, "ROCM_FORTRAN_METADATA_DIR", joinpath(GEN_ROOT, libname, "metadata")))
-  @info "  metadata: $(libdir)"
-  check_metadata_names(funcs, libdir, libname)
-  funcs, scalar_ptrs, ptrmode = apply_argkinds(funcs, joinpath(libdir, "$(libname).argkinds"))
+  md = load_metadata(joinpath(libdir, "$(libname).toml"))
+  @info "  metadata: $(md.path)$(isfile(md.path) ? "" : " (none)")"
+  check_metadata_names(funcs, md)
+  funcs, scalar_ptrs, ptrmode = apply_argkinds(funcs, md)
   funcs = revert_unknown_structs(funcs, structs)
   # After revert_unknown_structs, so the overrides have the last word.
-  funcs = apply_arg_overrides(funcs, libdir, libname)
+  funcs = apply_arg_overrides(funcs, md)
   macros = drop_clashing_macros(macros, funcs)
 
   own_consts = Set{String}(nm for e in enums for (nm, _) in e.constants)
   for (nm, _) in macros; push!(own_consts, nm); end
 
-  native, fullrank = load_native_funcs(joinpath(libdir, "$(libname).native"))
-  meta = LibMeta(; native, fullrank, scalar_ptrs, ptrmode,
-                 cptr_args = load_argkinds(joinpath(libdir, "$(libname).cptrargs")),
-                 # .devonly args are also in .argkinds (so stay type(c_ptr)); this
+  meta = LibMeta(; dims = md.dims, no_arrays = md.no_arrays, scalar_ptrs, ptrmode,
+                 cptr_args = md.cptr,
+                 # `device` scalars are also scalar_ptrs (so stay type(c_ptr)); this
                  # only withholds their _typed form.
-                 devonly = load_argkinds(joinpath(libdir, "$(libname).devonly")),
+                 devonly = md.devonly,
                  string_args = get(cfg["library"], "string_args", false),
                  own_consts, sibling_enum_mod,
                  bind_names = copy(BIND_NAMES[]), extra_procs)

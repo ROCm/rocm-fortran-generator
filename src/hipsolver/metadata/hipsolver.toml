@@ -1,0 +1,1736 @@
+# Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+#
+# What the hipsolver C headers cannot express. One section per C function
+# (`_64` and `_v2` variants inherit their base function's section), and
+# `["*"]` for every function. See "Fixing a binding" in the generator README.
+
+format = 1
+
+[hipsolverCCgels]
+devInfo = "scalar-device"
+niters = "scalar-host"
+
+[hipsolverCCgels_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCCgesv]
+work = "always-c-ptr"
+niters = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverCCgesv_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCgebrd]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCgebrd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCgelsBatched]
+hInfo = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverCgelsBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCgeqrf]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCgeqrfBatched]
+work = "always-c-ptr"
+hInfo = "scalar-host"
+
+[hipsolverCgeqrfBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCgeqrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCgesvd]
+devInfo = "scalar-device"
+
+[hipsolverCgesvd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCgesvdj]
+devInfo = "scalar-device"
+
+[hipsolverCgesvdjBatched]
+devInfo = "scalar-device"
+
+[hipsolverCgesvdjBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCgesvdj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCgetrf]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCgetrfBatched]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCgetrfBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCgetrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCgetriBatched]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCgetriBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCgetrs]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCgetrsBatched]
+work = "always-c-ptr"
+hInfo = "scalar-host"
+
+[hipsolverCgetrsBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCgetrs_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCheevd]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCheevd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCheevdx]
+nev = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverCheevdx_bufferSize]
+nev = "scalar-host"
+lwork = "scalar-host"
+
+[hipsolverCheevj]
+devInfo = "scalar-device"
+
+[hipsolverCheevjBatched]
+devInfo = "scalar-device"
+
+[hipsolverCheevjBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCheevj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverChegvd]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverChegvd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverChegvdx]
+nev = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverChegvdx_bufferSize]
+nev = "scalar-host"
+lwork = "scalar-host"
+
+[hipsolverChegvj]
+devInfo = "scalar-device"
+
+[hipsolverChegvj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverChetrd]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverChetrd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCpotrf]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCpotrfBatched]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCpotrfBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCpotrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCpotri]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCpotri_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCpotrs]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCpotrsBatched]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCpotrsBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCpotrs_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCsytrf]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCsytrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCungbr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCungbr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCungqr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCungqr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCungtr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCungtr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCunmqr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCunmqr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverCunmtr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverCunmtr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDDgels]
+devInfo = "scalar-device"
+niters = "scalar-host"
+
+[hipsolverDDgels_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDDgesv]
+work = "always-c-ptr"
+niters = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverDDgesv_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDgebrd]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDgebrd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDgelsBatched]
+hInfo = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverDgelsBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDgeqrf]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDgeqrfBatched]
+work = "always-c-ptr"
+hInfo = "scalar-host"
+
+[hipsolverDgeqrfBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDgeqrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDgesvd]
+devInfo = "scalar-device"
+
+[hipsolverDgesvd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDgesvdj]
+devInfo = "scalar-device"
+
+[hipsolverDgesvdjBatched]
+devInfo = "scalar-device"
+
+[hipsolverDgesvdjBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDgesvdj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDgetrf]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDgetrfBatched]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDgetrfBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDgetrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDgetriBatched]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDgetriBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDgetrs]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDgetrsBatched]
+work = "always-c-ptr"
+hInfo = "scalar-host"
+
+[hipsolverDgetrsBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDgetrs_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCCgels]
+devInfo = "scalar-device"
+niters = "scalar-host"
+
+[hipsolverDnCCgels_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCCgesv]
+devInfo = "scalar-device"
+niters = "scalar-host"
+
+[hipsolverDnCCgesv_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCgebrd]
+devInfo = "scalar-device"
+
+[hipsolverDnCgebrd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCgeqrf]
+devInfo = "scalar-device"
+
+[hipsolverDnCgeqrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCgesvd]
+devInfo = "scalar-device"
+
+[hipsolverDnCgesvd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCgesvdaStridedBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnCgesvdaStridedBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCgesvdj]
+devInfo = "scalar-device"
+
+[hipsolverDnCgesvdjBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnCgesvdjBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCgesvdj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCgetrf]
+devInfo = "scalar-device"
+
+[hipsolverDnCgetrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCgetrs]
+devInfo = "scalar-device"
+
+[hipsolverDnCheevd]
+devInfo = "scalar-device"
+
+[hipsolverDnCheevd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCheevdx]
+nev = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverDnCheevdx_bufferSize]
+nev = "scalar-host"
+lwork = "scalar-host"
+
+[hipsolverDnCheevj]
+devInfo = "scalar-device"
+
+[hipsolverDnCheevjBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnCheevjBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCheevj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnChegvd]
+devInfo = "scalar-device"
+
+[hipsolverDnChegvd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnChegvdx]
+nev = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverDnChegvdx_bufferSize]
+nev = "scalar-host"
+lwork = "scalar-host"
+
+[hipsolverDnChegvj]
+devInfo = "scalar-device"
+
+[hipsolverDnChegvj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnChetrd]
+devInfo = "scalar-device"
+
+[hipsolverDnChetrd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCpotrf]
+devInfo = "scalar-device"
+
+[hipsolverDnCpotrfBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnCpotrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCpotri]
+devInfo = "scalar-device"
+
+[hipsolverDnCpotri_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCpotrs]
+devInfo = "scalar-device"
+
+[hipsolverDnCpotrsBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnCsytrf]
+devInfo = "scalar-device"
+
+[hipsolverDnCsytrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCungbr]
+devInfo = "scalar-device"
+
+[hipsolverDnCungbr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCungqr]
+devInfo = "scalar-device"
+
+[hipsolverDnCungqr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCungtr]
+devInfo = "scalar-device"
+
+[hipsolverDnCungtr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCunmqr]
+devInfo = "scalar-device"
+
+[hipsolverDnCunmqr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnCunmtr]
+devInfo = "scalar-device"
+
+[hipsolverDnCunmtr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDDgels]
+devInfo = "scalar-device"
+niters = "scalar-host"
+
+[hipsolverDnDDgels_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDDgesv]
+devInfo = "scalar-device"
+niters = "scalar-host"
+
+[hipsolverDnDDgesv_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDgebrd]
+devInfo = "scalar-device"
+
+[hipsolverDnDgebrd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDgeqrf]
+devInfo = "scalar-device"
+
+[hipsolverDnDgeqrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDgesvd]
+devInfo = "scalar-device"
+
+[hipsolverDnDgesvd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDgesvdaStridedBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnDgesvdaStridedBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDgesvdj]
+devInfo = "scalar-device"
+
+[hipsolverDnDgesvdjBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnDgesvdjBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDgesvdj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDgetrf]
+devInfo = "scalar-device"
+
+[hipsolverDnDgetrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDgetrs]
+devInfo = "scalar-device"
+
+[hipsolverDnDorgbr]
+devInfo = "scalar-device"
+
+[hipsolverDnDorgbr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDorgqr]
+devInfo = "scalar-device"
+
+[hipsolverDnDorgqr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDorgtr]
+devInfo = "scalar-device"
+
+[hipsolverDnDorgtr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDormqr]
+devInfo = "scalar-device"
+
+[hipsolverDnDormqr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDormtr]
+devInfo = "scalar-device"
+
+[hipsolverDnDormtr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDpotrf]
+devInfo = "scalar-device"
+
+[hipsolverDnDpotrfBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnDpotrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDpotri]
+devInfo = "scalar-device"
+
+[hipsolverDnDpotri_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDpotrs]
+devInfo = "scalar-device"
+
+[hipsolverDnDpotrsBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnDsyevd]
+devInfo = "scalar-device"
+
+[hipsolverDnDsyevd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDsyevdx]
+nev = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverDnDsyevdx_bufferSize]
+nev = "scalar-host"
+lwork = "scalar-host"
+
+[hipsolverDnDsyevj]
+devInfo = "scalar-device"
+
+[hipsolverDnDsyevjBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnDsyevjBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDsyevj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDsygvd]
+devInfo = "scalar-device"
+
+[hipsolverDnDsygvd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDsygvdx]
+nev = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverDnDsygvdx_bufferSize]
+nev = "scalar-host"
+lwork = "scalar-host"
+
+[hipsolverDnDsygvj]
+devInfo = "scalar-device"
+
+[hipsolverDnDsygvj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDsytrd]
+devInfo = "scalar-device"
+
+[hipsolverDnDsytrd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnDsytrf]
+devInfo = "scalar-device"
+
+[hipsolverDnDsytrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnGetDeterministicMode]
+mode = "scalar-host"
+
+[hipsolverDnSSgels]
+devInfo = "scalar-device"
+niters = "scalar-host"
+
+[hipsolverDnSSgels_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSSgesv]
+devInfo = "scalar-device"
+niters = "scalar-host"
+
+[hipsolverDnSSgesv_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSgebrd]
+devInfo = "scalar-device"
+
+[hipsolverDnSgebrd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSgeqrf]
+devInfo = "scalar-device"
+
+[hipsolverDnSgeqrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSgesvd]
+devInfo = "scalar-device"
+
+[hipsolverDnSgesvd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSgesvdaStridedBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnSgesvdaStridedBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSgesvdj]
+devInfo = "scalar-device"
+
+[hipsolverDnSgesvdjBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnSgesvdjBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSgesvdj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSgetrf]
+devInfo = "scalar-device"
+
+[hipsolverDnSgetrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSgetrs]
+devInfo = "scalar-device"
+
+[hipsolverDnSorgbr]
+devInfo = "scalar-device"
+
+[hipsolverDnSorgbr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSorgqr]
+devInfo = "scalar-device"
+
+[hipsolverDnSorgqr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSorgtr]
+devInfo = "scalar-device"
+
+[hipsolverDnSorgtr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSormqr]
+devInfo = "scalar-device"
+
+[hipsolverDnSormqr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSormtr]
+devInfo = "scalar-device"
+
+[hipsolverDnSormtr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSpotrf]
+devInfo = "scalar-device"
+
+[hipsolverDnSpotrfBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnSpotrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSpotri]
+devInfo = "scalar-device"
+
+[hipsolverDnSpotri_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSpotrs]
+devInfo = "scalar-device"
+
+[hipsolverDnSpotrsBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnSsyevd]
+devInfo = "scalar-device"
+
+[hipsolverDnSsyevd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSsyevdx]
+nev = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverDnSsyevdx_bufferSize]
+nev = "scalar-host"
+lwork = "scalar-host"
+
+[hipsolverDnSsyevj]
+devInfo = "scalar-device"
+
+[hipsolverDnSsyevjBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnSsyevjBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSsyevj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSsygvd]
+devInfo = "scalar-device"
+
+[hipsolverDnSsygvd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSsygvdx]
+nev = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverDnSsygvdx_bufferSize]
+nev = "scalar-host"
+lwork = "scalar-host"
+
+[hipsolverDnSsygvj]
+devInfo = "scalar-device"
+
+[hipsolverDnSsygvj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSsytrd]
+devInfo = "scalar-device"
+
+[hipsolverDnSsytrd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnSsytrf]
+devInfo = "scalar-device"
+
+[hipsolverDnSsytrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnXgeev]
+devInfo = "scalar-device"
+
+[hipsolverDnXgeev_bufferSize]
+lworkOnDevice = "scalar-host"
+lworkOnHost = "scalar-host"
+
+[hipsolverDnXgeqrf]
+devInfo = "scalar-device"
+
+[hipsolverDnXgeqrf_bufferSize]
+lworkOnDevice = "scalar-host"
+lworkOnHost = "scalar-host"
+
+[hipsolverDnXgesvdjGetResidual]
+residual = "scalar-host"
+
+[hipsolverDnXgesvdjGetSweeps]
+executed_sweeps = "scalar-host"
+
+[hipsolverDnXgetrf]
+lworkOnDevice = "scalar-host"
+lworkOnHost = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverDnXgetrf_bufferSize]
+lworkOnDevice = "scalar-host"
+lworkOnHost = "scalar-host"
+
+[hipsolverDnXgetrs]
+devInfo = "scalar-device"
+
+[hipsolverDnXlarft_bufferSize]
+lworkOnDevice = "scalar-host"
+lworkOnHost = "scalar-host"
+
+[hipsolverDnXpotrf_bufferSize]
+lworkOnDevice = "scalar-host"
+lworkOnHost = "scalar-host"
+
+[hipsolverDnXsyevBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnXsyevBatched_bufferSize]
+lworkOnDevice = "scalar-host"
+lworkOnHost = "scalar-host"
+
+[hipsolverDnXsyevd]
+devInfo = "scalar-device"
+
+[hipsolverDnXsyevd_bufferSize]
+lworkOnDevice = "scalar-host"
+lworkOnHost = "scalar-host"
+
+[hipsolverDnXsyevjGetResidual]
+residual = "scalar-host"
+
+[hipsolverDnXsyevjGetSweeps]
+executed_sweeps = "scalar-host"
+
+[hipsolverDnXsytrs]
+devInfo = "scalar-device"
+
+[hipsolverDnXsytrs_bufferSize]
+lworkOnDevice = "scalar-host"
+lworkOnHost = "scalar-host"
+
+[hipsolverDnXtrtri]
+devInfo = "scalar-device"
+
+[hipsolverDnXtrtri_bufferSize]
+lworkOnDevice = "scalar-host"
+lworkOnHost = "scalar-host"
+
+[hipsolverDnZZgels]
+devInfo = "scalar-device"
+niters = "scalar-host"
+
+[hipsolverDnZZgels_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZZgesv]
+devInfo = "scalar-device"
+niters = "scalar-host"
+
+[hipsolverDnZZgesv_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZgebrd]
+devInfo = "scalar-device"
+
+[hipsolverDnZgebrd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZgeqrf]
+devInfo = "scalar-device"
+
+[hipsolverDnZgeqrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZgesvd]
+devInfo = "scalar-device"
+
+[hipsolverDnZgesvd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZgesvdaStridedBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnZgesvdaStridedBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZgesvdj]
+devInfo = "scalar-device"
+
+[hipsolverDnZgesvdjBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnZgesvdjBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZgesvdj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZgetrf]
+devInfo = "scalar-device"
+
+[hipsolverDnZgetrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZgetrs]
+devInfo = "scalar-device"
+
+[hipsolverDnZheevd]
+devInfo = "scalar-device"
+
+[hipsolverDnZheevd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZheevdx]
+nev = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverDnZheevdx_bufferSize]
+nev = "scalar-host"
+lwork = "scalar-host"
+
+[hipsolverDnZheevj]
+devInfo = "scalar-device"
+
+[hipsolverDnZheevjBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnZheevjBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZheevj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZhegvd]
+devInfo = "scalar-device"
+
+[hipsolverDnZhegvd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZhegvdx]
+nev = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverDnZhegvdx_bufferSize]
+nev = "scalar-host"
+lwork = "scalar-host"
+
+[hipsolverDnZhegvj]
+devInfo = "scalar-device"
+
+[hipsolverDnZhegvj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZhetrd]
+devInfo = "scalar-device"
+
+[hipsolverDnZhetrd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZpotrf]
+devInfo = "scalar-device"
+
+[hipsolverDnZpotrfBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnZpotrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZpotri]
+devInfo = "scalar-device"
+
+[hipsolverDnZpotri_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZpotrs]
+devInfo = "scalar-device"
+
+[hipsolverDnZpotrsBatched]
+devInfo = "scalar-device"
+
+[hipsolverDnZsytrf]
+devInfo = "scalar-device"
+
+[hipsolverDnZsytrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZungbr]
+devInfo = "scalar-device"
+
+[hipsolverDnZungbr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZungqr]
+devInfo = "scalar-device"
+
+[hipsolverDnZungqr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZungtr]
+devInfo = "scalar-device"
+
+[hipsolverDnZungtr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZunmqr]
+devInfo = "scalar-device"
+
+[hipsolverDnZunmqr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDnZunmtr]
+devInfo = "scalar-device"
+
+[hipsolverDnZunmtr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDorgbr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDorgbr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDorgqr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDorgqr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDorgtr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDorgtr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDormqr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDormqr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDormtr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDormtr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDpotrf]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDpotrfBatched]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDpotrfBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDpotrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDpotri]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDpotri_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDpotrs]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDpotrsBatched]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDpotrsBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDpotrs_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDsyevd]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDsyevd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDsyevdx]
+nev = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverDsyevdx_bufferSize]
+nev = "scalar-host"
+lwork = "scalar-host"
+
+[hipsolverDsyevj]
+devInfo = "scalar-device"
+
+[hipsolverDsyevjBatched]
+devInfo = "scalar-device"
+
+[hipsolverDsyevjBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDsyevj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDsygvd]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDsygvd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDsygvdx]
+nev = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverDsygvdx_bufferSize]
+nev = "scalar-host"
+lwork = "scalar-host"
+
+[hipsolverDsygvj]
+devInfo = "scalar-device"
+
+[hipsolverDsygvj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDsytrd]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDsytrd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverDsytrf]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverDsytrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverGetDeterministicMode]
+mode = "scalar-host"
+
+[hipsolverRfAccessBundledFactorsDevice]
+nnzM = "scalar-host"
+
+[hipsolverRfExtractBundledFactorsHost]
+h_nnzM = "scalar-host"
+
+[hipsolverRfExtractSplitFactorsHost]
+h_nnzL = "scalar-host"
+h_nnzU = "scalar-host"
+
+[hipsolverRfGetMatrixFormat]
+myFormat = "scalar-host"
+diag = "scalar-host"
+
+[hipsolverRfGetNumericBoostReport]
+report = "scalar-host"
+
+[hipsolverRfGetNumericProperties]
+zero = "scalar-host"
+boost = "scalar-host"
+
+[hipsolverRfGetResetValuesFastMode]
+fastMode = "scalar-host"
+
+[hipsolverRfGet_Algs]
+fact_alg = "scalar-host"
+solve_alg = "scalar-host"
+
+[hipsolverSSgels]
+devInfo = "scalar-device"
+niters = "scalar-host"
+
+[hipsolverSSgels_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSSgesv]
+work = "always-c-ptr"
+niters = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverSSgesv_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSgebrd]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSgebrd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSgelsBatched]
+hInfo = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverSgelsBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSgeqrf]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSgeqrfBatched]
+work = "always-c-ptr"
+hInfo = "scalar-host"
+
+[hipsolverSgeqrfBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSgeqrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSgesvd]
+devInfo = "scalar-device"
+
+[hipsolverSgesvd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSgesvdj]
+devInfo = "scalar-device"
+
+[hipsolverSgesvdjBatched]
+devInfo = "scalar-device"
+
+[hipsolverSgesvdjBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSgesvdj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSgetrf]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSgetrfBatched]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSgetrfBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSgetrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSgetriBatched]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSgetriBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSgetrs]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSgetrsBatched]
+work = "always-c-ptr"
+hInfo = "scalar-host"
+
+[hipsolverSgetrsBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSgetrs_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSorgbr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSorgbr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSorgqr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSorgqr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSorgtr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSorgtr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSormqr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSormqr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSormtr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSormtr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSpCcsrlsvqr]
+singularity = "scalar-host"
+
+[hipsolverSpDcsrlsvchol]
+singularity = "scalar-host"
+
+[hipsolverSpDcsrlsvcholHost]
+singularity = "scalar-host"
+
+[hipsolverSpDcsrlsvqr]
+singularity = "scalar-host"
+
+[hipsolverSpScsrlsvchol]
+singularity = "scalar-host"
+
+[hipsolverSpScsrlsvcholHost]
+singularity = "scalar-host"
+
+[hipsolverSpScsrlsvqr]
+singularity = "scalar-host"
+
+[hipsolverSpZcsrlsvqr]
+singularity = "scalar-host"
+
+[hipsolverSpotrf]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSpotrfBatched]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSpotrfBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSpotrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSpotri]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSpotri_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSpotrs]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSpotrsBatched]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSpotrsBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSpotrs_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSsyevd]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSsyevd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSsyevdx]
+nev = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverSsyevdx_bufferSize]
+nev = "scalar-host"
+lwork = "scalar-host"
+
+[hipsolverSsyevj]
+devInfo = "scalar-device"
+
+[hipsolverSsyevjBatched]
+devInfo = "scalar-device"
+
+[hipsolverSsyevjBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSsyevj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSsygvd]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSsygvd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSsygvdx]
+nev = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverSsygvdx_bufferSize]
+nev = "scalar-host"
+lwork = "scalar-host"
+
+[hipsolverSsygvj]
+devInfo = "scalar-device"
+
+[hipsolverSsygvj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSsytrd]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSsytrd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverSsytrf]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverSsytrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverXgesvdjGetResidual]
+residual = "scalar-host"
+
+[hipsolverXgesvdjGetSweeps]
+executed_sweeps = "scalar-host"
+
+[hipsolverXsyevjGetResidual]
+residual = "scalar-host"
+
+[hipsolverXsyevjGetSweeps]
+executed_sweeps = "scalar-host"
+
+[hipsolverZZgels]
+devInfo = "scalar-device"
+niters = "scalar-host"
+
+[hipsolverZZgels_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZZgesv]
+work = "always-c-ptr"
+niters = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverZZgesv_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZgebrd]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZgebrd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZgelsBatched]
+hInfo = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverZgelsBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZgeqrf]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZgeqrfBatched]
+work = "always-c-ptr"
+hInfo = "scalar-host"
+
+[hipsolverZgeqrfBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZgeqrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZgesvd]
+devInfo = "scalar-device"
+
+[hipsolverZgesvd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZgesvdj]
+devInfo = "scalar-device"
+
+[hipsolverZgesvdjBatched]
+devInfo = "scalar-device"
+
+[hipsolverZgesvdjBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZgesvdj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZgetrf]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZgetrfBatched]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZgetrfBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZgetrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZgetriBatched]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZgetriBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZgetrs]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZgetrsBatched]
+work = "always-c-ptr"
+hInfo = "scalar-host"
+
+[hipsolverZgetrsBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZgetrs_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZheevd]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZheevd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZheevdx]
+nev = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverZheevdx_bufferSize]
+nev = "scalar-host"
+lwork = "scalar-host"
+
+[hipsolverZheevj]
+devInfo = "scalar-device"
+
+[hipsolverZheevjBatched]
+devInfo = "scalar-device"
+
+[hipsolverZheevjBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZheevj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZhegvd]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZhegvd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZhegvdx]
+nev = "scalar-host"
+devInfo = "scalar-device"
+
+[hipsolverZhegvdx_bufferSize]
+nev = "scalar-host"
+lwork = "scalar-host"
+
+[hipsolverZhegvj]
+devInfo = "scalar-device"
+
+[hipsolverZhegvj_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZhetrd]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZhetrd_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZpotrf]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZpotrfBatched]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZpotrfBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZpotrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZpotri]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZpotri_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZpotrs]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZpotrsBatched]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZpotrsBatched_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZpotrs_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZsytrf]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZsytrf_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZungbr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZungbr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZungqr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZungqr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZungtr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZungtr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZunmqr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZunmqr_bufferSize]
+lwork = "scalar-host"
+
+[hipsolverZunmtr]
+work = "always-c-ptr"
+devInfo = "scalar-device"
+
+[hipsolverZunmtr_bufferSize]
+lwork = "scalar-host"

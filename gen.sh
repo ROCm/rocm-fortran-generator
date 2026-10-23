@@ -53,7 +53,7 @@ note:  <ROCM_SYSTEMS>/projects/fortran/<lib>.F90. It needs a checkout, the fortr
 note:  directory must already exist there, and a library that fails is not copied.
 note:  A run rewrites only the modules it generates: fortran/rocm-systems/fortran/
 note:  (HIP, ROCTx) and fortran/rocm-libraries/<lib>/ (the math libraries).
-note:  A checkout's fortran/metadata/ (rocm-systems: projects/fortran/metadata/;
+note:  A checkout's fortran/metadata/<lib>.toml (rocm-systems: projects/fortran/metadata/;
 note:  rocm-libraries: projects/<proj>/fortran/metadata/), when present, replaces the
 note:  generator's src/<lib>/metadata/ for that library.
 note:  The Julia dependencies are installed on the first run (Pkg.instantiate).

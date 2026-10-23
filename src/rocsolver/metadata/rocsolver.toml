@@ -1,0 +1,1641 @@
+# Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+#
+# What the rocsolver C headers cannot express. One section per C function
+# (`_64` and `_v2` variants inherit their base function's section), and
+# `["*"]` for every function. See "Fixing a binding" in the generator README.
+
+format = 1
+
+[rocsolver_cbdsqr]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgebd2_batched]
+
+[rocsolver_cgeblttrf_npvt]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgeblttrf_npvt_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgeblttrf_npvt_interleaved_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgeblttrf_npvt_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgebrd]
+
+[rocsolver_cgebrd_strided_batched]
+
+[rocsolver_cgehd2_batched]
+
+[rocsolver_cgehrd]
+
+[rocsolver_cgehrd_strided_batched]
+
+[rocsolver_cgelq2_batched]
+
+[rocsolver_cgelqf]
+
+[rocsolver_cgelqf_strided_batched]
+
+[rocsolver_cgels]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgels_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgels_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgeql2_batched]
+
+[rocsolver_cgeqlf]
+
+[rocsolver_cgeqlf_strided_batched]
+
+[rocsolver_cgeqr2_batched]
+
+[rocsolver_cgeqrf]
+
+[rocsolver_cgeqrf_strided_batched]
+
+[rocsolver_cgerq2_batched]
+
+[rocsolver_cgerqf]
+
+[rocsolver_cgerqf_strided_batched]
+
+[rocsolver_cgesdd]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgesdd_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgesdd_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgesv]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgesv_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgesv_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgesvd]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgesvd_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgesvd_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgesvdj]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgesvdj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgesvdj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgesvdx]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgesvdx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgesvdx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetf2]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetf2_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetf2_npvt]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetf2_npvt_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetf2_npvt_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetf2_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetrf]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetrf_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetrf_npvt]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetrf_npvt_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetrf_npvt_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetrf_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetri]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetri_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetri_npvt]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetri_npvt_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetri_npvt_outofplace]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetri_npvt_outofplace_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetri_npvt_outofplace_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetri_npvt_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetri_outofplace]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetri_outofplace_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetri_outofplace_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetri_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cgetrs_batched]
+
+[rocsolver_cheev]
+myInfo = "always-c-ptr"
+
+[rocsolver_cheev_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cheev_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cheevd]
+myInfo = "always-c-ptr"
+
+[rocsolver_cheevd_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cheevd_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cheevdj]
+myInfo = "always-c-ptr"
+
+[rocsolver_cheevdj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cheevdj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cheevdx]
+myInfo = "always-c-ptr"
+
+[rocsolver_cheevdx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cheevdx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cheevj]
+myInfo = "always-c-ptr"
+
+[rocsolver_cheevj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cheevj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cheevx]
+myInfo = "always-c-ptr"
+
+[rocsolver_cheevx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cheevx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_chegs2_batched]
+
+[rocsolver_chegst]
+
+[rocsolver_chegst_strided_batched]
+
+[rocsolver_chegv]
+myInfo = "always-c-ptr"
+
+[rocsolver_chegv_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_chegv_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_chegvd]
+myInfo = "always-c-ptr"
+
+[rocsolver_chegvd_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_chegvd_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_chegvdj]
+myInfo = "always-c-ptr"
+
+[rocsolver_chegvdj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_chegvdj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_chegvdx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_chegvdx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_chegvj]
+myInfo = "always-c-ptr"
+
+[rocsolver_chegvj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_chegvj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_chegvx]
+myInfo = "always-c-ptr"
+
+[rocsolver_chegvx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_chegvx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_chetd2]
+
+[rocsolver_chetd2_strided_batched]
+
+[rocsolver_chetrd_batched]
+
+[rocsolver_clabrd]
+
+[rocsolver_clarf]
+alpha = "scalar-device"
+
+[rocsolver_clarfg]
+alpha = "scalar-device"
+tau = "scalar-device"
+
+[rocsolver_claswp]
+
+[rocsolver_clasyf]
+kb = "always-c-ptr"
+myInfo = "always-c-ptr"
+
+[rocsolver_cposv]
+myInfo = "always-c-ptr"
+
+[rocsolver_cposv_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cposv_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cpotf2]
+myInfo = "always-c-ptr"
+
+[rocsolver_cpotf2_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cpotf2_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cpotrf]
+myInfo = "always-c-ptr"
+
+[rocsolver_cpotrf_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cpotrf_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cpotri]
+myInfo = "always-c-ptr"
+
+[rocsolver_cpotri_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cpotri_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cpotrs_batched]
+
+[rocsolver_cstedc]
+myInfo = "always-c-ptr"
+
+[rocsolver_cstein]
+myInfo = "always-c-ptr"
+
+[rocsolver_csteqr]
+myInfo = "always-c-ptr"
+
+[rocsolver_csytf2]
+myInfo = "always-c-ptr"
+
+[rocsolver_csytf2_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_csytf2_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_csytrf]
+myInfo = "always-c-ptr"
+
+[rocsolver_csytrf_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_csytrf_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ctrtri]
+myInfo = "always-c-ptr"
+
+[rocsolver_ctrtri_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ctrtri_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_cung2r]
+
+[rocsolver_cungl2]
+
+[rocsolver_cungql]
+
+[rocsolver_cungtr]
+
+[rocsolver_cunm2r]
+
+[rocsolver_cunml2]
+
+[rocsolver_cunmql]
+
+[rocsolver_cunmtr]
+
+[rocsolver_dbdsqr]
+myInfo = "always-c-ptr"
+
+[rocsolver_dbdsvdx]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgebd2_batched]
+
+[rocsolver_dgeblttrf_npvt]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgeblttrf_npvt_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgeblttrf_npvt_interleaved_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgeblttrf_npvt_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgebrd]
+
+[rocsolver_dgebrd_strided_batched]
+
+[rocsolver_dgehd2_batched]
+
+[rocsolver_dgehrd]
+
+[rocsolver_dgehrd_strided_batched]
+
+[rocsolver_dgelq2_batched]
+
+[rocsolver_dgelqf]
+
+[rocsolver_dgelqf_strided_batched]
+
+[rocsolver_dgels]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgels_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgels_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgeql2_batched]
+
+[rocsolver_dgeqlf]
+
+[rocsolver_dgeqlf_strided_batched]
+
+[rocsolver_dgeqr2_batched]
+
+[rocsolver_dgeqrf]
+
+[rocsolver_dgeqrf_strided_batched]
+
+[rocsolver_dgerq2_batched]
+
+[rocsolver_dgerqf]
+
+[rocsolver_dgerqf_strided_batched]
+
+[rocsolver_dgesdd]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgesdd_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgesdd_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgesv]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgesv_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgesv_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgesvd]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgesvd_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgesvd_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgesvdj]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgesvdj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgesvdj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgesvdx]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgesvdx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgesvdx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetf2]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetf2_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetf2_npvt]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetf2_npvt_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetf2_npvt_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetf2_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetrf]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetrf_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetrf_npvt]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetrf_npvt_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetrf_npvt_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetrf_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetri]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetri_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetri_npvt]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetri_npvt_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetri_npvt_outofplace]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetri_npvt_outofplace_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetri_npvt_outofplace_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetri_npvt_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetri_outofplace]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetri_outofplace_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetri_outofplace_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetri_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dgetrs_batched]
+
+[rocsolver_dlabrd]
+
+[rocsolver_dlarf]
+alpha = "scalar-device"
+
+[rocsolver_dlarfg]
+alpha = "scalar-device"
+tau = "scalar-device"
+
+[rocsolver_dlaswp]
+
+[rocsolver_dlasyf]
+kb = "always-c-ptr"
+myInfo = "always-c-ptr"
+
+[rocsolver_dorg2l]
+
+[rocsolver_dorgbr]
+
+[rocsolver_dorglq]
+
+[rocsolver_dorgqr]
+
+[rocsolver_dorm2l]
+
+[rocsolver_dormbr]
+
+[rocsolver_dormlq]
+
+[rocsolver_dormqr]
+
+[rocsolver_dposv]
+myInfo = "always-c-ptr"
+
+[rocsolver_dposv_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dposv_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dpotf2]
+myInfo = "always-c-ptr"
+
+[rocsolver_dpotf2_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dpotf2_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dpotrf]
+myInfo = "always-c-ptr"
+
+[rocsolver_dpotrf_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dpotrf_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dpotri]
+myInfo = "always-c-ptr"
+
+[rocsolver_dpotri_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dpotri_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dpotrs_batched]
+
+[rocsolver_dstebz]
+myInfo = "always-c-ptr"
+
+[rocsolver_dstedc]
+myInfo = "always-c-ptr"
+
+[rocsolver_dstein]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsteqr]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsterf]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyev]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyev_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyev_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyevd]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyevd_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyevd_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyevdj]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyevdj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyevdj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyevdx]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyevdx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyevdx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyevj]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyevj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyevj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyevx]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyevx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsyevx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygs2_batched]
+
+[rocsolver_dsygst]
+
+[rocsolver_dsygst_strided_batched]
+
+[rocsolver_dsygv]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygv_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygv_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygvd]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygvd_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygvd_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygvdj]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygvdj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygvdj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygvdx]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygvdx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygvdx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygvj]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygvj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygvj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygvx]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygvx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsygvx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsytd2_batched]
+
+[rocsolver_dsytf2]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsytf2_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsytf2_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsytrd_batched]
+
+[rocsolver_dsytrf]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsytrf_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dsytrf_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dtrtri]
+myInfo = "always-c-ptr"
+
+[rocsolver_dtrtri_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_dtrtri_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_get_alg_mode]
+mode = "scalar-host"
+
+[rocsolver_get_rfinfo_mode]
+mode = "scalar-host"
+
+[rocsolver_get_version_string_size]
+len = "scalar-host"
+
+[rocsolver_sbdsqr]
+myInfo = "always-c-ptr"
+
+[rocsolver_sbdsvdx]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgebd2_batched]
+
+[rocsolver_sgeblttrf_npvt]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgeblttrf_npvt_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgeblttrf_npvt_interleaved_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgeblttrf_npvt_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgebrd]
+
+[rocsolver_sgebrd_strided_batched]
+
+[rocsolver_sgehd2_batched]
+
+[rocsolver_sgehrd]
+
+[rocsolver_sgehrd_strided_batched]
+
+[rocsolver_sgelq2_batched]
+
+[rocsolver_sgelqf]
+
+[rocsolver_sgelqf_strided_batched]
+
+[rocsolver_sgels]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgels_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgels_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgeql2_batched]
+
+[rocsolver_sgeqlf]
+
+[rocsolver_sgeqlf_strided_batched]
+
+[rocsolver_sgeqr2_batched]
+
+[rocsolver_sgeqrf]
+
+[rocsolver_sgeqrf_strided_batched]
+
+[rocsolver_sgerq2_batched]
+
+[rocsolver_sgerqf]
+
+[rocsolver_sgerqf_strided_batched]
+
+[rocsolver_sgesdd]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgesdd_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgesdd_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgesv]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgesv_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgesv_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgesvd]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgesvd_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgesvd_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgesvdj]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgesvdj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgesvdj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgesvdx]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgesvdx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgesvdx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetf2]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetf2_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetf2_npvt]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetf2_npvt_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetf2_npvt_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetf2_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetrf]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetrf_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetrf_npvt]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetrf_npvt_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetrf_npvt_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetrf_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetri]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetri_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetri_npvt]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetri_npvt_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetri_npvt_outofplace]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetri_npvt_outofplace_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetri_npvt_outofplace_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetri_npvt_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetri_outofplace]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetri_outofplace_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetri_outofplace_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetri_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sgetrs_batched]
+
+[rocsolver_slabrd]
+
+[rocsolver_slarf]
+alpha = "scalar-device"
+
+[rocsolver_slarfg]
+alpha = "scalar-device"
+tau = "scalar-device"
+
+[rocsolver_slaswp]
+
+[rocsolver_slasyf]
+kb = "always-c-ptr"
+myInfo = "always-c-ptr"
+
+[rocsolver_sorg2l]
+
+[rocsolver_sorgbr]
+
+[rocsolver_sorglq]
+
+[rocsolver_sorgqr]
+
+[rocsolver_sorm2l]
+
+[rocsolver_sormbr]
+
+[rocsolver_sormlq]
+
+[rocsolver_sormqr]
+
+[rocsolver_sposv]
+myInfo = "always-c-ptr"
+
+[rocsolver_sposv_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_sposv_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_spotf2]
+myInfo = "always-c-ptr"
+
+[rocsolver_spotf2_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_spotf2_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_spotrf]
+myInfo = "always-c-ptr"
+
+[rocsolver_spotrf_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_spotrf_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_spotri]
+myInfo = "always-c-ptr"
+
+[rocsolver_spotri_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_spotri_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_spotrs_batched]
+
+[rocsolver_sstebz]
+myInfo = "always-c-ptr"
+
+[rocsolver_sstedc]
+myInfo = "always-c-ptr"
+
+[rocsolver_sstein]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssteqr]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssterf]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyev]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyev_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyev_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyevd]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyevd_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyevd_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyevdj]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyevdj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyevdj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyevdx]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyevdx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyevdx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyevj]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyevj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyevj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyevx]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyevx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssyevx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygs2_batched]
+
+[rocsolver_ssygst]
+
+[rocsolver_ssygst_strided_batched]
+
+[rocsolver_ssygv]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygv_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygv_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygvd]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygvd_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygvd_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygvdj]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygvdj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygvdj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygvdx]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygvdx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygvdx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygvj]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygvj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygvj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygvx]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygvx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssygvx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssytd2_batched]
+
+[rocsolver_ssytf2]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssytf2_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssytf2_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssytrd_batched]
+
+[rocsolver_ssytrf]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssytrf_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ssytrf_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_strtri]
+myInfo = "always-c-ptr"
+
+[rocsolver_strtri_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_strtri_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zbdsqr]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgebd2_batched]
+
+[rocsolver_zgeblttrf_npvt]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgeblttrf_npvt_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgeblttrf_npvt_interleaved_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgeblttrf_npvt_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgebrd]
+
+[rocsolver_zgebrd_strided_batched]
+
+[rocsolver_zgehd2_batched]
+
+[rocsolver_zgehrd]
+
+[rocsolver_zgehrd_strided_batched]
+
+[rocsolver_zgelq2_batched]
+
+[rocsolver_zgelqf]
+
+[rocsolver_zgelqf_strided_batched]
+
+[rocsolver_zgels]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgels_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgels_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgeql2_batched]
+
+[rocsolver_zgeqlf]
+
+[rocsolver_zgeqlf_strided_batched]
+
+[rocsolver_zgeqr2_batched]
+
+[rocsolver_zgeqrf]
+
+[rocsolver_zgeqrf_strided_batched]
+
+[rocsolver_zgerq2_batched]
+
+[rocsolver_zgerqf]
+
+[rocsolver_zgerqf_strided_batched]
+
+[rocsolver_zgesdd]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgesdd_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgesdd_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgesv]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgesv_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgesv_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgesvd]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgesvd_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgesvd_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgesvdj]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgesvdj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgesvdj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgesvdx]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgesvdx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgesvdx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetf2]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetf2_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetf2_npvt]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetf2_npvt_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetf2_npvt_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetf2_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetrf]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetrf_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetrf_npvt]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetrf_npvt_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetrf_npvt_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetrf_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetri]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetri_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetri_npvt]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetri_npvt_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetri_npvt_outofplace]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetri_npvt_outofplace_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetri_npvt_outofplace_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetri_npvt_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetri_outofplace]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetri_outofplace_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetri_outofplace_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetri_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zgetrs_batched]
+
+[rocsolver_zheev]
+myInfo = "always-c-ptr"
+
+[rocsolver_zheev_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zheev_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zheevd]
+myInfo = "always-c-ptr"
+
+[rocsolver_zheevd_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zheevd_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zheevdj]
+myInfo = "always-c-ptr"
+
+[rocsolver_zheevdj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zheevdj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zheevdx]
+myInfo = "always-c-ptr"
+
+[rocsolver_zheevdx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zheevdx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zheevj]
+myInfo = "always-c-ptr"
+
+[rocsolver_zheevj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zheevj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zheevx]
+myInfo = "always-c-ptr"
+
+[rocsolver_zheevx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zheevx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhegs2_batched]
+
+[rocsolver_zhegst]
+
+[rocsolver_zhegst_strided_batched]
+
+[rocsolver_zhegv]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhegv_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhegv_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhegvd]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhegvd_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhegvd_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhegvdj]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhegvdj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhegvdj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhegvdx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhegvdx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhegvj]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhegvj_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhegvj_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhegvx]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhegvx_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhegvx_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zhetd2]
+
+[rocsolver_zhetd2_strided_batched]
+
+[rocsolver_zhetrd_batched]
+
+[rocsolver_zlabrd]
+
+[rocsolver_zlarf]
+alpha = "scalar-device"
+
+[rocsolver_zlarfg]
+alpha = "scalar-device"
+tau = "scalar-device"
+
+[rocsolver_zlaswp]
+
+[rocsolver_zlasyf]
+kb = "always-c-ptr"
+myInfo = "always-c-ptr"
+
+[rocsolver_zposv]
+myInfo = "always-c-ptr"
+
+[rocsolver_zposv_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zposv_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zpotf2]
+myInfo = "always-c-ptr"
+
+[rocsolver_zpotf2_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zpotf2_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zpotrf]
+myInfo = "always-c-ptr"
+
+[rocsolver_zpotrf_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zpotrf_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zpotri]
+myInfo = "always-c-ptr"
+
+[rocsolver_zpotri_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zpotri_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zpotrs_batched]
+
+[rocsolver_zstedc]
+myInfo = "always-c-ptr"
+
+[rocsolver_zstein]
+myInfo = "always-c-ptr"
+
+[rocsolver_zsteqr]
+myInfo = "always-c-ptr"
+
+[rocsolver_zsytf2]
+myInfo = "always-c-ptr"
+
+[rocsolver_zsytf2_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zsytf2_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zsytrf]
+myInfo = "always-c-ptr"
+
+[rocsolver_zsytrf_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zsytrf_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ztrtri]
+myInfo = "always-c-ptr"
+
+[rocsolver_ztrtri_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_ztrtri_strided_batched]
+myInfo = "always-c-ptr"
+
+[rocsolver_zung2r]
+
+[rocsolver_zungl2]
+
+[rocsolver_zungql]
+
+[rocsolver_zungtr]
+
+[rocsolver_zunm2r]
+
+[rocsolver_zunml2]
+
+[rocsolver_zunmql]
+
+[rocsolver_zunmtr]

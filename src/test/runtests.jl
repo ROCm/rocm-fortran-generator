@@ -198,8 +198,8 @@ overlong_fortran_lines(s::AbstractString) =
 
     @testset "emit_generic interface + module procedures" begin
         io = IOBuffer()
-        # array overloads, as from .native
-        emit_generic(io, richf, LibMeta(native = Dict("hipblasSscal" => 1)))
+        # array overloads: any function with a data buffer gets them
+        emit_generic(io, richf, LibMeta())
         s = String(take!(io))
         @test occursin("interface hipblasSscal", s)
         @test occursin("module procedure", s) && occursin("hipblasSscal_rank_1", s)
@@ -280,7 +280,7 @@ overlong_fortran_lines(s::AbstractString) =
         end
     end
 
-    @testset "matrix wrappers (_full_rank / rank 2 / .cptrargs pass-through)" begin
+    @testset "matrix wrappers (_full_rank / rank 2 / `always-c-ptr` pass-through)" begin
         # Needs a buffer followed by an `ld*` argument for emits_fullrank.
         matf = FuncInfo("zzgemv", "integer(c_int)", false,
             [ArgInfo("handle",   "type(c_ptr)",           ", value", false),
@@ -288,12 +288,22 @@ overlong_fortran_lines(s::AbstractString) =
              ArgInfo("lda",      "integer(c_int)",        ", value", false),
              ArgInfo("x",        "real(c_double)",        "(*)",     false),
              ArgInfo("myResult", "real(c_double)",        "(*)",     false)])
-        meta = LibMeta(native    = Dict("zzgemv" => 1),
-                       fullrank  = Set(["zzgemv"]),
-                       cptr_args = Dict("zzgemv" => Set(["myResult"])))
+        meta = LibMeta(cptr_args = Dict("zzgemv" => Set(["myResult"])))
 
-        @test arg_natural_rank(matf.args, 2) == 2   # A, followed by lda
-        @test arg_natural_rank(matf.args, 4) == 1   # x, a plain vector
+        @test arg_natural_rank(matf, meta, 2) == 2   # A, followed by lda
+        @test arg_natural_rank(matf, meta, 4) == 1   # x, a plain vector
+        # Strided batched: a batch stride adds a dimension, after ld* or inc*.
+        sb = FuncInfo("zzgemv_strided_batched", "integer(c_int)", false,
+            [ArgInfo("A", "real(c_double)", "(*)", false), ArgInfo("lda", "integer(c_int)", ", value", false),
+             ArgInfo("stride_A", "integer(c_int64_t)", ", value", false),
+             ArgInfo("x", "real(c_double)", "(*)", false), ArgInfo("incx", "integer(c_int)", ", value", false),
+             ArgInfo("stridex", "integer(c_int64_t)", ", value", false),
+             ArgInfo("r", "real(c_double)", "(*)", false), ArgInfo("stride_r", "integer(c_int64_t)", ", value", false)])
+        @test [arg_natural_rank(sb, LibMeta(), i) for i in (1, 4, 7)] == [3, 2, 2]
+        # The metadata imposes a rank: rotg_strided_batched's one scalar per batch.
+        let m = LibMeta(dims = Dict("zzgemv_strided_batched" => Dict("r" => 1)))
+            @test arg_natural_rank(sb, m, 7) == 1
+        end
         @test has_matrix_buffer(matf, meta) && emits_fullrank(matf, meta)
 
         io = IOBuffer()
@@ -302,7 +312,7 @@ overlong_fortran_lines(s::AbstractString) =
         @test occursin("function zzgemv_full_rank(handle,A,lda,x,myResult)", s)
         @test occursin("real(c_double),target,dimension(:,:) :: A", s)  # matrix
         @test occursin("real(c_double),target,dimension(:) :: x", s)    # vector
-        # The .cptrargs argument is a scalar OUTPUT pointer: declared
+        # The `opaque` argument is a scalar OUTPUT pointer: declared
         # type(c_ptr) and forwarded unchanged, never arrayified or c_loc'd.
         @test occursin("      type(c_ptr) :: myResult\n", s)
         @test occursin("zzgemv_(handle,c_loc(A),lda,c_loc(x),myResult)", s)
@@ -326,8 +336,7 @@ overlong_fortran_lines(s::AbstractString) =
         # to arrayify: rank_0 and rank_1 would be identical (ambiguous).
         pf = FuncInfo("zzdot", "integer(c_int)", false,
              [ArgInfo("myResult", "real(c_double)", "(*)", false)])
-        pmeta = LibMeta(native = meta.native, fullrank = meta.fullrank,
-                        cptr_args = Dict("zzdot" => Set(["myResult"])))
+        pmeta = LibMeta(cptr_args = Dict("zzdot" => Set(["myResult"])))
         @test !func_has_buffer(pf, pmeta)
     end
 
@@ -558,17 +567,18 @@ overlong_fortran_lines(s::AbstractString) =
         # clang_isFunctionTypeVariadic also reports as variadic.
         @test haskey(F, "skips_start") && isempty(F["skips_start"].args)
         @test haskey(F, "skips_stop")  && isempty(F["skips_stop"].args)
-        @test length(funcs) == 4
+        @test length(funcs) == 5
 
-        # Batched: both spellings of a T** device array of pointers go by value.
+        # Both spellings of an array of pointers go by value, whatever the name.
         b = Dict(a.name => (a.ftype, a.suffix) for a in F["skips_sgemm_batched"].args)
         @test b["A"] == ("type(c_ptr)", ", value")   # T* const A[]
         @test b["B"] == ("type(c_ptr)", ", value")   # T* const*  (trmv/tpmv spelling)
         @test b["C"] == ("real(c_float)", "(*)")     # a plain data buffer is untouched
         @test b["n"] == ("integer(c_int)", ", value")
-        # Outside a *_batched routine they are host-side pointer arrays, by reference.
         p = Dict(a.name => (a.ftype, a.suffix) for a in F["skips_sgemm"].args)
-        @test p["A"] == ("type(c_ptr)", "") && p["B"] == ("type(c_ptr)", "")
+        @test p["A"] == ("type(c_ptr)", ", value") && p["B"] == ("type(c_ptr)", ", value")
+        # A plain T** is an output, by reference.
+        @test only(F["skips_create"].args).suffix == ""
     end
 
     @testset "metadata loaders + IR helpers" begin
@@ -619,7 +629,7 @@ overlong_fortran_lines(s::AbstractString) =
             @test raw_arg(fdev, fdev.args[1], meta).suffix == ", value"
             @test raw_arg(fno,  fno.args[1], meta).ftype   == "real(c_double)"
 
-            # An .argkinds entry makes a generic with a _typed module procedure and
+            # A scalar entry makes a generic with a _typed module procedure and
             # no array wrapper.
             @test wants_typed(fdev, meta)
             @test !wants_typed(fno, meta)
@@ -661,52 +671,60 @@ overlong_fortran_lines(s::AbstractString) =
                 @test occursin("      type(c_funptr), value :: f\n", out)
                 @test occursin("      type(c_ptr), value :: s\n", out)
             end
-            # A device-only scalar (.devonly) keeps the pointer and gets no _typed;
+            # A device-written scalar (`device`) keeps the pointer and gets no _typed;
             # the array overloads get a _devptr twin taking it as a pointer.
             let dmeta = LibMeta(scalar_ptrs = Dict("zzdev"    => Set(["alpha"]),
                                                    "zzdev_64" => Set(["alpha"])),
                                 devonly     = Dict("zzdev" => Set(["alpha"])))
                 @test !wants_typed(fdev, dmeta) && wants_rank_devptr(fdev, dmeta)
-                # An ILP64 variant inherits its base routine's .devonly entry.
+                # An ILP64 variant inherits its base routine's `device` entry.
                 f64 = FuncInfo("zzdev_64", fdev.ret_ftype, fdev.is_void, fdev.args)
                 @test devonly_args(f64, dmeta) == Set(["alpha"])
                 @test !wants_typed(f64, dmeta) && wants_rank_devptr(f64, dmeta)
             end
         end
 
-        # load_argkinds + apply_argkinds: listed scalar pointers revert to by-ref;
+        # load_metadata + apply_argkinds: listed scalar pointers revert to by-ref;
         # _64 / _v2 variants inherit the base function's scalar set
         mktemp() do path, io
-            # A function may span several lines (merged, not overwritten), and C
-            # argument names are normalized through safe_argname, the spelling
+            # C argument names are normalized through safe_argname, the spelling
             # every consumer compares against.
-            write(io, "# comment\nmyfunc alpha beta\n\n" *
-                      "myfunc gamma\n" *
-                      "hipFuncGetAttribute value\n" *
-                      "hipGetSymbolSize mySize\n"); close(io)
-            ak = load_argkinds(path)
-            @test ak["myfunc"] == Set(["alpha", "beta", "gamma"])   # merged, not overwritten
-            @test ak["hipFuncGetAttribute"] == Set(["myValue"])     # C spelling -> emitted name
-            @test ak["hipGetSymbolSize"]    == Set(["mySize"])      # already renamed: idempotent
+            write(io, "# comment\nformat = 1\n\n" *
+                      "[myfunc]\nalpha = \"scalar-host-or-device\"\nbeta = [\"scalar-host\", \"always-c-ptr\"]\ngamma = \"scalar-device\"\n\n" *
+                      "[hipFuncGetAttribute]\nvalue = \"scalar-host\"\n\n" *
+                      "[hipGetSymbolSize]\nmySize = \"scalar-host\"\n"); close(io)
+            md = load_metadata(path)
+            @test md.scalar["myfunc"] == Set(["alpha", "beta", "gamma"])
+            @test md.ptrmode["myfunc"] == Set(["alpha", "gamma"])          # device implies the c_ptr form
+            @test md.devonly["myfunc"] == Set(["gamma"])
+            @test md.cptr["myfunc"] == Set(["beta"])
+            @test md.scalar["hipFuncGetAttribute"] == Set(["myValue"])    # C spelling -> emitted name
+            @test md.scalar["hipGetSymbolSize"]    == Set(["mySize"])     # already renamed: idempotent
             hf = FuncInfo("hipFuncGetAttribute", "integer(c_int)", false,
                  [ArgInfo("myValue", "integer(c_int)", "(*)", false)])
-            @test first(apply_argkinds([hf], path))[1].args[1].suffix == ""
+            @test first(apply_argkinds([hf], md))[1].args[1].suffix == ""
             f = FuncInfo("myfunc", "integer(c_int)", false,
                 [ArgInfo("alpha", "real(c_double)", "(*)", false),
                  ArgInfo("x",     "real(c_double)", "(*)", false)])
-            g, scalar_ptrs, _ = apply_argkinds([f], path)
+            g, scalar_ptrs, _ = apply_argkinds([f], md)
             g = only(g)
             @test scalar_ptrs == Dict("myfunc" => Set(["alpha"]))
             @test g.args[1].suffix == "" && g.args[2].suffix == "(*)"      # alpha scalarized, x stays a buffer
             f64 = FuncInfo("myfunc_64", "integer(c_int)", false,
                   [ArgInfo("alpha", "real(c_double)", "(*)", false)])
-            @test first(apply_argkinds([f64], path))[1].args[1].suffix == ""       # inherits base scalars
-            # A _64 variant inherits the 2-D full_rank overload of its base routine too.
-            let m = LibMeta(native = Dict("mat" => 1), fullrank = Set(["mat"]))
-                g64 = FuncInfo("mat_64", "integer(c_int)", false,
+            @test first(apply_argkinds([f64], md))[1].args[1].suffix == ""       # inherits base scalars
+            # A _64 variant inherits its base routine's tables: here the opt-out.
+            let g64 = FuncInfo("mat_64", "integer(c_int)", false,
                                [ArgInfo("A", "real(c_double)", "(*)", false), ArgInfo("lda", "integer(c_int64_t)", ", value", false)])
-                @test wants_fullrank(g64, m) && native_maxrank(g64, m) == 1
+                @test wants_fullrank(g64, LibMeta()) && native_maxrank(g64, LibMeta()) == 1
+                @test native_maxrank(g64, LibMeta(no_arrays = Set(["mat"]))) == -1
+                # An any-rank buffer: rank 0 to 3, and no _full_rank form.
+                ar = LibMeta(dims = Dict("mat" => Dict("A" => ANY_RANK)))
+                @test native_maxrank(g64, ar) == 3 && !wants_fullrank(g64, ar)
             end
+            # A _spt variant takes the table of its own base first (_v2 before plain).
+            @test meta_get(Dict("f_v2" => 2, "f" => 1), "f_v2_spt", 0) == 2
+            @test meta_get(Dict("f" => 1), "f_v2_spt", 0) == 1
         end
 
         # anonymous-enum spellings lose the absolute include path
@@ -773,11 +791,25 @@ overlong_fortran_lines(s::AbstractString) =
         @test split(joined, r"[\s,()]+"; keepempty=false) == ["call", "f", toks...]
     end
 
-    @testset "argument overrides (.optional / .arrayargs / `*` lines)" begin
+    @testset "argument overrides (nullable / struct-array / by-value / by-reference / `[\"*\"]`)" begin
         d = mktempdir()
-        write(joinpath(d, "zz.optional"),  "# comment\n* p_error\nzz_get status\nzz_get n\n")
-        write(joinpath(d, "zz.arrayargs"), "zz_guru dims\nzz_guru rank\n")
-        write(joinpath(d, "zz.byvalue"),   "zz_cb cb_data\n")
+        write(joinpath(d, "zz.toml"), """
+            # comment
+            format = 1
+            ["*"]
+            p_error = "nullable"
+            [zz_get]
+            status = "nullable"
+            n = "nullable"
+            [zz_guru]
+            dims = "struct-array"
+            rank = "struct-array"
+            [zz_cb]
+            cb_data = "by-value"
+            [zz_exec]
+            bufs = "by-reference"
+            n = "by-reference"
+            """)
         fs = [FuncInfo("zz_solve", "integer(c_int)", false,
                        [ArgInfo("h", "type(c_ptr)", ", value", false),
                         ArgInfo("p_error", "type(c_ptr)", "", false)]),
@@ -788,14 +820,19 @@ overlong_fortran_lines(s::AbstractString) =
                        [ArgInfo("rank", "integer(c_int)", ", value", false),
                         ArgInfo("dims", "type(zz_iodim)", "", false)]),
               FuncInfo("zz_cb", "integer(c_int)", false,
-                       [ArgInfo("cb_data", "type(c_ptr)", "", false)])]
-        out = Dict(f.name => f for f in apply_arg_overrides(fs, d, "zz"))
-        @test out["zz_solve"].args[2].suffix == ", optional"     # via the `*` line
+                       [ArgInfo("cb_data", "type(c_ptr)", "", false)]),
+              FuncInfo("zz_exec", "integer(c_int)", false,
+                       [ArgInfo("bufs", "type(c_ptr)", ", value", false),
+                        ArgInfo("n", "integer(c_int)", ", value", false)])]
+        out = Dict(f.name => f for f in apply_arg_overrides(fs, load_metadata(joinpath(d, "zz.toml"))))
+        @test out["zz_solve"].args[2].suffix == ", optional"     # via the ["*"] table
         @test out["zz_get"].args[1].suffix   == ", optional"     # by-reference scalar
         @test out["zz_get"].args[2].suffix   == ", value"        # value arg: refused, kept
         @test out["zz_guru"].args[2].suffix  == "(*)"            # derived-type array
         @test out["zz_guru"].args[1].suffix  == ", value"        # not a derived type: kept
         @test out["zz_cb"].args[1].suffix    == ", value"
+        @test out["zz_exec"].args[1].suffix  == ""               # ref: array of pointers by reference
+        @test out["zz_exec"].args[2].suffix  == ", value"        # not an array of pointers: kept
         # A derived-type array is not a data buffer: the bind(C) specific keeps its
         # type and shape instead of turning it into an opaque type(c_ptr), value.
         @test !is_buffer(out["zz_guru"].args[2])
@@ -1055,15 +1092,38 @@ overlong_fortran_lines(s::AbstractString) =
     end
 
     @testset "gen_files metadata helpers + rename/no-success paths" begin
-        # load_native_funcs: plain / maxrank / full, comments + blanks skipped
+        # Imposed ranks and the opt-out.
         mktemp() do path, io
-            write(io, "# comment\nfoo\nbar 3\nbaz full\n\n"); close(io)
-            d, full = load_native_funcs(path)
-            @test d["foo"] == 1 && d["bar"] == 3 && d["baz"] == 1
-            @test full == Set(["baz"])
+            write(io, "format = 1\n[foo]\nx = \"1d\"\ny = \"3d\"\n[bar]\nz = \"any-rank\"\n[baz]\nfortran-arrays = false\n"); close(io)
+            md = load_metadata(path)
+            @test md.dims["foo"] == Dict("x" => 1, "y" => 3) && md.dims["bar"]["z"] == ANY_RANK
+            @test md.no_arrays == Set(["baz"])
         end
-        @test load_native_funcs(joinpath(@__DIR__, "nope.native")) ==
-              (Dict{String,Int}(), Set{String}())
+        let md = load_metadata(joinpath(@__DIR__, "nope.toml"))
+            @test isempty(md.dims) && isempty(md.scalar) && isempty(md.no_arrays)
+        end
+        # An empty file, or one with only comments, is no metadata either.
+        for content in ("", "# nothing to say yet\n")
+            mktemp() do path, io
+                write(io, content); close(io)
+                md = load_metadata(path)
+                @test isempty(md.dims) && isempty(md.scalar) && isempty(md.optional)
+            end
+        end
+        # A malformed file is an error, never ignored.
+        for bad in ("[f]\nx = \"scalar-host\"\n",                                  # no format
+                    "format = 2\n",                                                   # unknown format
+                    "format = 1\n[f]\nx = \"scalar\"\n",                            # unknown value
+                    "format = 1\n[f]\nx = [\"scalar-host\", \"scalar-device\"]\n",  # two kinds
+                    "format = 1\n[f]\nx = [\"by-value\", \"by-reference\"]\n",      # two passings
+                    "format = 1\n[f]\nx = [\"1d\", \"2d\"]\n",                      # two ranks
+                    "format = 1\n[f]\nfortran-arrays = true\n",                      # only false
+                    "format = 1\n[\"*\"]\nx = \"scalar-host\"\n")                   # [\"*\"]: passing only
+            mktemp() do path, io
+                write(io, bad); close(io)
+                @test_throws ErrorException load_metadata(path)
+            end
+        end
 
         # gen_files enum_rename: FROM_ -> TO_ applied to the emitted module
         let out = mktempdir()
@@ -1107,7 +1167,7 @@ overlong_fortran_lines(s::AbstractString) =
         # array parameters (_ftype_of_array): scalar element vs array-of-pointers
         a = F["rich_arrays"].args
         @test a[1].ftype == "integer(c_int)" && a[1].suffix == "(*)"     # int[]
-        @test a[2].ftype == "type(c_ptr)"    && a[2].suffix == ""        # void*[] -> c_ptr by ref
+        @test a[2].ftype == "type(c_ptr)"    && a[2].suffix == ", value" # void*[] -> c_ptr by value
 
         # typedefs used BY VALUE (elaborated-canonical branches)
         b = F["rich_byvalue"].args
@@ -1170,10 +1230,10 @@ overlong_fortran_lines(s::AbstractString) =
               "type(fb_byval)"
 
         # Metadata entries that match nothing are reported, keys and argument names.
-        md = mktempdir()
-        write(joinpath(md, "fb.argkinds"), "fb_case N\nfb_case nope\nfb_missing x\n")
-        write(joinpath(md, "fb.native"), "fb_takes\nfb_gone\n")
-        @test_logs (:warn, r"fb.argkinds: 1 key") (:warn, r"fb.argkinds: 1 argument name") (:warn, r"fb.native: 1 key") match_mode=:any check_metadata_names(funcs, md, "fb")
+        md = joinpath(mktempdir(), "fb.toml")
+        write(md, "format = 1\n[fb_case]\nN = \"scalar-host\"\nnope = \"scalar-host\"\n" *
+                  "[fb_missing]\nx = \"scalar-host\"\n[fb_takes]\nfortran-arrays = false\n[fb_gone]\nfortran-arrays = false\n")
+        @test_logs (:warn, r"fb.toml: 2 table") (:warn, r"fb.toml: 1 argument name") match_mode=:any check_metadata_names(funcs, load_metadata(md))
     end
 
     @testset "typedef aliases (aliases.h)" begin
@@ -1290,7 +1350,7 @@ overlong_fortran_lines(s::AbstractString) =
         # arrays: scalar element / array-of-pointers / fixed-size
         ar = ft("at_arrays")
         @test ar["scal"]  == ("integer(c_int)", "(*)")
-        @test ar["ptrs"]  == ("type(c_ptr)", "")               # array-of-pointers -> c_ptr by ref
+        @test ar["ptrs"]  == ("type(c_ptr)", ", value")        # array-of-pointers -> c_ptr by value
         @test ar["fixed"] == ("integer(c_int)", "(*)")         # fixed-size array
 
         # function pointer by value

@@ -116,14 +116,18 @@ function record_ret_ftype(t)
   return "type($(clean_type_name(Clang.spelling(t))))"
 end
 
-# True for an array of pointers (`T* X[]`) or a pointer to a pointer (`T* const*`):
-# rocBLAS spells the same batched argument both ways (trmv/tpmv use the second).
+# True for an array of pointers written with an explicit `*`: `T* X[]` or
+# `T* const* X` (rocBLAS spells the same batched argument both ways). A plain `T**`
+# is an output (hipMalloc's pointer, a created handle), and an array of a pointer
+# typedef (`const hipGraphNode_t* deps`) is an array of handles on the host: both
+# stay by reference.
 function is_ptr_array(t) :: Bool
   k = Clang.kind(t)
   k in (Clang.CXType_IncompleteArray, Clang.CXType_ConstantArray) &&
-    return canon_kind(Clang.getElementType(t)) == Clang.CXType_Pointer
-  k == Clang.CXType_Pointer && return canon_kind(Clang.getPointeeType(t)) == Clang.CXType_Pointer
-  return false
+    return Clang.kind(Clang.getElementType(t)) == Clang.CXType_Pointer
+  k == Clang.CXType_Pointer || return false
+  pt = Clang.getPointeeType(t)
+  return Clang.kind(pt) == Clang.CXType_Pointer && Clang.LibClang.clang_isConstQualifiedType(pt.type) != 0
 end
 
 function collect_funcs(root, prefix::String) :: Vector{FuncInfo}
@@ -166,14 +170,12 @@ function collect_funcs(root, prefix::String) :: Vector{FuncInfo}
     clang_args  = Clang.get_function_args(child)
     clang_types = [Clang.getCursorType(a) for a in clang_args]
     args = [make_arg_info(clang_args[i], clang_types[i], i) for i in eachindex(clang_args)]
-    # *_batched routines take a device array of pointers: pass its address by
-    # value. Host-side pointer arrays elsewhere (rocfft_execute) stay by reference;
-    # hipsolverRfBatch* is set by value in hipsolver.byvalue.
-    if occursin(r"batched"i, name)
-      for i in eachindex(args)
-        is_ptr_array(clang_types[i]) &&
-          (args[i] = ArgInfo(args[i].name, "type(c_ptr)", ", value", args[i].is_string))
-      end
+    # An array of pointers (the batched routines' A, B, C) is passed by value: the
+    # caller passes a c_ptr to the array, in device or host memory. The metadata's
+    # `ref` keeps one by reference (rocfft_execute, whose callers pass one buffer).
+    for i in eachindex(args)
+      is_ptr_array(clang_types[i]) &&
+        (args[i] = ArgInfo(args[i].name, "type(c_ptr)", ", value", args[i].is_string))
     end
     # Disambiguate any duplicate dummy names (some headers repeat or omit names).
     # Fortran names ignore case, so N and n are duplicates too.

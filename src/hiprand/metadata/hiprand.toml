@@ -1,0 +1,19 @@
+# Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+#
+# What the hiprand C headers cannot express. One section per C function
+# (`_64` and `_v2` variants inherit their base function's section), and
+# `["*"]` for every function. See "Fixing a binding" in the generator README.
+
+format = 1
+
+[hiprandGenerateLogNormal]
+
+[hiprandGenerateLongLong]
+
+[hiprandGenerateNormalDouble]
+
+[hiprandGenerateUniform]
+
+[hiprandGetVersion]
+version = "scalar-host"
