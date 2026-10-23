@@ -667,7 +667,7 @@ h_nnzL = "scalar-host"
 h_nnzU = "scalar-host"
 
 [hipsolverRfGetMatrixFormat]
-myFormat = "scalar-host"
+format = "scalar-host"
 diag = "scalar-host"
 
 [hipsolverRfGetNumericBoostReport]

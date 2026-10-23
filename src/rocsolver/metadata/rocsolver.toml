@@ -9,302 +9,250 @@
 format = 1
 
 ["rocsolver_{s,d,c,z}bdsqr"]
-myInfo = "always-c-ptr"
-
-["rocsolver_{s,d,c,z}gebd2_batched"]
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}geblttrf_npvt"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}geblttrf_npvt_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}geblttrf_npvt_interleaved_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}geblttrf_npvt_strided_batched"]
-myInfo = "always-c-ptr"
-
-["rocsolver_{s,d,c,z}gebrd"]
-
-["rocsolver_{s,d,c,z}gebrd_strided_batched"]
-
-["rocsolver_{s,d,c,z}gehd2_batched"]
-
-["rocsolver_{s,d,c,z}gehrd"]
-
-["rocsolver_{s,d,c,z}gehrd_strided_batched"]
-
-["rocsolver_{s,d,c,z}gelq2_batched"]
-
-["rocsolver_{s,d,c,z}gelqf"]
-
-["rocsolver_{s,d,c,z}gelqf_strided_batched"]
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gels"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gels_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gels_strided_batched"]
-myInfo = "always-c-ptr"
-
-["rocsolver_{s,d,c,z}geql2_batched"]
-
-["rocsolver_{s,d,c,z}geqlf"]
-
-["rocsolver_{s,d,c,z}geqlf_strided_batched"]
-
-["rocsolver_{s,d,c,z}geqr2_batched"]
-
-["rocsolver_{s,d,c,z}geqrf"]
-
-["rocsolver_{s,d,c,z}geqrf_strided_batched"]
-
-["rocsolver_{s,d,c,z}gerq2_batched"]
-
-["rocsolver_{s,d,c,z}gerqf"]
-
-["rocsolver_{s,d,c,z}gerqf_strided_batched"]
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gesdd"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gesdd_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gesdd_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gesv"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gesv_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gesv_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gesvd"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gesvd_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gesvd_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gesvdj"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gesvdj_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gesvdj_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gesvdx"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gesvdx_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}gesvdx_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getf2"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getf2_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getf2_npvt"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getf2_npvt_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getf2_npvt_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getf2_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getrf"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getrf_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getrf_npvt"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getrf_npvt_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getrf_npvt_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getrf_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getri"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getri_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getri_npvt"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getri_npvt_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getri_npvt_outofplace"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getri_npvt_outofplace_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getri_npvt_outofplace_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getri_npvt_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getri_outofplace"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getri_outofplace_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getri_outofplace_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}getri_strided_batched"]
-myInfo = "always-c-ptr"
-
-["rocsolver_{s,d,c,z}getrs_batched"]
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heev"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heev_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heev_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heevd"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heevd_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heevd_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heevdj"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heevdj_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heevdj_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heevdx"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heevdx_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heevdx_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heevj"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heevj_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heevj_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heevx"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heevx_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}heevx_strided_batched"]
-myInfo = "always-c-ptr"
-
-["rocsolver_{c,z}hegs2_batched"]
-
-["rocsolver_{c,z}hegst"]
-
-["rocsolver_{c,z}hegst_strided_batched"]
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}hegv"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}hegv_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}hegv_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}hegvd"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}hegvd_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}hegvd_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}hegvdj"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}hegvdj_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}hegvdj_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}hegvdx_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}hegvdx_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}hegvj"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}hegvj_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}hegvj_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}hegvx"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}hegvx_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{c,z}hegvx_strided_batched"]
-myInfo = "always-c-ptr"
-
-["rocsolver_{c,z}hetd2"]
-
-["rocsolver_{c,z}hetd2_strided_batched"]
-
-["rocsolver_{c,z}hetrd_batched"]
-
-["rocsolver_{s,d,c,z}labrd"]
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}larf"]
 alpha = "scalar-device"
@@ -313,244 +261,198 @@ alpha = "scalar-device"
 alpha = "scalar-device"
 tau = "scalar-device"
 
-["rocsolver_{s,d,c,z}laswp"]
-
 ["rocsolver_{s,d,c,z}lasyf"]
 kb = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}posv"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}posv_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}posv_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}potf2"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}potf2_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}potf2_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}potrf"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}potrf_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}potrf_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}potri"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}potri_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}potri_strided_batched"]
-myInfo = "always-c-ptr"
-
-["rocsolver_{s,d,c,z}potrs_batched"]
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}stedc"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}stein"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}steqr"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}sytf2"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}sytf2_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}sytf2_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}sytrf"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}sytrf_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}sytrf_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}trtri"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}trtri_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d,c,z}trtri_strided_batched"]
-myInfo = "always-c-ptr"
-
-["rocsolver_{c,z}ung2r"]
-
-["rocsolver_{c,z}ungl2"]
-
-["rocsolver_{c,z}ungql"]
-
-["rocsolver_{c,z}ungtr"]
-
-["rocsolver_{c,z}unm2r"]
-
-["rocsolver_{c,z}unml2"]
-
-["rocsolver_{c,z}unmql"]
-
-["rocsolver_{c,z}unmtr"]
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}bdsvdx"]
-myInfo = "always-c-ptr"
-
-["rocsolver_{s,d}org2l"]
-
-["rocsolver_{s,d}orgbr"]
-
-["rocsolver_{s,d}orglq"]
-
-["rocsolver_{s,d}orgqr"]
-
-["rocsolver_{s,d}orm2l"]
-
-["rocsolver_{s,d}ormbr"]
-
-["rocsolver_{s,d}ormlq"]
-
-["rocsolver_{s,d}ormqr"]
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}stebz"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sterf"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syev"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syev_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syev_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syevd"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syevd_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syevd_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syevdj"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syevdj_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syevdj_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syevdx"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syevdx_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syevdx_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syevj"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syevj_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syevj_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syevx"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syevx_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}syevx_strided_batched"]
-myInfo = "always-c-ptr"
-
-["rocsolver_{s,d}sygs2_batched"]
-
-["rocsolver_{s,d}sygst"]
-
-["rocsolver_{s,d}sygst_strided_batched"]
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygv"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygv_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygv_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygvd"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygvd_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygvd_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygvdj"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygvdj_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygvdj_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygvdx"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygvdx_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygvdx_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygvj"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygvj_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygvj_strided_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygvx"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygvx_batched"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsolver_{s,d}sygvx_strided_batched"]
-myInfo = "always-c-ptr"
-
-["rocsolver_{s,d}sytd2_batched"]
-
-["rocsolver_{s,d}sytrd_batched"]
+info = "always-c-ptr"
 
 [rocsolver_get_alg_mode]
 mode = "scalar-host"

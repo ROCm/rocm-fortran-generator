@@ -135,7 +135,7 @@ driverStatus = ["scalar-host", "nullable"]
 symbolStatus = ["scalar-host", "nullable"]
 
 [hipGetSymbolSize]
-mySize = "scalar-host"
+size = "scalar-host"
 
 [hipGetTextureAlignmentOffset]
 offset = "scalar-host"
@@ -220,7 +220,7 @@ total = "scalar-host"
 flags = "scalar-host"
 
 [hipMemPtrGetInfo]
-mySize = "scalar-host"
+size = "scalar-host"
 
 [hipMemcpy3DBatchAsync]
 failIdx = "scalar-host"

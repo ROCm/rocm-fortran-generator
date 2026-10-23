@@ -33,32 +33,32 @@ descrC = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}bsric02"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}bsric02_analysis"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}bsric02_bufferSize"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D,C,Z}bsrilu02"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}bsrilu02_analysis"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}bsrilu02_bufferSize"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D,C,Z}bsrilu02_numericBoost"]
@@ -77,39 +77,39 @@ beta = "scalar-host-or-device"
 
 ["hipsparse{S,D,C,Z}bsrsm2_analysis"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}bsrsm2_bufferSize"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D,C,Z}bsrsm2_solve"]
 alpha = "scalar-host-or-device"
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}bsrsv2_analysis"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}bsrsv2_bufferSize"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D,C,Z}bsrsv2_bufferSizeExt"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D,C,Z}bsrsv2_solve"]
 alpha = "scalar-host-or-device"
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}bsrxmv"]
@@ -129,7 +129,7 @@ descrA = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}csr2csru"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}csr2dense"]
@@ -151,7 +151,7 @@ hybA = "always-c-ptr"
 descrA = "always-c-ptr"
 fractionToColor = ["scalar-host", "always-c-ptr"]
 ncolors = "scalar-host"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}csrgeam"]
 alpha = "scalar-host-or-device"
@@ -188,7 +188,7 @@ descrB = "always-c-ptr"
 beta = "scalar-host-or-device"
 descrD = "always-c-ptr"
 descrC = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}csrgemm2_bufferSizeExt"]
@@ -197,47 +197,47 @@ descrA = "always-c-ptr"
 descrB = "always-c-ptr"
 beta = "scalar-host-or-device"
 descrD = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D,C,Z}csric02"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}csric02_analysis"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}csric02_bufferSize"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D,C,Z}csric02_bufferSizeExt"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D,C,Z}csrilu02"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}csrilu02_analysis"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}csrilu02_bufferSize"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D,C,Z}csrilu02_bufferSizeExt"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D,C,Z}csrilu02_numericBoost"]
@@ -262,48 +262,48 @@ beta = "scalar-host-or-device"
 ["hipsparse{S,D,C,Z}csrsm2_analysis"]
 alpha = "scalar-host-or-device"
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}csrsm2_bufferSizeExt"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D,C,Z}csrsm2_solve"]
 alpha = "scalar-host-or-device"
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}csrsv2_analysis"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}csrsv2_bufferSize"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D,C,Z}csrsv2_bufferSizeExt"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D,C,Z}csrsv2_solve"]
 alpha = "scalar-host-or-device"
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}csru2csr"]
 descrA = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}csru2csr_bufferSizeExt"]
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D,C,Z}dense2csc"]
@@ -313,10 +313,10 @@ descr = "always-c-ptr"
 descr = "always-c-ptr"
 
 ["hipsparse{C,Z}dotci"]
-myResult = "scalar-host-or-device"
+result = "scalar-host-or-device"
 
 ["hipsparse{S,D,C,Z}doti"]
-myResult = "scalar-host-or-device"
+result = "scalar-host-or-device"
 
 ["hipsparse{S,D,C,Z}gebsr2csr"]
 descrA = "always-c-ptr"
@@ -351,8 +351,6 @@ pBuffer = "always-c-ptr"
 
 ["hipsparse{S,D,C,Z}gpsvInterleavedBatch_bufferSizeExt"]
 pBufferSizeInBytes = "scalar-host"
-
-["hipsparse{S,D,C,Z}gthrz"]
 
 ["hipsparse{S,D,C,Z}gtsv2"]
 pBuffer = "always-c-ptr"
@@ -512,19 +510,19 @@ buffer = "always-c-ptr"
 ["hipsparse{S,D}pruneCsr2csrByPercentage"]
 descrA = "always-c-ptr"
 descrC = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 buffer = "always-c-ptr"
 
 ["hipsparse{S,D}pruneCsr2csrByPercentage_bufferSize"]
 descrA = "always-c-ptr"
 descrC = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D}pruneCsr2csrByPercentage_bufferSizeExt"]
 descrA = "always-c-ptr"
 descrC = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D}pruneCsr2csrNnz"]
@@ -538,7 +536,7 @@ buffer = "always-c-ptr"
 descrA = "always-c-ptr"
 descrC = "always-c-ptr"
 nnzTotalDevHostPtr = "scalar-host-or-device"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 buffer = "always-c-ptr"
 
 ["hipsparse{S,D}pruneCsr2csr_bufferSize"]
@@ -558,17 +556,17 @@ buffer = "always-c-ptr"
 
 ["hipsparse{S,D}pruneDense2csrByPercentage"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 buffer = "always-c-ptr"
 
 ["hipsparse{S,D}pruneDense2csrByPercentage_bufferSize"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D}pruneDense2csrByPercentage_bufferSizeExt"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBufferSizeInBytes = "scalar-host"
 
 ["hipsparse{S,D}pruneDense2csrNnz"]
@@ -580,7 +578,7 @@ buffer = "always-c-ptr"
 ["hipsparse{S,D}pruneDense2csrNnzByPercentage"]
 descr = "always-c-ptr"
 nnzTotalDevHostPtr = "scalar-host-or-device"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 buffer = "always-c-ptr"
 
 ["hipsparse{S,D}pruneDense2csr_bufferSize"]
@@ -673,7 +671,7 @@ alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
 [hipsparseSpMatGetFormat]
-myFormat = "scalar-host"
+format = "scalar-host"
 
 [hipsparseSpMatGetIndexBase]
 idxBase = "scalar-host"
@@ -784,7 +782,7 @@ descrB = "always-c-ptr"
 descrD = "always-c-ptr"
 descrC = "always-c-ptr"
 nnzTotalDevHostPtr = "scalar-host-or-device"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 pBuffer = "always-c-ptr"
 
 [hipsparseXcsrgemmNnz]

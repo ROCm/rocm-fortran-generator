@@ -8,15 +8,5 @@
 
 format = 1
 
-[rocrand_generate]
-
-[rocrand_generate_log_normal_double]
-
-[rocrand_generate_normal]
-
-[rocrand_generate_poisson]
-
-[rocrand_generate_uniform_double]
-
 [rocrand_get_version]
 version = "scalar-host"

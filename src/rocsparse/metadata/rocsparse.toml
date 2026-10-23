@@ -83,32 +83,32 @@ buffer_size = "scalar-host"
 
 ["rocsparse_{s,d,c,z}bsric0"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}bsric0_analysis"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}bsric0_buffer_size"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 buffer_size = "scalar-host"
 
 ["rocsparse_{s,d,c,z}bsrilu0"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}bsrilu0_analysis"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}bsrilu0_buffer_size"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 buffer_size = "scalar-host"
 
 ["rocsparse_{s,d,c,z,dc,ds}bsrilu0_numeric_boost"]
@@ -127,34 +127,34 @@ beta = "scalar-host-or-device"
 
 ["rocsparse_{s,d,c,z}bsrsm_analysis"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}bsrsm_buffer_size"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 buffer_size = "scalar-host"
 
 ["rocsparse_{s,d,c,z}bsrsm_solve"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}bsrsv_analysis"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}bsrsv_buffer_size"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 buffer_size = "scalar-host"
 
 ["rocsparse_{s,d,c,z}bsrsv_solve"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}bsrxmv"]
@@ -242,7 +242,7 @@ hyb = "always-c-ptr"
 descr = "always-c-ptr"
 fraction_to_color = "scalar-host"
 ncolors = "scalar-host"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}csrgeam"]
 alpha = "scalar-host-or-device"
@@ -276,32 +276,32 @@ beta = "scalar-host-or-device"
 
 ["rocsparse_{s,d,c,z}csric0"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}csric0_analysis"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}csric0_buffer_size"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 buffer_size = "scalar-host"
 
 ["rocsparse_{s,d,c,z}csrilu0"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}csrilu0_analysis"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}csrilu0_buffer_size"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 buffer_size = "scalar-host"
 
 ["rocsparse_{s,d,c,z,dc,ds}csrilu0_numeric_boost"]
@@ -327,45 +327,45 @@ beta = "scalar-host-or-device"
 ["rocsparse_{s,d,c,z}csrmv"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 beta = "scalar-host-or-device"
 
 ["rocsparse_{s,d,c,z}csrmv_analysis"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}csrsm_analysis"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}csrsm_buffer_size"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 buffer_size = "scalar-host"
 
 ["rocsparse_{s,d,c,z}csrsm_solve"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}csrsv_analysis"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}csrsv_buffer_size"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 buffer_size = "scalar-host"
 
 ["rocsparse_{s,d,c,z}csrsv_solve"]
 alpha = "scalar-host-or-device"
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}dense2coo"]
@@ -378,10 +378,10 @@ descr = "always-c-ptr"
 descr = "always-c-ptr"
 
 ["rocsparse_{c,z}dotci"]
-myResult = "scalar-host-or-device"
+result = "scalar-host-or-device"
 
 ["rocsparse_{s,d,c,z}doti"]
-myResult = "scalar-host-or-device"
+result = "scalar-host-or-device"
 
 ["rocsparse_{s,d,c,z}ell2csr"]
 ell_descr = "always-c-ptr"
@@ -433,8 +433,6 @@ temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}gpsv_interleaved_batch_buffer_size"]
 buffer_size = "scalar-host"
-
-["rocsparse_{s,d,c,z}gthrz"]
 
 ["rocsparse_{s,d,c,z}gtsv"]
 temp_buffer = "always-c-ptr"
@@ -735,13 +733,13 @@ buffer_size = "scalar-host"
 ["rocsparse_{s,d}prune_csr2csr_by_percentage"]
 csr_descr_A = "always-c-ptr"
 csr_descr_C = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d}prune_csr2csr_by_percentage_buffer_size"]
 csr_descr_A = "always-c-ptr"
 csr_descr_C = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 buffer_size = "scalar-host"
 
 ["rocsparse_{s,d}prune_csr2csr_nnz"]
@@ -755,7 +753,7 @@ temp_buffer = "always-c-ptr"
 csr_descr_A = "always-c-ptr"
 csr_descr_C = "always-c-ptr"
 nnz_total_dev_host_ptr = "scalar-host-or-device"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d}prune_dense2csr"]
@@ -770,12 +768,12 @@ buffer_size = "scalar-host"
 
 ["rocsparse_{s,d}prune_dense2csr_by_percentage"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d}prune_dense2csr_by_percentage_buffer_size"]
 descr = "always-c-ptr"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 buffer_size = "scalar-host"
 
 ["rocsparse_{s,d}prune_dense2csr_nnz"]
@@ -787,7 +785,7 @@ temp_buffer = "always-c-ptr"
 ["rocsparse_{s,d}prune_dense2csr_nnz_by_percentage"]
 descr = "always-c-ptr"
 nnz_total_dev_host_ptr = "scalar-host-or-device"
-myInfo = "always-c-ptr"
+info = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d}roti"]
@@ -880,7 +878,7 @@ alpha = "scalar-host-or-device"
 buffer_size = "scalar-host"
 
 [rocsparse_spmat_get_format]
-myFormat = "scalar-host"
+format = "scalar-host"
 
 [rocsparse_spmat_get_index_base]
 idx_base = "scalar-host"

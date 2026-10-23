@@ -8,13 +8,5 @@
 
 format = 1
 
-[hiprandGenerateLogNormal]
-
-[hiprandGenerateLongLong]
-
-[hiprandGenerateNormalDouble]
-
-[hiprandGenerateUniform]
-
 [hiprandGetVersion]
 version = "scalar-host"
