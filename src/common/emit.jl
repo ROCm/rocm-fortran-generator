@@ -120,11 +120,10 @@ host_args(f::FuncInfo, meta::LibMeta) =
   setdiff(scalar_ptr_args(f, meta), ptrmode_args(f, meta), devonly_args(f, meta))
 wants_devptr(f, meta) = !isempty(setdiff(ptrmode_args(f, meta), devonly_args(f, meta))) &&
                         !isempty(host_args(f, meta))
-# The array overloads take device-only scalars and .cptrargs scalars as variables;
-# their _devptr twins take them as type(c_ptr).
-cptr_scalars(f::FuncInfo, meta::LibMeta) =
-  intersect(scalar_ptr_args(f, meta), meta_get(meta.cptr_args, f.name, EMPTY_STRSET))
-wants_rank_devptr(f, meta) = !isempty(devonly_args(f, meta)) || !isempty(cptr_scalars(f, meta))
+# The array forms take every scalar as a variable, which suits the host pointer
+# mode; their _devptr twins take the pointer-mode and device scalars as
+# type(c_ptr), for the device pointer mode, and the host-only ones still typed.
+wants_rank_devptr(f, meta) = !isempty(devonly_args(f, meta)) || !isempty(ptrmode_args(f, meta))
 
 # Specific name capped at Fortran's 63-char limit. A plain prefix cut is not
 # injective (it would silently dispatch to another C entry point), so cuts are
@@ -275,12 +274,10 @@ function emit_rank_wrapper(io, f::FuncInfo, meta::LibMeta, rank::Int = 0;
   wname = spec_name(name, suffix)
   rawnm = name * "_"
   joined = join((a.name for a in f.args), ",")
-  # Checked before is_cptr_passthrough: some rocBLAS rot-family args are in both
-  # .argkinds and .cptrargs, and the scalar rule wins.
   scalars   = scalar_ptr_args(f, meta)
   devonly   = devonly_args(f, meta)
   typedargs = opt    ? Set{String}() :
-              devptr ? (typed ? host_args(f, meta) : setdiff(host_args(f, meta), cptr_scalars(f, meta))) :
+              devptr ? host_args(f, meta) :
               typed  ? setdiff(scalars, devonly) : scalars
   asptr     = setdiff(scalars, typedargs)
   strargs   = typed ? string_args(f, meta) : Set{String}()

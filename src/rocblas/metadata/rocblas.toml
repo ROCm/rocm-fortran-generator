@@ -1,10 +1,10 @@
 # Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
-# What the rocblas C headers cannot express. One table per C function, and
-# `["*"]` for every function; a key with braces names several. A _64 or _spt
-# variant without a table takes its base's. See "Fixing a binding" in the
-# generator README; `gen.sh --explain <function>` shows what applies.
+# What the rocblas C headers cannot express: one table per C function, and a key
+# with braces names several. A _64 or _spt variant without a table takes its
+# base's. See "Fixing a binding" in the generator README; `gen.sh --explain
+# <function>` shows what applies.
 
 format = 1
 
@@ -18,7 +18,7 @@ alpha = "scalar-host-or-device"
 alpha = "scalar-host-or-device"
 
 ["rocblas_{s,d,h,bf}dot"]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 ["rocblas_{s,d,h,bf}dot_batched"]
 result = "always-c-ptr"
@@ -36,7 +36,7 @@ alpha = "scalar-host-or-device"
 alpha = "scalar-host-or-device"
 
 ["rocblas_{c,z}dotc"]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 ["rocblas_{c,z}dotc_batched"]
 result = "always-c-ptr"
@@ -45,7 +45,7 @@ result = "always-c-ptr"
 result = "always-c-ptr"
 
 ["rocblas_{c,z}dotu"]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 ["rocblas_{c,z}dotu_batched"]
 result = "always-c-ptr"
@@ -252,16 +252,16 @@ alpha = "scalar-host-or-device"
 alpha = "scalar-host-or-device"
 
 ["rocblas_{s,d,c,z,cs,zd}rot"]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
+c = "scalar-host-or-device"
+s = "scalar-host-or-device"
 
 ["rocblas_{s,d,c,z,cs,zd}rot_batched"]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
+c = "scalar-host-or-device"
+s = "scalar-host-or-device"
 
 ["rocblas_{s,d,c,z,cs,zd}rot_strided_batched"]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
+c = "scalar-host-or-device"
+s = "scalar-host-or-device"
 
 ["rocblas_{s,d,c,z}rotg"]
 a = "scalar-host-or-device"
@@ -429,10 +429,10 @@ x1 = "1d"
 y1 = "1d"
 
 ["rocblas_{dz,sc}asum"]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 ["rocblas_{dz,sc}nrm2"]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 [rocblas_geam_ex]
 alpha = "scalar-host-or-device"
@@ -482,7 +482,7 @@ alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
 [rocblas_icamax]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 [rocblas_icamax_batched]
 result = "always-c-ptr"
@@ -491,7 +491,7 @@ result = "always-c-ptr"
 result = "always-c-ptr"
 
 [rocblas_icamin]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 [rocblas_icamin_batched]
 result = "always-c-ptr"
@@ -536,7 +536,7 @@ result = "always-c-ptr"
 result = "always-c-ptr"
 
 [rocblas_izamax]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 [rocblas_izamax_batched]
 result = "always-c-ptr"
@@ -545,7 +545,7 @@ result = "always-c-ptr"
 result = "always-c-ptr"
 
 [rocblas_izamin]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 [rocblas_izamin_batched]
 result = "always-c-ptr"

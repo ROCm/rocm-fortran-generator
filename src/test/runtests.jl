@@ -642,7 +642,9 @@ overlong_fortran_lines(s::AbstractString) =
                 fm = FuncInfo("zzmix", "integer(c_int)", false,
                               [ArgInfo("alpha", "real(c_double)",   "", false),
                                ArgInfo("bsize", "integer(c_size_t)", "", false)])
-                @test wants_typed(fm, mmeta) && wants_devptr(fm, mmeta) && !wants_rank_devptr(fm, mmeta)
+                @test wants_typed(fm, mmeta) && wants_devptr(fm, mmeta)
+                # A pointer-mode scalar gives the array forms a _devptr twin too.
+                @test wants_rank_devptr(fm, mmeta)
                 io = IOBuffer()
                 emit_typed_body(io, [fm], mmeta)
                 s = String(take!(io))
@@ -690,14 +692,14 @@ overlong_fortran_lines(s::AbstractString) =
             # C argument names are normalized through safe_argname, the spelling
             # every consumer compares against.
             write(io, "# comment\nformat = 1\n\n" *
-                      "[myfunc]\nalpha = \"scalar-host-or-device\"\nbeta = [\"scalar-host\", \"always-c-ptr\"]\ngamma = \"scalar-device\"\n\n" *
+                      "[myfunc]\nalpha = \"scalar-host-or-device\"\nbeta = \"scalar-host\"\nx = \"always-c-ptr\"\ngamma = \"scalar-device\"\n\n" *
                       "[hipFuncGetAttribute]\nvalue = \"scalar-host\"\n\n" *
                       "[hipGetSymbolSize]\nmySize = \"scalar-host\"\n"); close(io)
             md = load_metadata(path)
             @test md.scalar["myfunc"] == Set(["alpha", "beta", "gamma"])
             @test md.ptrmode["myfunc"] == Set(["alpha", "gamma"])          # device implies the c_ptr form
             @test md.devonly["myfunc"] == Set(["gamma"])
-            @test md.cptr["myfunc"] == Set(["beta"])
+            @test md.cptr["myfunc"] == Set(["x"])
             @test md.scalar["hipFuncGetAttribute"] == Set(["myValue"])    # C spelling -> emitted name
             @test md.scalar["hipGetSymbolSize"]    == Set(["mySize"])     # already renamed: idempotent
             hf = FuncInfo("hipFuncGetAttribute", "integer(c_int)", false,
@@ -794,12 +796,12 @@ overlong_fortran_lines(s::AbstractString) =
         @test split(joined, r"[\s,()]+"; keepempty=false) == ["call", "f", toks...]
     end
 
-    @testset "argument overrides (nullable / struct-array / by-value / by-reference / `[\"*\"]`)" begin
+    @testset "argument overrides (nullable / struct-array / by-value / by-reference)" begin
         d = mktempdir()
         write(joinpath(d, "zz.toml"), """
             # comment
             format = 1
-            ["*"]
+            [zz_solve]
             p_error = "nullable"
             [zz_get]
             status = "nullable"
@@ -828,7 +830,7 @@ overlong_fortran_lines(s::AbstractString) =
                        [ArgInfo("bufs", "type(c_ptr)", ", value", false),
                         ArgInfo("n", "integer(c_int)", ", value", false)])]
         out = Dict(f.name => f for f in apply_arg_overrides(fs, load_metadata(joinpath(d, "zz.toml"))))
-        @test out["zz_solve"].args[2].suffix == ", optional"     # via the ["*"] table
+        @test out["zz_solve"].args[2].suffix == ", optional"
         @test out["zz_get"].args[1].suffix   == ", optional"     # by-reference scalar
         @test out["zz_get"].args[2].suffix   == ", value"        # value arg: refused, kept
         @test out["zz_guru"].args[2].suffix  == "(*)"            # derived-type array
@@ -1106,9 +1108,9 @@ overlong_fortran_lines(s::AbstractString) =
             write(io, """
                 format = 1
                 ["lib_{s,d}dot"]
-                r = ["scalar-host-or-device", "always-c-ptr"]
+                r = "always-c-ptr"
                 [lib_ddot_64]
-                r = "scalar-host-or-device"
+                r = "1d"
                 """); close(io)
             md = load_metadata(path)
             @test md.origin["lib_sdot"] == "lib_{s,d}dot" && md.cptr["lib_ddot"] == Set(["r"])
@@ -1155,7 +1157,8 @@ overlong_fortran_lines(s::AbstractString) =
                     "format = 1\n[f]\nx = [\"by-value\", \"by-reference\"]\n",      # two passings
                     "format = 1\n[f]\nx = [\"1d\", \"2d\"]\n",                      # two ranks
                     "format = 1\n[f]\nfortran-arrays = true\n",                      # only false
-                    "format = 1\n[\"*\"]\nx = \"scalar-host\"\n")                   # [\"*\"]: passing only
+                    "format = 1\n[f]\nx = [\"scalar-host\", \"always-c-ptr\"]\n",   # a scalar is not a buffer
+                    "format = 1\n[\"*\"]\nx = \"nullable\"\n")                      # not a function name
             mktemp() do path, io
                 write(io, bad); close(io)
                 @test_throws ErrorException load_metadata(path)

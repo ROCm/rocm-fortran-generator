@@ -1,10 +1,10 @@
 # Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
-# What the rocsparse C headers cannot express. One table per C function, and
-# `["*"]` for every function; a key with braces names several. A _64 or _spt
-# variant without a table takes its base's. See "Fixing a binding" in the
-# generator README; `gen.sh --explain <function>` shows what applies.
+# What the rocsparse C headers cannot express: one table per C function, and a key
+# with braces names several. A _64 or _spt variant without a table takes its
+# base's. See "Fixing a binding" in the generator README; `gen.sh --explain
+# <function>` shows what applies.
 
 format = 1
 # argkinds:
@@ -13,10 +13,6 @@ format = 1
 # nullable:
 #   Arguments documented as nullable. The module procedures take them OPTIONAL and
 #   pass c_null_ptr when absent (an OPTIONAL dummy in a bind(C) interface needs F2018).
-
-["*"]
-error = "nullable"
-p_error = "nullable"
 
 [rocsparse_axpby]
 alpha = "scalar-host-or-device"
@@ -400,7 +396,7 @@ csr_descr = "always-c-ptr"
 temp_buffer = "always-c-ptr"
 
 ["rocsparse_{s,d,c,z}gebsr2gebsc_buffer_size"]
-p_buffer_size = ["scalar-host", "always-c-ptr"]
+p_buffer_size = "scalar-host"
 
 ["rocsparse_{s,d,c,z}gebsr2gebsr_buffer_size"]
 buffer_size = "scalar-host"
@@ -633,7 +629,7 @@ ell_width = "scalar-host-or-device"
 [rocsparse_csr2gebsr_nnz]
 csr_descr = "always-c-ptr"
 bsr_descr = "always-c-ptr"
-bsr_nnz_devhost = ["scalar-host-or-device", "always-c-ptr"]
+bsr_nnz_devhost = "scalar-host-or-device"
 
 [rocsparse_csr_get]
 rows = "scalar-host"
@@ -698,6 +694,9 @@ position = "scalar-host-or-device"
 
 [rocsparse_dense_to_sparse]
 buffer_size = "scalar-host"
+
+["rocsparse_{dnmat_copy_data,dnmat_transpose,dnvec_descr_create_scalar,spmat_scale,spmv_clear_extra,spmv_set_extra}"]
+p_error = "nullable"
 
 [rocsparse_dnmat_get]
 rows = "scalar-host"
@@ -820,6 +819,9 @@ pointer_mode = "scalar-host"
 [rocsparse_get_version]
 version = "scalar-host"
 
+["rocsparse_{handle,spic0_descr,spildlt0_descr,spilu0_descr,spsort_descr,sptrsv_descr}_{create,destroy}"]
+p_error = "nullable"
+
 [rocsparse_hyb2csr_buffer_size]
 descr = "always-c-ptr"
 hyb = "always-c-ptr"
@@ -855,22 +857,30 @@ buffer_size = "scalar-host"
 [rocsparse_sparse_to_sparse_buffer_size]
 buffer_size_in_bytes = "scalar-host"
 
+["rocsparse_{spgeam,spgeam_get_output,spmv_set_input}"]
+error = "nullable"
+
 [rocsparse_spgeam_buffer_size]
+error = "nullable"
 buffer_size = "scalar-host"
+
+["rocsparse_{spgeam,spic0,spildlt0,spilu0,spsort,sptrsm,sptrsv}_set_input"]
+p_error = "nullable"
 
 [rocsparse_spgemm]
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 buffer_size = "scalar-host"
 
-[rocsparse_spic0_buffer_size]
-p_buffer_size_in_bytes = "scalar-host"
+["rocsparse_{spic0,spildlt0,spilu0,spsort,sptrsm,sptrsv}"]
+p_error = "nullable"
 
-[rocsparse_spildlt0_buffer_size]
+["rocsparse_{spic0,spildlt0,spilu0}_buffer_size"]
 p_buffer_size_in_bytes = "scalar-host"
+p_error = "nullable"
 
-[rocsparse_spilu0_buffer_size]
-p_buffer_size_in_bytes = "scalar-host"
+["rocsparse_{spic0,spildlt0,spilu0,sptrsm,sptrsv}_get_output"]
+p_error = "nullable"
 
 [rocsparse_spitsv]
 host_nmaxiter = "scalar-host"
@@ -908,18 +918,13 @@ buffer_size = "scalar-host"
 alpha = "scalar-host-or-device"
 buffer_size = "scalar-host"
 
-[rocsparse_spsort_buffer_size]
+["rocsparse_{spsort,sptrsm,sptrsv}_buffer_size"]
 buffer_size_in_bytes = "scalar-host"
+p_error = "nullable"
 
 [rocsparse_spsv]
 alpha = "scalar-host-or-device"
 buffer_size = "scalar-host"
-
-[rocsparse_sptrsm_buffer_size]
-buffer_size_in_bytes = "scalar-host"
-
-[rocsparse_sptrsv_buffer_size]
-buffer_size_in_bytes = "scalar-host"
 
 [rocsparse_spvec_get]
 size = "scalar-host"
@@ -935,8 +940,10 @@ idx_base = "scalar-host"
 buffer_size = "scalar-host"
 
 [rocsparse_v2_spmv]
+error = "nullable"
 alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
 [rocsparse_v2_spmv_buffer_size]
+error = "nullable"
 buffer_size_in_bytes = "scalar-host"

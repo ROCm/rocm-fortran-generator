@@ -188,87 +188,143 @@ If the generator finds far fewer functions than expected, check the `prefix` spe
 ## Fixing a binding
 
 The generated Fortran is never edited by hand.
-What the C headers cannot express is supplied by one metadata file per module, `src/<lib>/metadata/<lib>.toml`;
-then regenerate the library.
-When a run reads a checkout, the `metadata/` directory next to the library's Fortran module in that checkout
-(`projects/fortran/metadata/` in rocm-systems, `projects/<proj>/fortran/metadata/` in rocm-libraries)
-replaces the generator's copy.
-A missing or empty file means no metadata.
+A binding is fixed by regenerating it, after changing the generator or the library's **metadata**:
+the few facts its C headers cannot express, in one file per module.
 
-The file holds one table per C function, keyed by its arguments, and a `["*"]` table for every function.
-A key may name several functions with braces, as in a shell: `["hipsolver{S,D,C,Z}gebrd"]`,
-or `["x{,_64}"]` with an empty alternative. A function named by two keys is an error.
-A variant without a table of its own takes its base function's whole table:
-an `_spt` variant that of the same function without `_spt`, an ILP64 `_64` variant that of the 32-bit one.
-A table of its own replaces the base's entirely, and a `_v2`, a new API, inherits nothing.
+### What the generator does on its own
+
+For every C function `X`, the module has a generic `X` with these forms:
+
+| Form | Takes | When |
+|---|---|---|
+| `X_` (`bind(C)`) | every pointer as `type(c_ptr)`, exactly the C signature | always; out of the generic when `X_opt` takes its place |
+| `X_typed` | each scalar the metadata names as a Fortran variable (`real :: alpha`), the other pointers as `type(c_ptr)` | it has a host or pointer-mode scalar |
+| `X_devptr` | the pointer-mode scalars as `type(c_ptr)`, the host-only ones still typed | it has both kinds |
+| `X_opt` | a `nullable` argument as `optional` | it has one that is not a scalar |
+| `X_rank_0`, `X_rank_1`, `X_full_rank` (F2008) / `X_assumed_rank` (F2018) | each data buffer as a Fortran array, the scalars typed | it has a data buffer |
+| `_devptr` twins of the array forms | the arrays, with the pointer-mode and device scalars as `type(c_ptr)` | it has such a scalar |
+
+The array forms exist only in the F2008 (`USE_ASSUMED_SHAPE`) and F2018 (`USE_ASSUMED_RANK`) tiers;
+`_rank_0` and `_rank_1` take every buffer as a scalar or a vector, `_full_rank` each buffer at its natural rank.
+
+From the C declaration alone, the generator decides:
+
+- **a typed pointer** (`float*`) is a data buffer: an array in the array forms;
+  a pointer to a C struct is one element; `work`, `pBuffer` and other workspace names stay `type(c_ptr)`;
+- **a buffer's natural rank** is 1, plus 1 when a leading dimension (`lda`, ...) follows it,
+  plus 1 when a batch stride (`stride_A`, `stridex`, ...) follows that or its increment:
+  `gemv`'s `A` is 2-D, `gemm_strided_batched`'s `A` 3-D, a strided-batched vector 2-D;
+- **an array of pointers** written with an explicit `*` (`T* x[]`, `T* const* x`, the `A` of a batched routine)
+  is passed by value: the caller passes a `c_ptr` to the array.
+  A plain `T**` is an output (hipMalloc's pointer, a created handle) and an array of a pointer typedef
+  (`const hipGraphNode_t*`) an array of handles: both stay by reference.
+
+For example, from
+
+```c
+hipblasStatus_t hipblasSgemv(hipblasHandle_t handle, hipblasOperation_t trans, int m, int n,
+                             const float* alpha, const float* AP, int lda, const float* x, int incx,
+                             const float* beta, float* y, int incy);
+```
+
+and the metadata `alpha = "scalar-host-or-device"`, `beta = "scalar-host-or-device"`, a program can call
+
+```fortran
+real, pointer :: dA(:,:), dx(:), dy(:)
+! host pointer mode: _full_rank, alpha and beta by value, A as a matrix
+call hipblasCheck(hipblasSgemv(h, HIPBLAS_OP_N, m, n, 1.0, dA, lda, dx, 1, 0.0, dy, 1))
+! device pointer mode: _full_rank_devptr, alpha and beta as device pointers
+call hipblasCheck(hipblasSgemv(h, HIPBLAS_OP_N, m, n, d_alpha, dA, lda, dx, 1, d_beta, dy, 1))
+! any mode: the bind(C) form, everything as type(c_ptr)
+call hipblasCheck(hipblasSgemv(h, HIPBLAS_OP_N, m, n, c_loc(alpha), c_loc(dA), lda, &
+                               c_loc(dx), 1, c_loc(beta), c_loc(dy), 1))
+```
+
+Without the metadata, `alpha` and `beta` would be buffers: arrays of one element.
+
+### The metadata file
+
+| | |
+|---|---|
+| **where** | `src/<lib>/metadata/<lib>.toml` in the generator; when a run reads a checkout, the checkout's own `metadata/` next to the module replaces it (`projects/fortran/metadata/` in rocm-systems, `projects/<proj>/fortran/metadata/` in rocm-libraries) |
+| **none** | a missing or empty file means no metadata: the C declarations alone |
+| **`format = 1`** | required as soon as there is an entry; the version of this schema, not of the generator |
+| **tables** | one per C function, keyed by its arguments' names as the C header spells them |
+| **braces** | a key names several functions as in a shell, `["hipsolver{S,D,C,Z}gebrd"]`, or `["x{,_64}"]` with an empty alternative; a function named by two keys is an error |
+| **variants** | an `_spt` variant without a table takes the whole table of the same function without `_spt`, an ILP64 `_64` variant that of the 32-bit one; a table of its own replaces the base's entirely; a `_v2`, a new API, inherits nothing |
 
 ```toml
 format = 1
 
+["hipblas{S,D,C,Z}gemv"]
+alpha = "scalar-host-or-device"
+beta = "scalar-host-or-device"
+
 ["hipsolver{S,D,C,Z}gebrd"]
-work = "always-c-ptr"
 devInfo = "scalar-device"
 
 ["rocblas_{s,d}rotg_strided_batched"]
 a = "1d"
 ```
 
-`./gen.sh --explain <c-function> ...` prints the table that applies to each function and where it comes from
-(the key that names it, the base it inherits from, the `["*"]` entries), from the checkouts' metadata with
-`ROCM_SYSTEMS` / `ROCM_LIBRARIES`:
+### The values
 
-```text
-$ ./gen.sh --explain rocblas_ddot_64
-rocblas_ddot_64: src/rocblas/metadata/rocblas.toml
-  ["rocblas_{s,d,h,bf}dot"] (inherited from rocblas_ddot)
-    myResult = ["scalar-host-or-device", "always-c-ptr"]
-```
-
-An argument takes one value, or a list of values that answer different questions.
-Each question takes at most one answer; without one, the generator goes by the C declaration.
+An argument takes one value, or a list of values that answer different questions, each at most once:
+`x = "scalar-host"`, `x = ["scalar-host", "nullable"]`.
+Without an answer, the generator goes by the C declaration, as above.
 
 **What is it?**
 
-| Value | Meaning |
-|---|---|
-| `scalar-host` | a pointer to one value, read or written on the host: a `_typed` form takes the Fortran variable |
-| `scalar-device` | a pointer to one value in device memory (hipSOLVER's `devInfo`): no form takes a host variable |
-| `scalar-host-or-device` | a pointer to one value, on the host or the device as the handle's pointer mode says: `_typed` for the host, `_devptr` for the device |
-| `struct-array` | a pointer to a C struct that is an array, `type(T) :: x(*)`, not one element (intrinsic types: see `scalar-*`) |
-| `function-pointer` | a function pointer declared `void*`: `type(c_funptr), value` |
+| Value | Meaning | Example |
+|---|---|---|
+| `scalar-host` | a pointer to one value, read or written on the host: `X_typed` takes the variable | `lwork` of a `_bufferSize` |
+| `scalar-device` | a pointer to one value in device memory: no form takes a host variable | hipSOLVER's `devInfo` |
+| `scalar-host-or-device` | a pointer to one value, on the host or the device as the handle's pointer mode says | BLAS `alpha`, `beta` |
+| `struct-array` | a pointer to a C struct that is an array, `type(T) :: x(*)`, not one element | hipFFTW's `dims` |
+| `function-pointer` | a function pointer declared `void*`: `type(c_funptr), value` | a kernel |
 
 **How is it passed?**
 
-| Value | Meaning |
-|---|---|
-| `by-value` | by value although its C type is a pointer |
-| `by-reference` | an array of pointers kept by reference, so a caller can pass one pointer variable |
+| Value | Meaning | Example |
+|---|---|---|
+| `by-value` | by value although its C type is a pointer | `extra` of `hipModuleLaunchKernel` |
+| `by-reference` | an array of pointers kept by reference, so a caller can pass one pointer variable | `rocfft_execute`'s buffers |
 
-An array of pointers written with an explicit `*` (`T* x[]`, `T* const* x`) is passed by value: the caller passes a `c_ptr` to the array.
-A plain `T**` is an output, and an array of a pointer typedef (`const hipGraphNode_t*`) an array of handles: both stay by reference.
+**Its rank in the array forms** (F2008 and F2018)
 
-**Its rank in the array forms** (F2008 and F2018 only)
-
-| Value | Meaning |
-|---|---|
-| `1d`, `2d`, `3d` | that rank |
-| `any-rank` | rank 0 to 3, all buffers alike (an FFT's data, whose rank the plan decides) |
-
-Without one, a buffer's rank is 1, plus 1 when a leading dimension (`lda`, ...) follows it,
-plus 1 when a batch stride (`stride_A`, `stridex`, ...) follows that or its increment:
-`gemv`'s `A` is 2-D, `gemm_strided_batched`'s `A` 3-D and `x` of a strided-batched vector routine 2-D.
+| Value | Meaning | Example |
+|---|---|---|
+| `1d`, `2d`, `3d` | that rank, where the natural rank above is wrong | `rotg_strided_batched`'s per-batch scalars: `1d` |
+| `any-rank` | rank 0 to 3, all buffers alike, instead of `_full_rank` | an FFT's data, whose rank the plan decides |
 
 **Adjustments**
 
-| Value | Meaning |
-|---|---|
-| `nullable` | the C API accepts NULL: `optional` in the forms that take Fortran variables |
-| `always-c-ptr` | stays `type(c_ptr)` in the array forms too (a workspace, an output in device pointer mode) |
+| Value | Meaning | Example |
+|---|---|---|
+| `nullable` | the C API accepts NULL: `optional` in the forms that take Fortran variables | rocSPARSE's `p_error` |
+| `always-c-ptr` | a buffer that stays `type(c_ptr)` in the array forms too; not for scalars, whose array forms already have a `_devptr` twin | a batch of results |
 
-Every function with a data buffer gets array forms: `_rank_0` and `_rank_1` (each buffer a scalar, or a vector),
-`_full_rank` (each buffer at its rank above) in F2008, and `_assumed_rank` in F2018.
-`fortran-arrays = false` in a function's table withholds them.
-`format` is the version of this schema, not of the generator: it changes only when the meaning of a file does.
+**A function** can also say `fortran-arrays = false` in its table: no array forms.
+Every function with a data buffer gets them otherwise.
+
+### Checking
+
+- `./gen.sh --explain <c-function> ...` prints the table that applies to each function and where it comes from;
+  with `ROCM_SYSTEMS` / `ROCM_LIBRARIES`, from the checkouts' metadata:
+
+  ```text
+  $ ./gen.sh --explain rocblas_ddot_64
+  rocblas_ddot_64: src/rocblas/metadata/rocblas.toml
+    ["rocblas_{s,d,h,bf}dot"] (inherited from rocblas_ddot)
+      result = "scalar-host-or-device"
+  ```
+
+- A malformed file stops the generation: an unknown value, two answers to one question,
+  `always-c-ptr` on a scalar, a function named twice, entries without `format = 1`.
+- A table that matches no declared function, or an argument the function does not have,
+  is reported as a warning (a typo, an API removed, or one newer than the headers read).
+- A generation that adds a function whose arguments look like scalars (`alpha`, `beta`, ...) but are not classified
+  reports it, so the bot's pull request can classify them.
 
 ## Checks
 

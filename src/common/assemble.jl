@@ -60,7 +60,7 @@ function gen_files(output_dir::String, cfg::Dict, funcs::Vector{FuncInfo},
   for (nm, _) in macros; push!(own_consts, nm); end
 
   meta = LibMeta(; dims = md.dims,
-                 no_arrays_by = Dict(fn => fn in md.no_arrays for fn in keys(md.tables) if fn != "*"),
+                 no_arrays_by = Dict(fn => fn in md.no_arrays for fn in keys(md.tables)),
                  scalar_ptrs, ptrmode,
                  cptr_args = md.cptr,
                  # `device` scalars are also scalar_ptrs (so stay type(c_ptr)); this

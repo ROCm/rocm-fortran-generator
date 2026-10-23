@@ -1,10 +1,10 @@
 # Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
-# What the hip C headers cannot express. One table per C function, and
-# `["*"]` for every function; a key with braces names several. A _64 or _spt
-# variant without a table takes its base's. See "Fixing a binding" in the
-# generator README; `gen.sh --explain <function>` shows what applies.
+# What the hip C headers cannot express: one table per C function, and a key
+# with braces names several. A _64 or _spt variant without a table takes its
+# base's. See "Fixing a binding" in the generator README; `gen.sh --explain
+# <function>` shows what applies.
 
 format = 1
 # nullable:

@@ -62,8 +62,8 @@ end
 
 """
 The metadata file of one library, metadata/<lib>.toml: what its C headers cannot
-express. One table per C function, whose keys are argument names, plus a `["*"]`
-table that applies to every function. A key may name several functions with
+express. One table per C function, whose keys are argument names. A key may
+name several functions with
 braces (`["hipsolver{S,D,C,Z}gebrd"]`); a function named twice is an error. A `_64`
 or `_spt` variant without a table of its own takes its base's whole table.
 
@@ -94,8 +94,8 @@ An argument takes one value, or a list of values that answer different questions
     any-rank               the array forms take it at rank 0 to 3 (an FFT's data)
   Adjustments:
     nullable               the C API accepts NULL: OPTIONAL in Fortran
-    always-c-ptr           stays type(c_ptr) in the array forms too (a workspace,
-                           an output in device pointer mode)
+    always-c-ptr           a buffer that stays type(c_ptr) in the array forms too
+                           (not for scalars, whose array forms have a _devptr twin)
 
 A function gets array forms (F2008 per-rank, F2018 assumed-rank) when it has a
 data buffer; `fortran-arrays = false` in its table withholds them.
@@ -129,8 +129,6 @@ const PASSING_VALUES = ("by-value", "by-reference")
 const DIM_VALUES = Dict("1d" => 1, "2d" => 2, "3d" => 3, "any-rank" => ANY_RANK)
 const ADJUST_VALUES = ("nullable", "always-c-ptr")
 const ARG_VALUES = (KIND_VALUES..., PASSING_VALUES..., "1d", "2d", "3d", "any-rank", ADJUST_VALUES...)
-# How a C argument is passed, which [\"*\"] may set for every function.
-const STAR_VALUES = ("struct-array", "function-pointer", PASSING_VALUES..., "nullable")
 
 function empty_metadata(path::String="")
   d() = Dict{String,Set{String}}()
@@ -161,7 +159,7 @@ function load_metadata(path::String) :: Metadata
       bad("[$(k)]: $(sprint(showerror, e))")
     end
     for fn in names
-      fn == "*" || occursin(r"^[A-Za-z_][A-Za-z0-9_]*$", fn) ||
+      occursin(r"^[A-Za-z_][A-Za-z0-9_]*$", fn) ||
         bad("[$(k)] names `$(fn)`, which is not a C function name")
       haskey(md.origin, fn) && bad("`$(fn)` has two tables, [$(md.origin[fn])] and [$(k)]")
       md.origin[fn] = k
@@ -171,7 +169,6 @@ function load_metadata(path::String) :: Metadata
   for (fn, tbl) in md.tables
     for (key, v) in tbl
       if key == "fortran-arrays"
-        fn == "*" && bad("[\"*\"] cannot set fortran-arrays")
         v === false || bad("[$(fn)] fortran-arrays: only `false` is meaningful, not $(repr(v))")
         push!(md.no_arrays, fn)
         continue
@@ -185,8 +182,8 @@ function load_metadata(path::String) :: Metadata
         count(in(group), vals) <= 1 ||
           bad("[$(fn)] $(key) = $(repr(v)): more than one answer to $(what) ($(join(group, ", ")))")
       end
-      fn == "*" && !all(in(STAR_VALUES), vals) &&
-        bad("[\"*\"] $(key) = $(repr(v)): only $(join(STAR_VALUES, ", ")) apply to every function")
+      "always-c-ptr" in vals && any(in(KIND_VALUES), vals) &&
+        bad("[$(fn)] $(key) = $(repr(v)): always-c-ptr applies to buffers; a scalar's array forms already have a _devptr twin taking it as type(c_ptr)")
       # Store names in their emitted spelling (safe_argname, idempotent), since every
       # consumer compares against a.name; both `value` and `myValue` are accepted.
       a = safe_argname(String(key))
@@ -208,7 +205,6 @@ function load_metadata(path::String) :: Metadata
   # A function's own table replaces its base's entirely: give every table an entry,
   # empty where it says nothing, so meta_get stops there instead of falling back.
   for fn in keys(md.tables)
-    fn == "*" && continue
     for d in (md.scalar, md.ptrmode, md.devonly, md.cptr, md.optional, md.byvalue,
               md.funptr, md.arrays, md.byref)
       get!(d, fn, Set{String}())
@@ -272,8 +268,7 @@ end
 # any-rank function, which already cover them.
 wants_fullrank(f::FuncInfo, meta::LibMeta) = native_maxrank(f, meta) == 1
 
-# Argument-passing overrides the C headers cannot express; the `["*"]` table
-# applies to every function.
+# Argument-passing overrides the C headers cannot express.
 #   value     force `, value`: HIP's `void** extra` passed by reference sends the
 #             address of a NULL variable, never NULL, and HIP rejects the launch
 #             (kernelParams, same C type, is by reference).
@@ -287,7 +282,7 @@ function apply_arg_overrides(funcs::Vector{FuncInfo}, md::Metadata) :: Vector{Fu
   byval, funptr, opt, arrs, refs = md.byvalue, md.funptr, md.optional, md.arrays, md.byref
   libname = replace(basename(md.path), r"\.toml$" => "")
   all(isempty, (byval, funptr, opt, arrs, refs)) && return funcs
-  names(d, f) = union(get(d, f.name, Set{String}()), get(d, "*", Set{String}()))
+  names(d, f) = get(d, f.name, Set{String}())
   out = FuncInfo[]
   rejected = String[]
   for f in funcs
@@ -417,7 +412,6 @@ function check_metadata_names(funcs::Vector{FuncInfo}, md::Metadata)
   end
   stale_keys, stale_args = String[], String[]
   for fn in sort!(collect(keys(md.tables)))
-    fn == "*" && continue
     k = md.origin[fn]
     where = k == fn ? fn : "$(fn) (from [$(k)])"
     if !haskey(args_of, fn)

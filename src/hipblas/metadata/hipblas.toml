@@ -1,10 +1,10 @@
 # Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 #
-# What the hipblas C headers cannot express. One table per C function, and
-# `["*"]` for every function; a key with braces names several. A _64 or _spt
-# variant without a table takes its base's. See "Fixing a binding" in the
-# generator README; `gen.sh --explain <function>` shows what applies.
+# What the hipblas C headers cannot express: one table per C function, and a key
+# with braces names several. A _64 or _spt variant without a table takes its
+# base's. See "Fixing a binding" in the generator README; `gen.sh --explain
+# <function>` shows what applies.
 
 format = 1
 
@@ -18,7 +18,7 @@ alpha = "scalar-host-or-device"
 alpha = "scalar-host-or-device"
 
 ["hipblas{S,D,Bf}dot"]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 ["hipblas{S,D,Bf}dotBatched"]
 result = "always-c-ptr"
@@ -36,7 +36,7 @@ alpha = "scalar-host-or-device"
 alpha = "scalar-host-or-device"
 
 ["hipblas{C,Z}dotc"]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 ["hipblas{C,Z}dotcBatched"]
 result = "always-c-ptr"
@@ -45,7 +45,7 @@ result = "always-c-ptr"
 result = "always-c-ptr"
 
 ["hipblas{C,Z}dotu"]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 ["hipblas{C,Z}dotuBatched"]
 result = "always-c-ptr"
@@ -114,14 +114,14 @@ alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
 ["hipblas{S,D,C,Z}geqrf"]
-info = ["scalar-host", "always-c-ptr"]
+info = "scalar-host"
 
 ["hipblas{S,D,C,Z}geqrfBatched"]
 ipiv = "always-c-ptr"
-info = ["scalar-host", "always-c-ptr"]
+info = "scalar-host"
 
 ["hipblas{S,D,C,Z}geqrfStridedBatched"]
-info = ["scalar-host", "always-c-ptr"]
+info = "scalar-host"
 
 ["hipblas{C,Z}gerc"]
 alpha = "scalar-host-or-device"
@@ -156,14 +156,14 @@ ipiv = "always-c-ptr"
 info = "always-c-ptr"
 
 ["hipblas{S,D,C,Z}getrs"]
-info = ["scalar-host", "always-c-ptr"]
+info = "scalar-host"
 
 ["hipblas{S,D,C,Z}getrsBatched"]
 ipiv = "always-c-ptr"
-info = ["scalar-host", "always-c-ptr"]
+info = "scalar-host"
 
 ["hipblas{S,D,C,Z}getrsStridedBatched"]
-info = ["scalar-host", "always-c-ptr"]
+info = "scalar-host"
 
 ["hipblas{C,Z}hbmv"]
 alpha = "scalar-host-or-device"
@@ -286,8 +286,8 @@ alpha = "scalar-host-or-device"
 alpha = "scalar-host-or-device"
 
 ["hipblas{S,D,C,Z}rot"]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
+c = "scalar-host-or-device"
+s = "scalar-host-or-device"
 
 ["hipblas{S,D,C,Z}rotBatched"]
 c = "always-c-ptr"
@@ -328,8 +328,8 @@ alpha = "scalar-host-or-device"
 alpha = "scalar-host-or-device"
 
 [hipblasCsrot]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
+c = "scalar-host-or-device"
+s = "scalar-host-or-device"
 
 [hipblasCsrotBatched]
 c = "always-c-ptr"
@@ -445,7 +445,7 @@ alpha = "scalar-host-or-device"
 alpha = "scalar-host-or-device"
 
 ["hipblas{S,D}asum"]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 ["hipblas{S,D}asumBatched"]
 result = "always-c-ptr"
@@ -463,7 +463,7 @@ alpha = "scalar-host-or-device"
 alpha = "scalar-host-or-device"
 
 ["hipblas{S,D}nrm2"]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 ["hipblas{S,D}nrm2Batched"]
 result = "always-c-ptr"
@@ -526,7 +526,7 @@ alpha = "scalar-host-or-device"
 alpha = "scalar-host-or-device"
 
 [hipblasDzasum]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 [hipblasDzasumBatched]
 result = "always-c-ptr"
@@ -535,7 +535,7 @@ result = "always-c-ptr"
 result = "always-c-ptr"
 
 [hipblasDznrm2]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 [hipblasDznrm2Batched]
 result = "always-c-ptr"
@@ -593,7 +593,7 @@ alpha = "scalar-host-or-device"
 beta = "scalar-host-or-device"
 
 [hipblasIcamax]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 [hipblasIcamaxBatched]
 result = "always-c-ptr"
@@ -602,7 +602,7 @@ result = "always-c-ptr"
 result = "always-c-ptr"
 
 [hipblasIcamin]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 [hipblasIcaminBatched]
 result = "always-c-ptr"
@@ -611,7 +611,7 @@ result = "always-c-ptr"
 result = "always-c-ptr"
 
 [hipblasIdamax]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 [hipblasIdamaxBatched]
 result = "always-c-ptr"
@@ -620,7 +620,7 @@ result = "always-c-ptr"
 result = "always-c-ptr"
 
 [hipblasIdamin]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 [hipblasIdaminBatched]
 result = "always-c-ptr"
@@ -629,7 +629,7 @@ result = "always-c-ptr"
 result = "always-c-ptr"
 
 [hipblasIsamax]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 [hipblasIsamaxBatched]
 result = "always-c-ptr"
@@ -638,7 +638,7 @@ result = "always-c-ptr"
 result = "always-c-ptr"
 
 [hipblasIsamin]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 [hipblasIsaminBatched]
 result = "always-c-ptr"
@@ -647,7 +647,7 @@ result = "always-c-ptr"
 result = "always-c-ptr"
 
 [hipblasIzamax]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 [hipblasIzamaxBatched]
 result = "always-c-ptr"
@@ -656,7 +656,7 @@ result = "always-c-ptr"
 result = "always-c-ptr"
 
 [hipblasIzamin]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 [hipblasIzaminBatched]
 result = "always-c-ptr"
@@ -674,7 +674,7 @@ alpha = "scalar-host-or-device"
 alpha = "scalar-host-or-device"
 
 [hipblasScasum]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 [hipblasScasumBatched]
 result = "always-c-ptr"
@@ -683,7 +683,7 @@ result = "always-c-ptr"
 result = "always-c-ptr"
 
 [hipblasScnrm2]
-result = ["scalar-host-or-device", "always-c-ptr"]
+result = "scalar-host-or-device"
 
 [hipblasScnrm2Batched]
 result = "always-c-ptr"
@@ -705,8 +705,8 @@ alpha = "scalar-host-or-device"
 alpha = "scalar-host-or-device"
 
 [hipblasZdrot]
-c = ["scalar-host-or-device", "always-c-ptr"]
-s = ["scalar-host-or-device", "always-c-ptr"]
+c = "scalar-host-or-device"
+s = "scalar-host-or-device"
 
 [hipblasZdrotBatched]
 c = "always-c-ptr"

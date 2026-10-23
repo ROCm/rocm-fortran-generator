@@ -24,8 +24,8 @@
 ###############################################################################
 
 # Which metadata applies to a C function, and where it comes from: the table that
-# names it (after brace expansion, or inherited by a _64/_spt variant) and the
-# `["*"]` entries. Reads the checkouts' metadata like gen.sh does.
+# names it, after brace expansion, or inherited by a _64/_spt variant. Reads the
+# checkouts' metadata like gen.sh does.
 #
 #   ROCM_LIBRARIES=<checkout> julia --project=src src/explain_metadata.jl rocblas_ddot_64
 
@@ -51,7 +51,6 @@ function explain(io, name, s::HeaderSources)
     path = joinpath(lib_metadata(s, lib), "$(lib).toml")
     md = load_metadata(path)
     hit = applying_table(md, name)
-    star = get(md.tables, "*", nothing)
     owns = lib == owner
     hit === nothing && !owns && continue
     found = true
@@ -64,12 +63,6 @@ function explain(io, name, s::HeaderSources)
       via = fn == name ? "" : " (inherited from $(fn))"
       println(io, "  [$(key == fn ? fn : repr(key))]$(via)")
       for (a, v) in sort!(collect(tbl); by = first)
-        println(io, "    $(a) = $(fmt_values(v))")
-      end
-    end
-    if star !== nothing && owns
-      println(io, "  [\"*\"], every function:")
-      for (a, v) in sort!(collect(star); by = first)
         println(io, "    $(a) = $(fmt_values(v))")
       end
     end
