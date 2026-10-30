@@ -709,6 +709,17 @@ overlong_fortran_lines(s::AbstractString) =
             end
         end
 
+        # hipSOLVER's batched compat routines (hipsolver[SDCZ]...Batched) write one
+        # info per batch entry: their devInfo is an array of batch_count, a buffer,
+        # never an .argkinds scalar (hInfo, a single host int, stays one).
+        let md = joinpath(@__DIR__, "..", "hipsolver", "metadata")
+            for ext in ("argkinds", "ptrmode", "devonly")
+                bad = [k for (k, v) in load_argkinds(joinpath(md, "hipsolver.$ext"))
+                       if occursin(r"^hipsolver[SDCZ]\w*Batched$", k) && "devInfo" in v]
+                @test isempty(bad)
+            end
+        end
+
         # anonymous-enum spellings lose the absolute include path
         @test stable_enum_name("enum (unnamed at /opt/rocm/include/hip/hip_runtime_api.h:37:1)") ==
               "enum (unnamed at hip/hip_runtime_api.h:37:1)"

@@ -6,7 +6,7 @@ hipsolverCCgesv devInfo niters
 hipsolverCCgesv_bufferSize lwork
 hipsolverCgebrd devInfo
 hipsolverCgebrd_bufferSize lwork
-hipsolverCgelsBatched hInfo devInfo
+hipsolverCgelsBatched hInfo
 hipsolverCgelsBatched_bufferSize lwork
 hipsolverCgeqrf devInfo
 hipsolverCgeqrfBatched hInfo
@@ -14,14 +14,11 @@ hipsolverCgeqrfBatched_bufferSize lwork
 hipsolverCgeqrf_bufferSize lwork
 hipsolverCgesvd_bufferSize lwork
 hipsolverCgesvdj devInfo
-hipsolverCgesvdjBatched devInfo
 hipsolverCgesvdjBatched_bufferSize lwork
 hipsolverCgesvdj_bufferSize lwork
 hipsolverCgetrf devInfo
-hipsolverCgetrfBatched devInfo
 hipsolverCgetrfBatched_bufferSize lwork
 hipsolverCgetrf_bufferSize lwork
-hipsolverCgetriBatched devInfo
 hipsolverCgetriBatched_bufferSize lwork
 hipsolverCgetrs devInfo
 hipsolverCgetrsBatched hInfo
@@ -32,7 +29,6 @@ hipsolverCheevd_bufferSize lwork
 hipsolverCheevdx devInfo nev
 hipsolverCheevdx_bufferSize lwork nev
 hipsolverCheevj devInfo
-hipsolverCheevjBatched devInfo
 hipsolverCheevjBatched_bufferSize lwork
 hipsolverCheevj_bufferSize lwork
 hipsolverChegvd devInfo
@@ -44,13 +40,11 @@ hipsolverChegvj_bufferSize lwork
 hipsolverChetrd devInfo
 hipsolverChetrd_bufferSize lwork
 hipsolverCpotrf devInfo
-hipsolverCpotrfBatched devInfo
 hipsolverCpotrfBatched_bufferSize lwork
 hipsolverCpotrf_bufferSize lwork
 hipsolverCpotri devInfo
 hipsolverCpotri_bufferSize lwork
 hipsolverCpotrs devInfo
-hipsolverCpotrsBatched devInfo
 hipsolverCpotrsBatched_bufferSize lwork
 hipsolverCpotrs_bufferSize lwork
 hipsolverCsytrf devInfo
@@ -71,7 +65,7 @@ hipsolverDDgesv devInfo niters
 hipsolverDDgesv_bufferSize lwork
 hipsolverDgebrd devInfo
 hipsolverDgebrd_bufferSize lwork
-hipsolverDgelsBatched hInfo devInfo
+hipsolverDgelsBatched hInfo
 hipsolverDgelsBatched_bufferSize lwork
 hipsolverDgeqrf devInfo
 hipsolverDgeqrfBatched hInfo
@@ -79,14 +73,11 @@ hipsolverDgeqrfBatched_bufferSize lwork
 hipsolverDgeqrf_bufferSize lwork
 hipsolverDgesvd_bufferSize lwork
 hipsolverDgesvdj devInfo
-hipsolverDgesvdjBatched devInfo
 hipsolverDgesvdjBatched_bufferSize lwork
 hipsolverDgesvdj_bufferSize lwork
 hipsolverDgetrf devInfo
-hipsolverDgetrfBatched devInfo
 hipsolverDgetrfBatched_bufferSize lwork
 hipsolverDgetrf_bufferSize lwork
-hipsolverDgetriBatched devInfo
 hipsolverDgetriBatched_bufferSize lwork
 hipsolverDgetrs devInfo
 hipsolverDgetrsBatched hInfo
@@ -236,13 +227,11 @@ hipsolverDormqr_bufferSize lwork
 hipsolverDormtr devInfo
 hipsolverDormtr_bufferSize lwork
 hipsolverDpotrf devInfo
-hipsolverDpotrfBatched devInfo
 hipsolverDpotrfBatched_bufferSize lwork
 hipsolverDpotrf_bufferSize lwork
 hipsolverDpotri devInfo
 hipsolverDpotri_bufferSize lwork
 hipsolverDpotrs devInfo
-hipsolverDpotrsBatched devInfo
 hipsolverDpotrsBatched_bufferSize lwork
 hipsolverDpotrs_bufferSize lwork
 hipsolverDsyevd devInfo
@@ -250,7 +239,6 @@ hipsolverDsyevd_bufferSize lwork
 hipsolverDsyevdx devInfo nev
 hipsolverDsyevdx_bufferSize lwork nev
 hipsolverDsyevj devInfo
-hipsolverDsyevjBatched devInfo
 hipsolverDsyevjBatched_bufferSize lwork
 hipsolverDsyevj_bufferSize lwork
 hipsolverDsygvd devInfo
@@ -278,7 +266,7 @@ hipsolverSSgesv devInfo niters
 hipsolverSSgesv_bufferSize lwork
 hipsolverSgebrd devInfo
 hipsolverSgebrd_bufferSize lwork
-hipsolverSgelsBatched hInfo devInfo
+hipsolverSgelsBatched hInfo
 hipsolverSgelsBatched_bufferSize lwork
 hipsolverSgeqrf devInfo
 hipsolverSgeqrfBatched hInfo
@@ -286,14 +274,11 @@ hipsolverSgeqrfBatched_bufferSize lwork
 hipsolverSgeqrf_bufferSize lwork
 hipsolverSgesvd_bufferSize lwork
 hipsolverSgesvdj devInfo
-hipsolverSgesvdjBatched devInfo
 hipsolverSgesvdjBatched_bufferSize lwork
 hipsolverSgesvdj_bufferSize lwork
 hipsolverSgetrf devInfo
-hipsolverSgetrfBatched devInfo
 hipsolverSgetrfBatched_bufferSize lwork
 hipsolverSgetrf_bufferSize lwork
-hipsolverSgetriBatched devInfo
 hipsolverSgetriBatched_bufferSize lwork
 hipsolverSgetrs devInfo
 hipsolverSgetrsBatched hInfo
@@ -318,13 +303,11 @@ hipsolverSpScsrlsvcholHost singularity
 hipsolverSpScsrlsvqr singularity
 hipsolverSpZcsrlsvqr singularity
 hipsolverSpotrf devInfo
-hipsolverSpotrfBatched devInfo
 hipsolverSpotrfBatched_bufferSize lwork
 hipsolverSpotrf_bufferSize lwork
 hipsolverSpotri devInfo
 hipsolverSpotri_bufferSize lwork
 hipsolverSpotrs devInfo
-hipsolverSpotrsBatched devInfo
 hipsolverSpotrsBatched_bufferSize lwork
 hipsolverSpotrs_bufferSize lwork
 hipsolverSsyevd devInfo
@@ -332,7 +315,6 @@ hipsolverSsyevd_bufferSize lwork
 hipsolverSsyevdx devInfo nev
 hipsolverSsyevdx_bufferSize lwork nev
 hipsolverSsyevj devInfo
-hipsolverSsyevjBatched devInfo
 hipsolverSsyevjBatched_bufferSize lwork
 hipsolverSsyevj_bufferSize lwork
 hipsolverSsygvd devInfo
@@ -355,7 +337,7 @@ hipsolverZZgesv devInfo niters
 hipsolverZZgesv_bufferSize lwork
 hipsolverZgebrd devInfo
 hipsolverZgebrd_bufferSize lwork
-hipsolverZgelsBatched hInfo devInfo
+hipsolverZgelsBatched hInfo
 hipsolverZgelsBatched_bufferSize lwork
 hipsolverZgeqrf devInfo
 hipsolverZgeqrfBatched hInfo
@@ -363,14 +345,11 @@ hipsolverZgeqrfBatched_bufferSize lwork
 hipsolverZgeqrf_bufferSize lwork
 hipsolverZgesvd_bufferSize lwork
 hipsolverZgesvdj devInfo
-hipsolverZgesvdjBatched devInfo
 hipsolverZgesvdjBatched_bufferSize lwork
 hipsolverZgesvdj_bufferSize lwork
 hipsolverZgetrf devInfo
-hipsolverZgetrfBatched devInfo
 hipsolverZgetrfBatched_bufferSize lwork
 hipsolverZgetrf_bufferSize lwork
-hipsolverZgetriBatched devInfo
 hipsolverZgetriBatched_bufferSize lwork
 hipsolverZgetrs devInfo
 hipsolverZgetrsBatched hInfo
@@ -381,7 +360,6 @@ hipsolverZheevd_bufferSize lwork
 hipsolverZheevdx devInfo nev
 hipsolverZheevdx_bufferSize lwork nev
 hipsolverZheevj devInfo
-hipsolverZheevjBatched devInfo
 hipsolverZheevjBatched_bufferSize lwork
 hipsolverZheevj_bufferSize lwork
 hipsolverZhegvd devInfo
@@ -393,13 +371,11 @@ hipsolverZhegvj_bufferSize lwork
 hipsolverZhetrd devInfo
 hipsolverZhetrd_bufferSize lwork
 hipsolverZpotrf devInfo
-hipsolverZpotrfBatched devInfo
 hipsolverZpotrfBatched_bufferSize lwork
 hipsolverZpotrf_bufferSize lwork
 hipsolverZpotri devInfo
 hipsolverZpotri_bufferSize lwork
 hipsolverZpotrs devInfo
-hipsolverZpotrsBatched devInfo
 hipsolverZpotrsBatched_bufferSize lwork
 hipsolverZpotrs_bufferSize lwork
 hipsolverZsytrf devInfo
