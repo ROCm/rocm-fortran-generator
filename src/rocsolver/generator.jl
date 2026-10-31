@@ -54,8 +54,10 @@ function rocblas_link_dir(rocblas_include::String) :: Union{String,Nothing}
   return dir
 end
 
-function main()
-  run_library_generator(@__DIR__;
+# `run` is run_library_generator, or library_funcs to parse without generating
+# (explain_metadata.jl).
+function main(run = run_library_generator)
+  run(@__DIR__;
     # <rocblas/rocblas.h> and rocBLAS's internal/ headers, from the installed
     # include dir or the sibling project of a rocm-libraries checkout.
     argshook = function (args, include_dir, hdrs)
@@ -70,4 +72,6 @@ function main()
     end)
 end
 
-main()
+if abspath(PROGRAM_FILE) == @__FILE__
+  main()
+end

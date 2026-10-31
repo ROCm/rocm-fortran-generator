@@ -30,8 +30,10 @@
 
 include("../common/fortran_gen.jl")
 
-function main()
-  run_library_generator(@__DIR__;
+# `run` is run_library_generator, or library_funcs to parse without generating
+# (explain_metadata.jl).
+function main(run = run_library_generator)
+  run(@__DIR__;
     # hiprand_compat.h stubs out the C++ HIP headers hiprand.h includes.
     argshook = function (args, include_dir, hdrs)
       push!(args, "-I$(@__DIR__)")
@@ -43,4 +45,6 @@ function main()
     end)
 end
 
-main()
+if abspath(PROGRAM_FILE) == @__FILE__
+  main()
+end

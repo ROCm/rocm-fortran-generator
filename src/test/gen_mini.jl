@@ -25,7 +25,7 @@
 
 # Shared mini-fixture bootstrap for runtests.jl, compile_golden.jl and
 # array_ifaces.jl, so they all exercise the same module. The mini metadata
-# (.native, .argkinds) is read from fixtures/mini/ through the config's
+# (metadata/mini.toml) is read from fixtures/mini/ through the config's
 # metadata_dir.
 
 const COMMON = normpath(joinpath(@__DIR__, "..", "common"))

@@ -4,6 +4,8 @@ name = "hipsolver"
 [library]
 enum_rename = ["HIPBLAS_", "HIPSOLVER_"]
 prefix = "hipsolver"
+# A routine taking one of these handles ends with the info the kernel writes.
+solver_info_handles = ["hipsolverHandle_t", "hipsolverDnHandle_t"]
 opaque_handles = [
   "hipsolverHandle_t",
   "hipsolverDnHandle_t",

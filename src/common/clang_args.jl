@@ -419,10 +419,69 @@ function alias_function_macros!(funcs, cfg::Dict, ctx, tu, root, own_headers)
 end
 
 """
+    parse_library(dir, include_dir; headers, argshook, funcfilter) -> NamedTuple
+
+Parse one library's headers, as `run_library_generator` does, and generate nothing.
+Returns `cfg` (the library's TOML config), `headers` (the headers parsed), `funcs`
+(the functions bound, after `funcfilter` and the forwarding-macro renames),
+`filtered` (the names `funcfilter` dropped), and `ctx`, `tu`, `root` for further
+walks of the translation unit. The hooks are those of `run_library_generator`.
+"""
+function parse_library(dir::AbstractString, include_dir::AbstractString;
+                       headers    = nothing,
+                       argshook   = nothing,
+                       funcfilter = nothing)
+  reset_generator_state!()
+  lib = basename(dir)
+  cfg = TOML.parsefile(joinpath(dir, "$(lib).toml"))
+
+  hdrs = if headers === nothing
+    found = find_headers(cfg, include_dir)
+    @info "Parsing: $(only(found))"
+    found
+  else
+    headers(include_dir)
+  end
+
+  args = make_clang_args(cfg, include_dir)
+  argshook === nothing || argshook(args, include_dir, hdrs)
+
+  ctx, tu = parse_checked(hdrs, args)
+  root = Clang.getTranslationUnitCursor(tu)
+
+  prefix = cfg["library"]["prefix"]
+  funcs = GC.@preserve ctx tu collect_funcs(root, prefix)
+  @info "Found $(length(funcs)) $(prefix)* functions"
+  declared = [f.name for f in funcs]
+  funcfilter === nothing || (funcs = funcfilter(funcs))
+  filtered = setdiff(declared, [f.name for f in funcs])
+
+  funcs = alias_function_macros!(funcs, cfg, ctx, tu, root, own_headers_of(cfg))
+  return (; cfg, headers = hdrs, funcs, filtered, ctx, tu, root)
+end
+
+# An empty TOML array parses as Vector{Any}, which the typed keywords reject.
+strlist(x) = collect(String, x)
+own_headers_of(cfg::Dict) = strlist(get(cfg["library"], "own_headers", [cfg["general"]["name"]]))
+
+"""
+    library_funcs(dir; include_dir, headers, argshook, funcfilter, gen_kwargs...) -> (cfg, funcs, parsed)
+
+`parse_library`, called like `run_library_generator`, so that a generator's
+`main(library_funcs)` parses its headers with its own hooks and generates nothing
+(the `gen_kwargs` are ignored). `parsed` is everything `parse_library` returns.
+"""
+function library_funcs(dir::AbstractString; include_dir::AbstractString = "/opt/rocm/include",
+                       headers = nothing, argshook = nothing, funcfilter = nothing, gen_kwargs...)
+  p = parse_library(dir, abspath(include_dir); headers, argshook, funcfilter)
+  return p.cfg, p.funcs, p
+end
+
+"""
     run_library_generator(dir; headers, include_dir, argshook, funcfilter, gen_kwargs...)
 
-Parse one library's headers and emit its Fortran module: everything a
-`src/<lib>/generator.jl` does that is not genuinely per library.
+Parse one library's headers (`parse_library`) and emit its Fortran module:
+everything a `src/<lib>/generator.jl` does that is not genuinely per library.
 
 `dir` is the library's own source directory (`@__DIR__` at the call site); its
 name selects both the config (`<dir>/<lib>.toml`) and the default output
@@ -448,38 +507,14 @@ function run_library_generator(dir::AbstractString;
                                argshook   = nothing,
                                funcfilter = nothing,
                                gen_kwargs...)
-  reset_generator_state!()
-  lib = basename(dir)
-  cfg = TOML.parsefile(joinpath(dir, "$(lib).toml"))
-
   include_dir = abspath(length(ARGS) >= 1 ? ARGS[1] : include_dir)
   output_dir  = length(ARGS) >= 2 ? ARGS[2] : joinpath(dir, "output")
   mkpath(output_dir)
 
-  hdrs = if headers === nothing
-    found = find_headers(cfg, include_dir)
-    @info "Parsing: $(only(found))"
-    found
-  else
-    headers(include_dir)
-  end
+  (; cfg, funcs, ctx, tu, root) = parse_library(dir, include_dir; headers, argshook, funcfilter)
 
-  args = make_clang_args(cfg, include_dir)
-  argshook === nothing || argshook(args, include_dir, hdrs)
-
-  ctx, tu = parse_checked(hdrs, args)
-  root = Clang.getTranslationUnitCursor(tu)
-
-  prefix = cfg["library"]["prefix"]
-  # An empty TOML array parses as Vector{Any}, which the typed keywords reject.
-  strlist(x) = collect(String, x)
   handles = strlist(get(cfg["library"], "opaque_handles", String[]))
-
-  funcs = GC.@preserve ctx tu collect_funcs(root, prefix)
-  @info "Found $(length(funcs)) $(prefix)* functions"
-  funcfilter === nothing || (funcs = funcfilter(funcs))
-
-  own_headers = strlist(get(cfg["library"], "own_headers", [cfg["general"]["name"]]))
+  own_headers = own_headers_of(cfg)
   # reexport_enums: sibling libraries whose enums and constants are `use`d from the
   # sibling's module rather than duplicated (rocSOLVER takes rocBLAS's), so only
   # this library's own are emitted.
@@ -508,8 +543,6 @@ function run_library_generator(dir::AbstractString;
   structs = GC.@preserve ctx tu collect_structs(root; skip=handles, own=own_headers,
                                                 keep=strlist(get(cfg["library"], "keep_structs", String[])))
   @info "Found $(length(structs)) derived types"
-
-  funcs = alias_function_macros!(funcs, cfg, ctx, tu, root, own_headers)
 
   gen_files(output_dir, cfg, funcs, enums, structs; macros=macros, aliases=aliases,
             sibling_enum_mod=sibling_enum_mod, sibling_enums=sibling_enums, gen_kwargs...)

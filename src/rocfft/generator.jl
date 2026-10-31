@@ -30,9 +30,13 @@
 
 include("../common/fortran_gen.jl")
 
-function main()
-  run_library_generator(@__DIR__;
+# `run` is run_library_generator, or library_funcs to parse without generating
+# (explain_metadata.jl).
+function main(run = run_library_generator)
+  run(@__DIR__;
     argshook = (args, include_dir, hdrs) -> push!(args, "-I$(dirname(hdrs[1]))"))
 end
 
-main()
+if abspath(PROGRAM_FILE) == @__FILE__
+  main()
+end
