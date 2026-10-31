@@ -1,7 +1,0 @@
-# <function> <argument-forced-to-", value"> ...   (see apply_arg_overrides)
-#
-# The `double* X[]` host pointer arrays of hipsolverRfBatch*: only routines named
-# *batched* get such arrays by value automatically.
-hipsolverRfBatchResetValues csrValA_array
-hipsolverRfBatchSetupHost h_csrValA_array
-hipsolverRfBatchSolve XF_array

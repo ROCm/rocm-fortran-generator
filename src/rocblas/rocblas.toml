@@ -3,6 +3,8 @@ name = "rocblas"
 
 [library]
 prefix = "rocblas_"
+# alpha and beta follow the handle's pointer mode (rocblas_set_pointer_mode).
+pointer_mode = true
 opaque_handles = [
   "rocblas_handle",
 ]

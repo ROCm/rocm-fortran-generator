@@ -31,8 +31,10 @@
 include("../common/fortran_gen.jl")
 include("../common/blas_generics.jl")
 
-function main()
-  run_library_generator(@__DIR__;
+# `run` is run_library_generator, or library_funcs to parse without generating
+# (explain_metadata.jl).
+function main(run = run_library_generator)
+  run(@__DIR__;
     argshook = function (args, include_dir, hdrs)
       push!(args, "-I$(dirname(hdrs[1]))")
       # <hipblas-common/hipblas-common.h> is a separate project in the monorepo.
@@ -43,4 +45,6 @@ function main()
     blas_aux_hooks(:camel, "HIPBLAS_STATUS_SUCCESS")...)
 end
 
-main()
+if abspath(PROGRAM_FILE) == @__FILE__
+  main()
+end

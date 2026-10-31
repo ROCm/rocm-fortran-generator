@@ -32,14 +32,20 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 usage_spec() { cat <<'SPEC'
 name:  gen.sh
 brief: generate the Fortran bindings into fortran/, a build artifact of this repo
-usage: ./gen.sh [--overwrite] [library ...]
+usage: ./gen.sh [--overwrite] [library ...] | --explain <c-function> ...
 env:   ROCM_INCLUDE | /opt/rocm/include | installed ROCm headers, read unless ROCM_SYSTEMS is set
 env:   ROCM_SYSTEMS | - | rocm-systems checkout: generate HIP and ROCTx from it
 env:   ROCM_LIBRARIES | - | rocm-libraries checkout: generate the math libraries from it
 env:   ROCM_FORTRAN_OUT | fortran/ | the directory to generate into
+env:   ROCM_FORTRAN_STRICT | - | 1: a metadata entry the headers make inapplicable stops the run (otherwise: a warning, the entry ignored)
 exit:  0 | generated; fortran/.provenance records the libraries, header sources and HIP version
 exit:  1 | bad header source, or a library failed to generate
 exit:  2 | unknown option
+note:  --explain prints the metadata that applies to each C function named, and the
+note:  table it comes from (brace expansion, _64/_spt inheritance); with
+note:  ROCM_SYSTEMS/ROCM_LIBRARIES, from the checkouts' metadata. Then the defaults its
+note:  C signature gives the arguments the table does not name, from the headers the
+note:  run would read (each library parsed once).
 note:  Neither checkout set: all libraries, from ROCM_INCLUDE.
 note:  ROCM_SYSTEMS alone: HIP and ROCTx, from the checkout only (no ROCm installation).
 note:  ROCM_LIBRARIES alone: the math libraries, from the checkout, with only the
@@ -53,7 +59,7 @@ note:  <ROCM_SYSTEMS>/projects/fortran/<lib>.F90. It needs a checkout, the fortr
 note:  directory must already exist there, and a library that fails is not copied.
 note:  A run rewrites only the modules it generates: fortran/rocm-systems/fortran/
 note:  (HIP, ROCTx) and fortran/rocm-libraries/<lib>/ (the math libraries).
-note:  A checkout's fortran/metadata/ (rocm-systems: projects/fortran/metadata/;
+note:  A checkout's fortran/metadata/<lib>.toml (rocm-systems: projects/fortran/metadata/;
 note:  rocm-libraries: projects/<proj>/fortran/metadata/), when present, replaces the
 note:  generator's src/<lib>/metadata/ for that library.
 note:  The Julia dependencies are installed on the first run (Pkg.instantiate).
@@ -62,6 +68,15 @@ note:  C headers in rocm-systems/ and rocm-libraries/.
 SPEC
 }
 usage_peek "$@"
+
+[ -z "${ROCM_SYSTEMS:-}" ] || [ -z "${ROCM_INCLUDE:-}" ] ||
+  die 1 "ROCM_INCLUDE cannot be combined with ROCM_SYSTEMS (HIP comes from the checkout)"
+
+if [ "${1:-}" = --explain ]; then
+  shift
+  [ $# -gt 0 ] || usage_error "--explain needs a C function name"
+  exec julia --project="$ROOT/src" "$ROOT/src/explain_metadata.jl" "$@"
+fi
 
 OUT="${ROCM_FORTRAN_OUT:-$ROOT/fortran}"
 
@@ -80,8 +95,6 @@ fi
 
 # generate_all.jl validates the checkouts and selects the libraries.
 if [ -n "${ROCM_SYSTEMS:-}" ]; then
-  [ -z "${ROCM_INCLUDE:-}" ] ||
-    die 1 "ROCM_INCLUDE cannot be combined with ROCM_SYSTEMS (HIP comes from the checkout)"
   GEN_ARGS=("$OUT")
 else
   GEN_ARGS=("${ROCM_INCLUDE:-/opt/rocm/include}" "$OUT")

@@ -1,9 +1,0 @@
-# <function> <argument-forced-to-", value"> ...   (see apply_arg_overrides)
-#
-# The callback `void**` arrays are documented nullable. By reference, a variable
-# holding c_null_ptr arrives as its own non-NULL address, so a callback could
-# never be cleared.
-rocfft_execution_info_set_load_callback cb_functions cb_data
-rocfft_execution_info_set_store_callback cb_functions cb_data
-rocfft_execution_info_set_load_callback_data cb_data
-rocfft_execution_info_set_store_callback_data cb_data
