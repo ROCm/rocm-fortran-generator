@@ -8,6 +8,8 @@ an error-check helper, and overloads that take Fortran arrays and scalars direct
 The generated modules are committed next to the C headers in
 [rocm-systems](https://github.com/ROCm/rocm-systems) and [rocm-libraries](https://github.com/ROCm/rocm-libraries).
 This repository holds only the generator.
+[docs/design-notes.md](docs/design-notes.md) explains the design: the build artifacts, why a `.mod` only works with the compiler that built it,
+how C constructs without a Fortran equivalent are mapped, the curated metadata, and how the generator is tested.
 
 ## Status and intent
 
