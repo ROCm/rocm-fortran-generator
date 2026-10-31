@@ -150,12 +150,13 @@ function sibling_use_onlys(f::FuncInfo, libname::String, meta::LibMeta) :: Vecto
 end
 
 # Empty the per-library collectors above (BIND_NAMES, RECORD_ALIASES,
-# UNMAPPED_CPTR). run_library_generator calls it before each library, so that
+# UNMAPPED_CPTR) and FUNC_DOCS (doc_check.jl). run_library_generator calls it before each library, so that
 # several libraries generated in one process (as the tests do) never see each
 # other's names; generate_all.jl runs each library in a process of its own anyway.
 function reset_generator_state!()
   BIND_NAMES[] = Dict{String,String}()
   RECORD_ALIASES[] = Dict{String,String}()
   reset_unmapped_cptr!()
+  reset_func_docs!()
   return nothing
 end

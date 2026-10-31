@@ -33,7 +33,7 @@ Security issues follow [SECURITY.md](SECURITY.md) instead.
 - Run the unit tests before submitting:
   `julia --project=src src/test/runtests.jl`.
   A change to the generated output should also pass the [checks](README.md#checks).
-- Most binding fixes are a one-line change to a library's metadata file;
+- Most binding fixes are a one-line change to a library's metadata file, `metadata/<lib>.toml`;
   see [Fixing a binding](README.md#fixing-a-binding).
 - Every pull request needs an approving review from a code owner
   ([.github/CODEOWNERS](.github/CODEOWNERS)) before it is merged.

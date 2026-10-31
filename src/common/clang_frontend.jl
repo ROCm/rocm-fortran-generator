@@ -56,7 +56,8 @@ end
 
 # Workspace arguments (e.g. double* work) are raw device scratch buffers that
 # callers pass as type(c_ptr), as in hipfort; keeping them c_ptr lets a call mixing
-# native data arrays with a c_ptr workspace still resolve.
+# native data arrays with a c_ptr workspace still resolve. A guess from the name, so
+# it yields to the metadata (apply_workspace_default).
 is_workspace_name(n::AbstractString) =
   occursin(r"^(d_?)?(work|workspace|buffer|pbuffer|externalbuffer|temp_?buffer|scratch)$"i, n)
 
@@ -79,12 +80,7 @@ function make_arg_info(cursor, t, idx::Int = 0)
     "(*)"  # pointer to data: assumed-size array
   end
 
-  if suffix == "(*)" && is_workspace_name(aname)
-    ftype  = "type(c_ptr)"
-    suffix = ", value"
-  end
-
-  ArgInfo(aname, ftype, suffix, is_str)
+  ArgInfo(aname, ftype, suffix, is_str, Clang.spelling(t))
 end
 
 # First enumerator of an enum type, or nothing if `t` is not (and does not
@@ -116,18 +112,24 @@ function record_ret_ftype(t)
   return "type($(clean_type_name(Clang.spelling(t))))"
 end
 
-# True for an array of pointers (`T* X[]`) or a pointer to a pointer (`T* const*`):
-# rocBLAS spells the same batched argument both ways (trmv/tpmv use the second).
+# True for an array of pointers written with an explicit `*`: `T* X[]` or
+# `T* const* X` (rocBLAS spells the same batched argument both ways). A plain `T**`
+# is an output (hipMalloc's pointer, a created handle), and an array of a pointer
+# typedef (`const hipGraphNode_t* deps`) is an array of handles on the host: both
+# stay by reference.
 function is_ptr_array(t) :: Bool
   k = Clang.kind(t)
   k in (Clang.CXType_IncompleteArray, Clang.CXType_ConstantArray) &&
-    return canon_kind(Clang.getElementType(t)) == Clang.CXType_Pointer
-  k == Clang.CXType_Pointer && return canon_kind(Clang.getPointeeType(t)) == Clang.CXType_Pointer
-  return false
+    return Clang.kind(Clang.getElementType(t)) == Clang.CXType_Pointer
+  k == Clang.CXType_Pointer || return false
+  pt = Clang.getPointeeType(t)
+  return Clang.kind(pt) == Clang.CXType_Pointer && Clang.LibClang.clang_isConstQualifiedType(pt.type) != 0
 end
 
 function collect_funcs(root, prefix::String) :: Vector{FuncInfo}
   reset_unmapped_cptr!()
+  reset_func_docs!()
+  carried = Pair{String,String}[]   # the last doc block's @params (function_docs!)
   funcs = FuncInfo[]
   seen  = Set{String}()
   skipped_variadic = String[]
@@ -165,15 +167,15 @@ function collect_funcs(root, prefix::String) :: Vector{FuncInfo}
 
     clang_args  = Clang.get_function_args(child)
     clang_types = [Clang.getCursorType(a) for a in clang_args]
+    carried = function_docs!(FUNC_DOCS[], name, raw_comment(child),
+                             String[Clang.spelling(a) for a in clang_args], carried)
     args = [make_arg_info(clang_args[i], clang_types[i], i) for i in eachindex(clang_args)]
-    # *_batched routines take a device array of pointers: pass its address by
-    # value. Host-side pointer arrays elsewhere (rocfft_execute) stay by reference;
-    # hipsolverRfBatch* is set by value in hipsolver.byvalue.
-    if occursin(r"batched"i, name)
-      for i in eachindex(args)
-        is_ptr_array(clang_types[i]) &&
-          (args[i] = ArgInfo(args[i].name, "type(c_ptr)", ", value", args[i].is_string))
-      end
+    # An array of pointers (the batched routines' A, B, C) is passed by value: the
+    # caller passes a c_ptr to the array, in device or host memory. The metadata's
+    # `by-reference` keeps one by reference (rocfft_execute, whose callers pass one buffer).
+    for i in eachindex(args)
+      is_ptr_array(clang_types[i]) &&
+        (args[i] = ArgInfo(args[i].name, "type(c_ptr)", ", value", args[i].is_string, args[i].ctype))
     end
     # Disambiguate any duplicate dummy names (some headers repeat or omit names).
     # Fortran names ignore case, so N and n are duplicates too.
@@ -182,7 +184,7 @@ function collect_funcs(root, prefix::String) :: Vector{FuncInfo}
       n = a.name
       lowercase(n) in taken && (n = "$(a.name)_$(i)")
       push!(taken, lowercase(n))
-      n == a.name || (args[i] = ArgInfo(n, a.ftype, a.suffix, a.is_string))
+      n == a.name || (args[i] = ArgInfo(n, a.ftype, a.suffix, a.is_string, a.ctype))
     end
 
     push!(funcs, FuncInfo(name, ret_ft, is_void, args))

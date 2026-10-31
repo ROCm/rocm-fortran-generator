@@ -194,7 +194,7 @@ function check_overwrite(s::HeaderSources, libs)
   end
 end
 
-# A library's metadata files (.argkinds, .native, ...): the checkout's
+# A library's metadata file (metadata/<lib>.toml): the checkout's
 # <fortran_dir>/metadata/ when it exists, else the generator's own
 # src/<lib>/metadata/. The file names carry the library name, so the modules sharing
 # a fortran/ directory (hip and roctx, hipfft and hipfftw) share one metadata/.

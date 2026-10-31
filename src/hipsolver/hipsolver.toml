@@ -4,6 +4,9 @@ name = "hipsolver"
 [library]
 enum_rename = ["HIPBLAS_", "HIPSOLVER_"]
 prefix = "hipsolver"
+# When a routine taking one of these handles ends (before any batch count) with an
+# integer output, that is the info the kernel writes.
+solver_info_handles = ["hipsolverHandle_t", "hipsolverDnHandle_t"]
 opaque_handles = [
   "hipsolverHandle_t",
   "hipsolverDnHandle_t",

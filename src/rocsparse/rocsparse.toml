@@ -3,6 +3,8 @@ name = "rocsparse"
 
 [library]
 prefix = "rocsparse_"
+# alpha and beta follow the handle's pointer mode (rocsparse_set_pointer_mode).
+pointer_mode = true
 opaque_handles = [
   "rocsparse_handle",
   "rocsparse_error",

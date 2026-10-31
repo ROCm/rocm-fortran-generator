@@ -1,0 +1,12 @@
+# Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+#
+# The metadata of the explain/rocblas.h fixture: rocblas_dbar's table overrides
+# a pointer-mode default, repeats another, and overrides a workspace default.
+
+format = 1
+
+[rocblas_dbar]
+alpha = "scalar-pointer-mode"
+beta = "scalar-host"
+scratch = "1d"

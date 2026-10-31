@@ -31,8 +31,10 @@
 include("../common/fortran_gen.jl")
 include("../common/hip_generics.jl")
 
-function main()
-  run_library_generator(@__DIR__;
+# `run` is run_library_generator, or library_funcs to parse without generating
+# (explain_metadata.jl).
+function main(run = run_library_generator)
+  run(@__DIR__;
     funcfilter = funcs -> filter(funcs) do f
       # The typed memory families are emitted by hip_generics.jl, and
       # hipGetDeviceProperties by hip_auxiliary_spec (dropping its R0600 target also
@@ -53,4 +55,6 @@ function main()
     end)
 end
 
-main()
+if abspath(PROGRAM_FILE) == @__FILE__
+  main()
+end

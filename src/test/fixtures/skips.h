@@ -1,6 +1,6 @@
 // Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
 // SPDX-License-Identifier: MIT
-/* Fixture for collect_funcs' three skip paths and the *_batched pointer-array
+/* Fixture for collect_funcs' three skip paths and the pointer-array
    rewrite. No #include, so the parse is deterministic and platform-free.
 
    Parse this one with -std=gnu17: in C23 an empty parameter list means (void),
@@ -21,10 +21,9 @@ int skips_stop(void);
 /* static inline: no symbol in the shared library to bind against. */
 static inline int skips_inline(int n) { return n + 1; }
 
-/* Batched, in both spellings of a T** device array of pointers (rocBLAS uses
-   `T* const* A` for trmv/tpmv). Both go by value: the array's device address. */
+/* Both spellings of an array of pointers (rocBLAS uses the second for trmv/tpmv)
+   are passed by value, whatever the routine's name. */
 int skips_sgemm_batched(float* const A[], float* const* B, float* C, int n);
-
-/* The same two shapes in a NON-batched routine stay by reference: there they are
-   host-side pointer arrays (rocfft_execute). */
 int skips_sgemm(float* const A[], float* const* B, float* C, int n);
+/* A plain T** is an output (a created handle, hipMalloc's pointer): by reference. */
+int skips_create(void** handle);

@@ -30,8 +30,10 @@
 
 include("../common/fortran_gen.jl")
 
-function main()
-  run_library_generator(@__DIR__;
+# `run` is run_library_generator, or library_funcs to parse without generating
+# (explain_metadata.jl).
+function main(run = run_library_generator)
+  run(@__DIR__;
     # hipfftMp.h uses hipfftXtSubFormat without including hipfftXt.h, and only one
     # translation unit is walked: force-include hipfftXt.h ahead of it.
     # hipfftXt.h includes <cstddef>, a C++ header: src/hipfft/cstddef stands in.
@@ -44,4 +46,6 @@ function main()
     end)
 end
 
-main()
+if abspath(PROGRAM_FILE) == @__FILE__
+  main()
+end
