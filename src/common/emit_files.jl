@@ -257,23 +257,30 @@ function status_names(enums::Vector{EnumInfo}, success::String)
   return String[]
 end
 
+# The declaration of the status name of a <lib>Check, as long as the longest
+# name. A fixed length rather than `character(len=:), allocatable`: the Cray
+# compiler warns that a deferred-length name may be used unallocated (ftn-7206),
+# even when an assignment allocates it first.
+check_name_decl(names::Vector{String}) =
+  "character(len=$(maximum(length, [names; "unknown status"]))) :: name"
+
 # The failure branch of a <lib>Check: print the status name (or just the code
 # without names). A `select case` rather than a call to the library's to-string
-# function, which not every library provides.
+# function, which not every library provides. `name` is set before the
+# `select case` rather than in a `case default`, so it is set on every path.
 function emit_check_failure(io, ind::String, label::String, names::Vector{String})
   if isempty(names)
     println(io, "$(ind)write (*, *) \"$(label) ERROR: code = \", status")
     return
   end
+  println(io, "$(ind)name = \"unknown status\"")
   println(io, "$(ind)select case (status)")
   for nm in names
     println(io, "$(ind)case ($(nm))")
     println(io, "$(ind)  name = \"$(nm)\"")
   end
-  println(io, "$(ind)case default")
-  println(io, "$(ind)  name = \"unknown status\"")
   println(io, "$(ind)end select")
-  println(io, "$(ind)write (*, \"(a,i0,a)\") \"$(label) ERROR: \" // name // \" (code \", status, \")\"")
+  println(io, "$(ind)write (*, \"(a,i0,a)\") \"$(label) ERROR: \" // trim(name) // \" (code \", status, \")\"")
 end
 
 # The library module: the declarations (`decls`), the interfaces and the wrappers,

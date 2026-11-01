@@ -174,9 +174,12 @@ overlong_fortran_lines(s::AbstractString) =
         io = IOBuffer()
         emit_check_failure(io, "  ", "ZZ", ["ZZ_BAD", "ZZ_WORSE"])
         s = String(take!(io))
-        @test occursin("  select case (status)\n  case (ZZ_BAD)\n    name = \"ZZ_BAD\"", s)
-        @test occursin("  case default\n    name = \"unknown status\"", s)
-        @test occursin("write (*, \"(a,i0,a)\") \"ZZ ERROR: \" // name // \" (code \", status, \")\"", s)
+        @test occursin("  name = \"unknown status\"\n  select case (status)\n  case (ZZ_BAD)\n    name = \"ZZ_BAD\"", s)
+        @test !occursin("case default", s)
+        @test occursin("write (*, \"(a,i0,a)\") \"ZZ ERROR: \" // trim(name) // \" (code \", status, \")\"", s)
+        # as long as the longest name, "unknown status" included
+        @test check_name_decl(["ZZ_BAD"]) == "character(len=14) :: name"
+        @test check_name_decl(["ZZ_A_MUCH_LONGER_STATUS"]) == "character(len=23) :: name"
         io = IOBuffer()
         emit_check_failure(io, "  ", "ZZ", String[])
         @test String(take!(io)) == "  write (*, *) \"ZZ ERROR: code = \", status\n"
@@ -189,7 +192,7 @@ overlong_fortran_lines(s::AbstractString) =
         c = String(take!(io))
         @test startswith(c, "    subroutine zzCheck(status)\n      implicit none\n")
         @test occursin("      integer(kind(ZZ_SUCCESS)) :: status\n", c)
-        @test occursin("\"ZZ ERROR: \" // name", c) && count("stop 1", c) == 1
+        @test occursin("\"ZZ ERROR: \" // trim(name)", c) && count("stop 1", c) == 1
         io = IOBuffer()
         write_check_routine(io, Dict("general" => Dict("name" => "zz"),
                                      "check"   => Dict("name" => "zzAssert")), String[], "ZZ_SUCCESS")

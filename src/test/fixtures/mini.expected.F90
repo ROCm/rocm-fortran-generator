@@ -221,15 +221,14 @@ module mini
     subroutine miniCheck(status)
       implicit none
       integer(kind(MINI_STATUS_SUCCESS)) :: status
-      character(len=:), allocatable :: name
+      character(len=19) :: name
       if (status /= MINI_STATUS_SUCCESS) then
+        name = "unknown status"
         select case (status)
         case (MINI_STATUS_FAILURE)
           name = "MINI_STATUS_FAILURE"
-        case default
-          name = "unknown status"
         end select
-        write (*, "(a,i0,a)") "MINI ERROR: " // name // " (code ", status, ")"
+        write (*, "(a,i0,a)") "MINI ERROR: " // trim(name) // " (code ", status, ")"
         stop 1
       end if
     end subroutine miniCheck
