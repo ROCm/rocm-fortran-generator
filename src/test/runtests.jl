@@ -199,6 +199,49 @@ overlong_fortran_lines(s::AbstractString) =
         @test occursin("subroutine zzAssert(status)", String(take!(io)))
     end
 
+    @testset "hoist_scope_uses: no use of a module the module has" begin
+        body = join([
+          "  interface f",
+          "    function f_(x) bind(c, name=\"f\")",
+          "      use iso_c_binding",
+          "      use other, only: k",
+          "      implicit none",
+          "    end function",
+          "  end interface",
+          "  interface g",
+          "    function g_() bind(c, name=\"g\")",
+          "      use iso_c_binding",
+          "      import",
+          "      implicit none",
+          "    end function",
+          "  end interface",
+          "  interface h",
+          "    function h_() bind(c, name=\"h\")",
+          "#ifdef X",
+          "      use iso_c_binding",
+          "#endif",
+          "      implicit none",
+          "    end function",
+          "  end interface",
+          "  contains",
+          "    function w(x)",
+          "      use iso_c_binding",
+          "      implicit none",
+          "      type(c_ptr) :: x",
+          "    end function"], "\n")
+        out, hoisted = hoist_scope_uses(body, ==("iso_c_binding"))
+        @test hoisted == Set(["iso_c_binding"])
+        # the `use, only:` stays, before the IMPORT that replaces the rest
+        @test occursin("      use other, only: k\n      import\n      implicit none", out)
+        # an existing IMPORT is kept, not doubled
+        @test occursin("bind(c, name=\"g\")\n      import\n      implicit none", out)
+        # a conditional `use` is left as it was
+        @test occursin("#ifdef X\n      use iso_c_binding\n#endif\n      implicit none", out)
+        # a module procedure needs no IMPORT
+        @test occursin("    function w(x)\n      implicit none", out)
+        @test count("import", out) == 2
+    end
+
     @testset "emit_generic interface + module procedures" begin
         io = IOBuffer()
         # array overloads, as from .native
