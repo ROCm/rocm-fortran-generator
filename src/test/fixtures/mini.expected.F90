@@ -63,7 +63,6 @@ module mini
 
   interface mini_create
     function mini_create_(handle) bind(c, name="mini_create")
-      use iso_c_binding
       import
       implicit none
       integer(c_int) :: mini_create_
@@ -73,7 +72,6 @@ module mini
 
   interface mini_cscal
     function mini_cscal_(handle,n,x,op) bind(c, name="mini_cscal")
-      use iso_c_binding
       import
       implicit none
       integer(c_int) :: mini_cscal_
@@ -96,7 +94,6 @@ module mini
 
   interface mini_dscal
     function mini_dscal_(handle,n,x,tag,myInfo) bind(c, name="mini_dscal")
-      use iso_c_binding
       import
       implicit none
       integer(c_int) :: mini_dscal_
@@ -122,7 +119,6 @@ module mini
 
   interface mini_destroy
     function mini_destroy_(handle) bind(c, name="mini_destroy")
-      use iso_c_binding
       import
       implicit none
       integer(c_int) :: mini_destroy_
@@ -132,7 +128,6 @@ module mini
 
   interface mini_get_params
     function mini_get_params_(handle,params) bind(c, name="mini_get_params")
-      use iso_c_binding
       import
       implicit none
       integer(c_int) :: mini_get_params_
@@ -143,7 +138,6 @@ module mini
 
   interface mini_record
     subroutine mini_record_(handle,x,tag) bind(c, name="mini_record")
-      use iso_c_binding
       import
       implicit none
       type(c_ptr),value :: handle
@@ -164,7 +158,6 @@ module mini
 
   interface mini_set_mode_v2
     function mini_set_mode_v2_(mode) bind(c, name="mini_set_mode_v2")
-      use iso_c_binding
       import
       implicit none
       integer(c_int) :: mini_set_mode_v2_
@@ -174,7 +167,6 @@ module mini
 
   interface mini_reset
     function mini_reset_() bind(c, name="mini_reset")
-      use iso_c_binding
       import
       implicit none
       integer(c_int) :: mini_reset_
@@ -183,7 +175,6 @@ module mini
 
   interface mini_choose_R0600
     function mini_choose_R0600_(device) bind(c, name="mini_choose_R0600")
-      use iso_c_binding
       import
       implicit none
       integer(c_int) :: mini_choose_R0600_
@@ -234,7 +225,6 @@ module mini
       end if
     end subroutine miniCheck
     function mini_dscal_typed(handle,n,x,tag,myInfo)
-      use iso_c_binding
       implicit none
       integer(kind(MINI_STATUS_SUCCESS)) :: mini_dscal_typed
       type(c_ptr), value :: handle
@@ -251,7 +241,6 @@ module mini
 
 #ifdef USE_ASSUMED_RANK
     function mini_cscal_assumed_rank(handle,n,x,op)
-      use iso_c_binding
       implicit none
       integer(kind(MINI_STATUS_SUCCESS)) :: mini_cscal_assumed_rank
       type(c_ptr), value :: handle
@@ -264,7 +253,6 @@ module mini
 
 #else
     function mini_cscal_rank_0(handle,n,x,op)
-      use iso_c_binding
       implicit none
       integer(kind(MINI_STATUS_SUCCESS)) :: mini_cscal_rank_0
       type(c_ptr), value :: handle
@@ -276,7 +264,6 @@ module mini
     end function
 
     function mini_cscal_rank_1(handle,n,x,op)
-      use iso_c_binding
       implicit none
       integer(kind(MINI_STATUS_SUCCESS)) :: mini_cscal_rank_1
       type(c_ptr), value :: handle
@@ -290,7 +277,6 @@ module mini
 #endif
 #ifdef USE_ASSUMED_RANK
     function mini_dscal_assumed_rank(handle,n,x,tag,myInfo)
-      use iso_c_binding
       implicit none
       integer(kind(MINI_STATUS_SUCCESS)) :: mini_dscal_assumed_rank
       type(c_ptr), value :: handle
@@ -304,7 +290,6 @@ module mini
 
 #else
     function mini_dscal_rank_0(handle,n,x,tag,myInfo)
-      use iso_c_binding
       implicit none
       integer(kind(MINI_STATUS_SUCCESS)) :: mini_dscal_rank_0
       type(c_ptr), value :: handle
@@ -317,7 +302,6 @@ module mini
     end function
 
     function mini_dscal_rank_1(handle,n,x,tag,myInfo)
-      use iso_c_binding
       implicit none
       integer(kind(MINI_STATUS_SUCCESS)) :: mini_dscal_rank_1
       type(c_ptr), value :: handle
@@ -332,7 +316,6 @@ module mini
 #endif
 #ifdef USE_ASSUMED_RANK
     subroutine mini_record_assumed_rank(handle,x,tag)
-      use iso_c_binding
       implicit none
       type(c_ptr), value :: handle
       real(c_double),target,dimension(..) :: x
@@ -343,7 +326,6 @@ module mini
 
 #else
     subroutine mini_record_rank_0(handle,x,tag)
-      use iso_c_binding
       implicit none
       type(c_ptr), value :: handle
       real(c_double),target :: x
@@ -353,7 +335,6 @@ module mini
     end subroutine
 
     subroutine mini_record_rank_1(handle,x,tag)
-      use iso_c_binding
       implicit none
       type(c_ptr), value :: handle
       real(c_double),target,dimension(:) :: x

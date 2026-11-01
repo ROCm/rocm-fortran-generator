@@ -276,6 +276,59 @@ function emit_check_failure(io, ind::String, label::String, names::Vector{String
   println(io, "$(ind)write (*, \"(a,i0,a)\") \"$(label) ERROR: \" // name // \" (code \", status, \")\"")
 end
 
+const USE_LINE = r"^\s*use\s*(?:,\s*intrinsic\s*::)?\s*(\w+)\s*$"i
+
+# The `use` lines of the interface bodies and module procedures in `body` that the
+# module makes redundant: a module procedure sees the module by host association,
+# and an interface body through IMPORT. ftn (HPE Cray) reads a module again for
+# each `use`, which made a module of thousands of interfaces and wrappers take an
+# hour to compile, against seconds without; gfortran and amdflang are 2 to 3
+# times faster too.
+#
+# Only a `use <module>` of a module that `hoistable(module)` accepts goes; a
+# `use ..., only:` stays, before the IMPORT. The `use` lines of a scope are the
+# ones just above its `implicit none`, and a preprocessor line ends them, so a
+# conditional `use` stays as it was. Returns the new body and the modules whose
+# `use` lines went.
+function hoist_scope_uses(body::AbstractString, hoistable::Function)
+  lines = split(body, '\n')
+  keep = trues(length(lines))
+  add_import = falses(length(lines))   # an IMPORT before this `implicit none`
+  hoisted = Set{String}()
+  in_iface = 0
+  for (i, l) in enumerate(lines)
+    if occursin(r"^\s*(abstract\s+)?interface(\s|$)"i, l)
+      in_iface += 1
+    elseif occursin(r"^\s*end\s+interface"i, l)
+      in_iface -= 1
+    end
+    occursin(r"^\s*implicit\s+none\s*$"i, l) || continue
+    first = i
+    while first > 1 && occursin(r"^\s*(use|import)\b"i, lines[first - 1])
+      first -= 1
+    end
+    first == i && continue
+    dropped = false
+    has_import = false
+    for j in first:i-1
+      occursin(r"^\s*import\b"i, lines[j]) && (has_import = true; continue)
+      m = match(USE_LINE, lines[j])
+      if m !== nothing && hoistable(lowercase(m.captures[1]))
+        keep[j] = false
+        dropped = true
+        push!(hoisted, lowercase(m.captures[1]))
+      end
+    end
+    dropped && in_iface > 0 && !has_import && (add_import[i] = true)
+  end
+  out = String[]
+  for (i, l) in enumerate(lines)
+    add_import[i] && push!(out, match(r"^\s*", l).match * "import")
+    keep[i] && push!(out, l)
+  end
+  return join(out, '\n'), hoisted
+end
+
 # The library module: the declarations (`decls`), the interfaces and the wrappers,
 # with the <lib>Check routine (`check_routine`, if any) among its procedures. The
 # hooks are called as `hook(io)`.
@@ -296,6 +349,21 @@ function gen_module_file(io, cfg::Dict, meta::LibMeta,
   println(io, "  use, intrinsic :: iso_c_binding")
   println(io, "  implicit none")
   println(io, "")
+  # The scopes' `use iso_c_binding` go: the module has it (see hoist_scope_uses).
+  bio = IOBuffer()
+  gen_module_body(bio, cfg, meta, funcs, aliases; decls, extra_generics,
+                  extra_wrappers, check_routine)
+  print(io, first(hoist_scope_uses(String(take!(bio)), ==("iso_c_binding"))))
+  println(io, "end module $(libname)")
+end
+
+# The declarations, interfaces and procedures of the library module, down to
+# `end module` (see gen_module_file).
+function gen_module_body(io, cfg::Dict, meta::LibMeta, funcs::Vector{FuncInfo},
+                         aliases::Dict{String,String}; decls::Function,
+                         extra_generics::Union{Nothing,Function},
+                         extra_wrappers::Union{Nothing,Function},
+                         check_routine::Union{Nothing,Function})
   decls(io)
   emit_interface_body(io, funcs, meta, aliases)
   extra_generics !== nothing && extra_generics(io)
@@ -321,5 +389,4 @@ function gen_module_file(io, cfg::Dict, meta::LibMeta,
     extra_wrappers !== nothing && extra_wrappers(io)
     GUARDED_IFACES && println(io, "#endif")
   end
-  println(io, "end module $(libname)")
 end
