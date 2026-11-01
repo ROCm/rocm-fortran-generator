@@ -164,7 +164,7 @@ function write_check_routine(cio::IO, cfg::Dict, names::Vector{String}, success:
   println(cio, "    subroutine $(checkname)(status)")
   println(cio, "      implicit none")
   println(cio, "      integer(kind($(success))) :: status")
-  isempty(names) || println(cio, "      character(len=:), allocatable :: name")
+  isempty(names) || println(cio, "      $(check_name_decl(names))")
   println(cio, "      if (status /= $(success)) then")
   emit_check_failure(cio, "        ", uppercase(libname), names)
   # `stop 1` is valid in both F2003 and F2008, unlike `error stop`.
