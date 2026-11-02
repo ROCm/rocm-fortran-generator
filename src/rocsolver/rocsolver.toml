@@ -8,6 +8,9 @@ success = "ROCBLAS_STATUS_SUCCESS"
 [library]
 reexport_enums = ["rocblas"]
 prefix = "rocsolver_"
+# When a routine taking this handle ends (before any batch count) with an integer
+# output, that is the info the kernel writes.
+solver_info_handles = ["rocblas_handle"]
 own_headers = ["rocsolver", "rocblas"]
 opaque_handles = [
   "rocblas_handle",

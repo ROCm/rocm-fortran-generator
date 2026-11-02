@@ -1,3 +1,0 @@
-# <function> <scalar-pointer-arg> ...
-# Every typed pointer not listed here is treated as a data buffer.
-rocrand_get_version version

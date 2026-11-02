@@ -31,7 +31,10 @@ struct ArgInfo
   ftype     :: String   # e.g. "real(c_double)"
   suffix    :: String   # ", value"  |  "(*)"  |  ""
   is_string :: Bool     # INPUT string: the C type is `const char*`
+  ctype     :: String   # the C type as declared, e.g. "const float *"; "" if built by hand
 end
+ArgInfo(name::AbstractString, ftype::AbstractString, suffix::AbstractString, is_string::Bool) =
+  ArgInfo(name, ftype, suffix, is_string, "")
 
 struct FuncInfo
   name      :: String

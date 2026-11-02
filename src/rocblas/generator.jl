@@ -31,8 +31,10 @@
 include("../common/fortran_gen.jl")
 include("../common/blas_generics.jl")
 
-function main()
-  run_library_generator(@__DIR__;
+# `run` is run_library_generator, or library_funcs to parse without generating
+# (explain_metadata.jl).
+function main(run = run_library_generator)
+  run(@__DIR__;
     # The rocblas/ subdir too, for its internal/ headers.
     argshook = function (args, include_dir, hdrs)
       rocblas_subdir = dirname(hdrs[1])
@@ -41,4 +43,6 @@ function main()
     blas_aux_hooks(:snake, "rocblas_status_success")...)
 end
 
-main()
+if abspath(PROGRAM_FILE) == @__FILE__
+  main()
+end

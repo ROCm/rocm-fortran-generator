@@ -3,6 +3,8 @@ name = "hipsparse"
 
 [library]
 prefix = "hipsparse"
+# alpha and beta follow the handle's pointer mode (hipsparseSetPointerMode).
+pointer_mode = true
 opaque_handles = [
   "hipsparseHandle_t",
   "hipsparseMatDescr_t",

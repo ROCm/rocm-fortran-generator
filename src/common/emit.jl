@@ -69,18 +69,18 @@ end
 
 # A buffer is a typed data pointer mapped to an assumed-size array `x(*)`: a c_ptr
 # in the bind(C) specific, a Fortran array in the array overloads. An assumed-size
-# array of a derived type (.arrayargs) is not one: it stays `type(T) :: x(*)`.
+# array of a derived type (`struct-array`) is not one: it stays `type(T) :: x(*)`.
 is_buffer(a::ArgInfo) = a.suffix == "(*)" && !startswith(a.ftype, "type(")
 
 fdecl(ftype::AbstractString, suffix::AbstractString, name::AbstractString) =
   suffix == "(*)" ? "$(ftype) :: $(name)(*)" : "$(ftype)$(suffix) :: $(name)"
-# A .cptrargs pass-through is not a data array: a function whose only buffer is one
+# An `always-c-ptr` pass-through is not a data array: a function whose only buffer is one
 # would get identical (hence ambiguous) rank_0 and rank_1 specifics.
 func_has_buffer(f::FuncInfo, meta::LibMeta) =
   any(a -> is_buffer(a) && !is_cptr_passthrough(f, a, meta), f.args)
 
-# The .argkinds scalar pointers (alpha, beta, devInfo, ...): host or device memory
-# for the pointer-mode ones, so the bind(C) specific declares them
+# The scalar pointers the metadata names (alpha, beta, devInfo, ...): host or device
+# memory for the pointer-mode ones, so the bind(C) specific declares them
 # type(c_ptr),value. The by-reference form is a module procedure (_typed), not a
 # second bind(C) specific: a binding label must be unique (F2018 19.2).
 scalar_ptr_args(f::FuncInfo, meta::LibMeta) = get(meta.scalar_ptrs, f.name, Set{String}())
@@ -88,11 +88,11 @@ has_scalar_ptr(f::FuncInfo, meta::LibMeta) = !isempty(scalar_ptr_args(f, meta))
 
 # Which module procedures a generic carries beside its bind(C) specific.
 wants_native(f, meta) = native_maxrank(f, meta) >= 0 && func_has_buffer(f, meta)
-# Device-only scalars (.devonly) have no host variable to take by reference.
+# Device-only scalars (`scalar-device`) have no host variable to take by reference.
 wants_typed(f, meta)  = !isempty(setdiff(scalar_ptr_args(f, meta), devonly_args(f, meta))) ||
                         !isempty(string_args(f, meta))
 
-# Nullable by-reference arguments (.optional) that are not .argkinds scalars. An
+# Nullable by-reference arguments (`nullable`) that are not scalar pointers. An
 # OPTIONAL dummy of a bind(C) interface is F2018 (18.3.6), so the bind(C) specific
 # takes type(c_ptr),value and the _opt module procedure takes an OPTIONAL dummy and
 # passes c_loc of it or c_null_ptr.
@@ -113,18 +113,29 @@ string_args(f::FuncInfo, meta::LibMeta) =
                                  if a.is_string && a.ftype == "type(c_ptr)" && a.suffix == ", value") :
                      Set{String}()
 
-# In device pointer mode the .ptrmode scalars are device addresses while the other
-# .argkinds scalars are still host variables; _devptr spells that mixed call.
+# In device pointer mode the `scalar-pointer-mode` scalars are device addresses
+# while the `scalar-host` ones are still host variables; _devptr spells that mixed call.
 ptrmode_args(f::FuncInfo, meta::LibMeta) = get(meta.ptrmode, f.name, Set{String}())
 host_args(f::FuncInfo, meta::LibMeta) =
   setdiff(scalar_ptr_args(f, meta), ptrmode_args(f, meta), devonly_args(f, meta))
 wants_devptr(f, meta) = !isempty(setdiff(ptrmode_args(f, meta), devonly_args(f, meta))) &&
                         !isempty(host_args(f, meta))
-# The array overloads take device-only scalars and .cptrargs scalars as variables;
-# their _devptr twins take them as type(c_ptr).
-cptr_scalars(f::FuncInfo, meta::LibMeta) =
-  intersect(scalar_ptr_args(f, meta), meta_get(meta.cptr_args, f.name, EMPTY_STRSET))
-wants_rank_devptr(f, meta) = !isempty(devonly_args(f, meta)) || !isempty(cptr_scalars(f, meta))
+# The array forms take every scalar as a variable, which suits the host pointer
+# mode; their _devptr twins take the pointer-mode and device scalars as
+# type(c_ptr), for the device pointer mode, and the host-only ones still typed.
+# `devptr` buffers too: an info per batch entry, taken as an array or as a pointer.
+# Not when the twin would keep no Fortran array: its rank_0, rank_1, ... versions
+# would then all be the same procedure (hipsolverXgelsBatched, whose only array is
+# devInfo), an ambiguous generic; the bind(C) specific takes those calls.
+devptr_array_args(f::FuncInfo, meta::LibMeta) =
+  Set{String}(a.name for a in f.args
+              if is_buffer(a) && a.name in meta_get(meta.devptr_arrays, f.name, EMPTY_STRSET))
+function wants_rank_devptr(f, meta)
+  dev = devptr_array_args(f, meta)
+  (isempty(devonly_args(f, meta)) && isempty(ptrmode_args(f, meta)) && isempty(dev)) && return false
+  return isempty(dev) ||
+         any(a -> is_buffer(a) && !is_cptr_passthrough(f, a, meta) && !(a.name in dev), f.args)
+end
 
 # Specific name capped at Fortran's 63-char limit. A plain prefix cut is not
 # injective (it would silently dispatch to another C entry point), so cuts are
@@ -158,7 +169,7 @@ function spec_name(base::String, suf::String)
   return name
 end
 
-# The bind(C) specific's spelling: buffers, .argkinds scalars and nullable
+# The bind(C) specific's spelling: buffers, scalar pointers and nullable
 # arguments become type(c_ptr),value.
 raw_arg(a::ArgInfo) = is_buffer(a) ? ArgInfo(a.name, "type(c_ptr)", ", value", a.is_string) : a
 raw_arg(f::FuncInfo, a::ArgInfo, meta::LibMeta) = (a.name in scalar_ptr_args(f, meta) || is_opt_arg(a)) ?
@@ -174,8 +185,8 @@ raw_func(f::FuncInfo, meta::LibMeta) =
                    for a in f.args])
 
 # The generic X: its bind(C) specific `X_` plus the module procedures that apply:
-#   X_rank_N / X_full_rank / X_assumed_rank  buffers as Fortran arrays (.native)
-#   X_typed   the .argkinds scalars by their Fortran type
+#   X_rank_N / X_full_rank / X_assumed_rank  buffers as Fortran arrays
+#   X_typed   the scalar pointers by their Fortran type
 #   X_devptr  the pointer-mode scalars as pointers, the host-only ones typed
 #   X_opt     the nullable arguments as OPTIONAL dummies
 # alias: emit the generic under another name (a versioned alias).
@@ -191,6 +202,10 @@ function emit_generic(io, f::FuncInfo, meta::LibMeta; alias::String = "")
     if emits_fullrank(f, meta)
       push!(procs, spec_name(f.name, "_full_rank"))
       dp && push!(procs, spec_name(f.name, "_full_rank_devptr"))
+    end
+    if emits_stridedrank(f, meta)
+      push!(procs, spec_name(f.name, "_strided_rank"))
+      dp && push!(procs, spec_name(f.name, "_strided_rank_devptr"))
     end
     push!(procs_ar, spec_name(f.name, "_assumed_rank"))
     dp && push!(procs_ar, spec_name(f.name, "_assumed_rank_devptr"))
@@ -218,36 +233,58 @@ function emit_wrapper_uses(io)
   println(io, "      implicit none")
 end
 
-# A buffer immediately followed by a leading dimension (lda/ldb/...) is a 2-D
-# matrix in the _full_rank overload; any other buffer is 1-D.
-arg_natural_rank(args::Vector{ArgInfo}, idx::Int) =
-  (idx < length(args) && startswith(lowercase(args[idx + 1].name), "ld")) ? 2 : 1
+# A buffer's rank in the _full_rank form: the metadata's 1d/2d/3d when it imposes
+# one; otherwise 1, plus 1 when a leading dimension (lda, ldb, ...) follows it. With
+# `strides`, the rank of the _strided_rank form: plus 1 when a batch stride
+# (stride_A, stridex, ...) follows that or its increment, so the matrices and
+# vectors of a strided-batched routine are 3-D and 2-D. _full_rank keeps hipfort's
+# ranks, so a strided-batched routine takes its batch packed in the last dimension.
+function arg_natural_rank(f::FuncInfo, meta::LibMeta, idx::Int; strides::Bool = false)
+  args = f.args
+  d = get(imposed_dims(f, meta), args[idx].name, 0)
+  d > 0 && return d
+  starts(j, p) = j <= length(args) && startswith(lowercase(args[j].name), p)
+  r, j = 1, idx + 1
+  if starts(j, "ld")
+    r += 1; j += 1
+  elseif starts(j, "inc")
+    j += 1
+  end
+  strides && starts(j, "stride") && (r += 1)
+  return r
+end
 
 # Typed pointers kept as an opaque c_ptr in the array overloads instead of becoming
-# a Fortran array (per function, from <lib>.cptrargs).
+# a Fortran array (`always-c-ptr`).
 is_cptr_passthrough(f::FuncInfo, a::ArgInfo, meta::LibMeta) =
   a.name in meta_get(meta.cptr_args, f.name, EMPTY_STRSET)
 
-# Device-only .argkinds scalars (<lib>.devonly), written by the kernel (hipSOLVER's
-# devInfo): no _typed form, but the array overloads still take them typed. Such an
-# argument must also be in .argkinds. An ILP64 or _v2 variant inherits its base
-# routine's entry.
+# Device-only scalars (`scalar-device`), written by the kernel (hipSOLVER's
+# devInfo): no _typed form; the array overloads take them typed, and their _devptr
+# twins as type(c_ptr). A _64 or _spt variant inherits its base routine's entry.
 devonly_args(f::FuncInfo, meta::LibMeta) =
   meta_get(meta.devonly, f.name, EMPTY_STRSET)
 
-# Without a 2-D buffer, _full_rank would duplicate _rank_1 (ambiguous generic).
+# Without a buffer above rank 1, _full_rank would duplicate _rank_1 (ambiguous generic).
+array_indices(f::FuncInfo, meta::LibMeta) =
+  [i for i in eachindex(f.args) if is_buffer(f.args[i]) && !is_cptr_passthrough(f, f.args[i], meta)]
 has_matrix_buffer(f::FuncInfo, meta::LibMeta) =
-  any(i -> is_buffer(f.args[i]) && !is_cptr_passthrough(f, f.args[i], meta) &&
-           arg_natural_rank(f.args, i) == 2, eachindex(f.args))
+  any(i -> arg_natural_rank(f, meta, i) >= 2, array_indices(f, meta))
 emits_fullrank(f::FuncInfo, meta::LibMeta) = wants_fullrank(f, meta) && has_matrix_buffer(f, meta)
+# _strided_rank, where a batch stride raises a buffer's rank above _full_rank's:
+# then it differs from _full_rank and from _rank_1 in that buffer's rank.
+emits_stridedrank(f::FuncInfo, meta::LibMeta) =
+  wants_fullrank(f, meta) &&
+  any(i -> arg_natural_rank(f, meta, i; strides = true) != arg_natural_rank(f, meta, i),
+      array_indices(f, meta))
 
 # One module procedure of the generic:
 #   default  the rank_<rank> array overload (ndims, or each buffer's natural rank)
 #   assumed  the F2018 assumed-rank overload (dimension(..)), alternative to rank_N
-#   typed    the _typed form: buffers stay type(c_ptr), .argkinds scalars by reference
+#   typed    the _typed form: buffers stay type(c_ptr), scalar pointers by reference
 #   devptr   with typed, the _devptr form; otherwise an array overload's twin
 #   opt      the _opt form, the C signature with nullable arguments OPTIONAL
-# A .optional argument is an optional dummy in every form, forwarded as
+# A `nullable` argument is an optional dummy in every form, forwarded as
 # c_null_ptr when absent.
 function emit_rank_wrapper(io, f::FuncInfo, meta::LibMeta, rank::Int = 0;
                            assumed::Bool = false,
@@ -256,19 +293,18 @@ function emit_rank_wrapper(io, f::FuncInfo, meta::LibMeta, rank::Int = 0;
                                             (typed ? (devptr ? "_devptr" : "_typed") :
                                              assumed ? "_assumed_rank" : "_rank_$(rank)") *
                                             (devptr && !typed ? "_devptr" : ""),
-                           ndims::Int = rank, natural::Bool = false)
+                           ndims::Int = rank, natural::Bool = false, strides::Bool = false)
   name  = f.name
   wname = spec_name(name, suffix)
   rawnm = name * "_"
   joined = join((a.name for a in f.args), ",")
-  # Checked before is_cptr_passthrough: some rocBLAS rot-family args are in both
-  # .argkinds and .cptrargs, and the scalar rule wins.
   scalars   = scalar_ptr_args(f, meta)
   devonly   = devonly_args(f, meta)
   typedargs = opt    ? Set{String}() :
-              devptr ? (typed ? host_args(f, meta) : setdiff(host_args(f, meta), cptr_scalars(f, meta))) :
+              devptr ? host_args(f, meta) :
               typed  ? setdiff(scalars, devonly) : scalars
   asptr     = setdiff(scalars, typedargs)
+  devptr && !typed && union!(asptr, devptr_array_args(f, meta))
   strargs   = typed ? string_args(f, meta) : Set{String}()
   optref    = opt_ref_args(f, meta)
   typed     = typed || opt
@@ -294,7 +330,7 @@ function emit_rank_wrapper(io, f::FuncInfo, meta::LibMeta, rank::Int = 0;
       if assumed
         println(io, "      $(a.ftype),target,dimension(..) :: $(a.name)")
       else
-        nd = natural ? arg_natural_rank(f.args, i) : ndims
+        nd = natural ? arg_natural_rank(f, meta, i; strides) : ndims
         dimattr = nd == 0 ? "" : ",dimension(" * join(fill(":", nd), ",") * ")"
         println(io, "      $(a.ftype),target$(dimattr) :: $(a.name)")
       end
@@ -318,6 +354,7 @@ function emit_rank_wrapper(io, f::FuncInfo, meta::LibMeta, rank::Int = 0;
   end
   callargs = join((a.name in opts ? "$(a.name)__p" :
                    (a.name in typedargs || a.name in strargs) ? "c_loc($(a.name))" :
+                   a.name in asptr ? a.name :
                    (is_buffer(a) && !typed && !is_cptr_passthrough(f, a, meta)) ? "c_loc($(a.name))" :
                    a.name
                    for a in f.args), ",")
@@ -351,6 +388,11 @@ function emit_wrappers_body(io, funcs::Vector{FuncInfo}, meta::LibMeta)
           emit_rank_wrapper(o, f, meta, 2; suffix="_full_rank", natural=true)
           dp && emit_rank_wrapper(o, f, meta, 2; suffix="_full_rank_devptr", natural=true,
                                   devptr=true)
+        end
+        if emits_stridedrank(f, meta)
+          emit_rank_wrapper(o, f, meta, 3; suffix="_strided_rank", natural=true, strides=true)
+          dp && emit_rank_wrapper(o, f, meta, 3; suffix="_strided_rank_devptr", natural=true,
+                                  strides=true, devptr=true)
         end
       end;
       per_rank_is_default = true)

@@ -3,6 +3,8 @@ name = "hipblas"
 
 [library]
 prefix = "hipblas"
+# alpha and beta follow the handle's pointer mode (hipblasSetPointerMode).
+pointer_mode = true
 # hipBLAS's enums (HIPBLAS_OP_N, ...) live in hipblas-common.
 own_headers = ["hipblas", "hipblas-common"]
 opaque_handles = [
