@@ -156,7 +156,7 @@ The other differences, point by point:
   gfortran and flang do not know `device`.
   Our `bind(C)` interfaces, `c_loc` and generated variants are the portable substitute for what `nvfortran` does natively.
 - **Scalar host-vs-device (alpha/beta).** Because `nvfortran` knows host from device, its non-v2 `cublas` module sets the library pointer mode implicitly on each call, depending on whether the scalar argument has the `device` attribute.
-  We cannot rely on the compiler for this, so `.argkinds` records which scalar pointers are host values.
+  We cannot rely on the compiler for this, so the curated metadata records which scalar pointers are host values (see [Curated metadata](#curated-metadata)).
   Static metadata cannot fully settle the question, though, because the host-versus-device choice for `alpha`/`beta` is also runtime handle state (`rocblas_set_pointer_mode`).
   The convenient host-scalar form is only correct when the handle is in host-pointer mode.
   The wrappers must not silently set or restore that mode: it is shared, mutable handle state, and touching it would race other threads.
@@ -224,7 +224,7 @@ Invalid C is a separate case: the generator fails on it (see [C-header hygiene](
 ## Curated metadata
 
 The generator emits everything the C ABI carries: signatures, enums and structs.
-A few Fortran-side facts are not in the C headers and cannot be inferred, so they live in small per-library files that a maintainer curates.
+A few Fortran-side facts are not in the C headers and cannot be inferred, so they live in one small file per library that a maintainer curates, `metadata/<lib>.toml`.
 These files sit in a `metadata/` directory next to the library's module:
 
 - `projects/fortran/metadata/` in `rocm-systems`;
@@ -232,43 +232,46 @@ These files sit in a `metadata/` directory next to the library's module:
 
 The generator reads that directory when it runs on a checkout, so the metadata is curated next to the header it describes, in the same repository (P1).
 It is the one part that stays manual: the bindings are generated, but this thin layer of per-argument intent is not in the C API.
-Several files concern the *pointer mode*, a per-handle setting that says whether scalar arguments such as `alpha` and `beta` are read from host or device memory.
 
-| File               | What it encodes                                                                     | Why the headers cannot give it                                                           |
-| ------------------ | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `<lib>.argkinds`   | which pointer args are scalars (`alpha`, `beta`, an output) vs data buffers         | `const double* alpha` and `double* x` are identical in C                                 |
-| `<lib>.ptrmode`    | the subset of those scalars the library reads per its pointer mode (host or device) | the pointer mode is runtime handle state                                                 |
-| `<lib>.devonly`    | scalars the device writes (hipSOLVER's `devInfo`), which get no host form           | the C type does not say which side writes                                                |
-| `<lib>.cptrargs`   | pointers kept as pass-through `type(c_ptr)` in the array overloads (a dot `result`) | pointer-mode outputs live on the device, so binding them as host Fortran arrays is wrong |
-| `<lib>.native`     | which functions get the array (`_rank_*`) overloads, and the max rank               | rank is a Fortran-side choice, absent from the ABI                                       |
-| `<lib>.optional`   | by-reference arguments the C API accepts as `NULL`                                  | a nullable pointer and a required one are identical in C                                 |
-| `<lib>.byvalue`    | arguments passed by value although their C type is a pointer (HIP's `extra`)        | the C type does not say how the API reads it                                             |
-| `<lib>.funptrargs` | arguments that are function pointers declared `void*`                               | the C type erased the function type                                                      |
-| `<lib>.arrayargs`  | pointers to a derived type that are arrays (hipFFTW's `fftw_iodim`)                 | a pointer to one element and to an array are identical in C                              |
+The file has one table per C function (a key with shell braces names several, `["rocblas_{s,d,c,z}rotg"]`), keyed by the argument names the C header uses.
+Each value answers a question the C type leaves open:
 
-A library carries only the files it needs: none for ROCTx, one to three for the FFT and RAND libraries, and four to six for HIP and the BLAS, SOLVER and SPARSE libraries.
+| Question | Values | Why the headers cannot give it |
+| --- | --- | --- |
+| What is the argument? | `scalar-host`, `scalar-device`, `scalar-pointer-mode`, `buffer`, `struct-array`, `function-pointer` | `const double* alpha` and `double* x` are identical in C; the pointer mode, which says whether `alpha` is read from host or device memory, is runtime handle state; a function pointer may be declared `void*` |
+| How is it passed? | `by-value`, `by-reference` | the C type does not say how the API reads it (HIP's `extra`) |
+| Its rank in the array forms | `1d`, `2d`, `3d`, `any-rank` | rank is a Fortran-side choice, absent from the ABI |
+| Adjustments | `nullable`, `always-c-ptr`, `devptr` | a nullable pointer and a required one are identical in C; whether a buffer may live on the device is a property of the routine |
 
-The generator configuration, `<lib>.toml`, holds the name prefix, opaque handles, own headers and check overrides.
-Those are project conventions, not facts from the headers, so the file stays with the generator, which owns the code that reads it.
+Most arguments need no entry: the generator derives a default from the shape of the function and the C type and position of the argument.
+A size query's size outputs and a getter's integer outputs are host scalars; a solver's `info` is a device scalar, or one per batch entry; under the library's pointer mode a `const` `alpha` or `beta` follows the mode; a workspace stays `type(c_ptr)`.
+An entry always overrides the default, so the files hold only what the signature cannot say: about 420 entries for all the libraries, none for ROCTx.
+`gen.sh --explain <function>` prints the table that applies and the default chosen for every other argument.
+
+The generator configuration, `src/<lib>/<lib>.toml`, holds the name prefix, opaque handles, own headers and check overrides.
+Those are project conventions, not facts from the headers, so that file stays with the generator, which owns the code that reads it.
 The HIP binding's pull request carries its `metadata/` (ROCTx needs none).
 The `rocm-libraries` pull requests add theirs before they leave draft; until then, the generator keeps a copy of each.
 
-The maintenance cost is bounded, because these files were bootstrapped and are validated by the tool.
-Every `.argkinds` was derived from the original hipfort sources in one run.
-The `.ptrmode` and `.devonly` files were first derived from `.argkinds` by a script, minus a short per-library list of host-only arguments; they are now curated by hand.
-The generator's `apply_argkinds` step reports scalar-looking arguments that are still unclassified.
-What remains is small, and it is maintenance rather than authoring: when a new ROCm function has a scalar pointer argument the bootstrap did not cover, that argument must be classified by hand, and the report points at it.
+The maintenance cost is bounded, because the entries were bootstrapped and are validated by the tool.
+They were first derived from the original hipfort sources, then reduced to what the signature defaults do not already give.
+What remains is maintenance rather than authoring: when a new ROCm function has an argument the defaults cannot classify, the generator reports it, and an entry is added by hand.
 
 **Keeping the classifications correct.**
-The `apply_argkinds` report catches an *unclassified* argument, but not a *stale* one, which stays well-formed after a function is renamed or its signature changes.
-So on each run the generator also checks the entries against the parsed C declarations and reports any that match nothing.
-Today that check covers every metadata file, function names and parameter names alike, but it only warns.
-Before the regeneration workflow is enabled (see [Rollout](https://github.com/ROCm/TheRock/blob/main/docs/rfcs/RFC0015-Fortran-Bindings-Split.md#rollout-and-success-criteria)), an unmatched entry **fails generation** instead, so the bot never proposes a binding built from a stale entry.
+On each run the generator checks the metadata against the parsed C declarations and their doxygen documentation:
+
+- a malformed file, a value that makes no sense with another, or a function named by two tables stops the generation;
+- an entry that does not apply to its C argument is reported and ignored, and a function whose struct is passed by value is left out, so new or changed headers never stop a generation;
+- a table or argument that matches no declaration (a renamed function, a changed signature), an entry that only repeats a default, and an argument whose doxygen comment disagrees with its binding ("on the GPU", "on the host") are reported for curation;
+- the scalar-looking arguments left unclassified are listed.
+
+`ROCM_FORTRAN_STRICT=1` turns the reports of the second kind into errors.
+The regeneration workflow (see [Rollout](https://github.com/ROCm/TheRock/blob/main/docs/rfcs/RFC0015-Fortran-Bindings-Split.md#rollout-and-success-criteria)) will run with it, so the bot never proposes a binding built from an entry that no longer applies.
 No such check can catch an entry that matches but is wrong.
 That case is covered two ways:
 
-- a one-time audit of the classifications bootstrapped from hipfort;
-- runtime tests that exercise **both host-pointer and device-pointer modes** for a representative set of entry points.
+- an audit of every entry against the library code, done once on the bootstrapped classifications and repeated when a library changes how it reads an argument;
+- runtime tests that exercise **both host-pointer and device-pointer modes** for a representative set of entry points, and one test per classification that a regeneration changed.
 
 Those tests prioritize the pointer-mode-ambiguous families (`alpha`/`beta`/`result`), where a wrong classification turns into a fault or a silently wrong answer.
 
@@ -301,7 +304,7 @@ This catches interface drift without a GPU.
 
 These gates are compile-only, so they need no GPU.
 At runtime, the same `fortran/test/` tests exercise the bindings on an AMD GPU, as GPU-labeled CTest tests of each library.
-That runtime suite must cover both pointer modes, host and device, for the `argkinds`-classified entry points.
+That runtime suite must cover both pointer modes, host and device, for the entry points whose scalars the metadata classifies.
 A misclassified scalar pointer compiles and links cleanly, so it is the one correctness property no compile-only gate can see (see [Keeping the classifications correct](#curated-metadata)).
 
 Because the transforms are unit-tested, the trust the regeneration workflow needs is largely in place: the bindings team, reviewing the bot's pull request, relies on a tool whose logic is checked, and not only on its output.
