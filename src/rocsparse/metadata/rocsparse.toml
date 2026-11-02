@@ -46,8 +46,8 @@ nnzb_C = "scalar-pointer-mode"
 position = "scalar-pointer-mode"
 
 ["rocsparse_{s,d,c,z,dc,ds}bsrilu0_numeric_boost"]
-boost_tol = "scalar-pointer-mode"
-boost_val = "scalar-pointer-mode"
+boost_tol = ["scalar-pointer-mode", "nullable"]
+boost_val = ["scalar-pointer-mode", "nullable"]
 
 [rocsparse_bsrilu0_zero_pivot]
 position = "scalar-pointer-mode"
@@ -81,7 +81,7 @@ data_status = "scalar-host"
 
 [rocsparse_check_spmat]
 data_status = "scalar-host"
-buffer_size = "scalar-host"
+buffer_size = ["scalar-host", "nullable"]
 
 [rocsparse_csr2bsr_nnz]
 bsr_nnz = "scalar-pointer-mode"
@@ -95,6 +95,7 @@ bsr_nnz_devhost = "scalar-pointer-mode"
 ["rocsparse_{s,d,c,z}csrcolor"]
 fraction_to_color = "scalar-host"
 ncolors = "scalar-host"
+reordering = "devptr"
 
 [rocsparse_csrgeam_nnz]
 nnz_C = "scalar-pointer-mode"
@@ -115,8 +116,8 @@ position = "scalar-pointer-mode"
 tolerance = "scalar-host"
 
 ["rocsparse_{s,d,c,z,dc,ds}csrilu0_numeric_boost"]
-boost_tol = "scalar-pointer-mode"
-boost_val = "scalar-pointer-mode"
+boost_tol = ["scalar-pointer-mode", "nullable"]
+boost_val = ["scalar-pointer-mode", "nullable"]
 
 [rocsparse_csrilu0_singular_pivot]
 position = "scalar-pointer-mode"
@@ -140,7 +141,7 @@ position = "scalar-pointer-mode"
 position = "scalar-pointer-mode"
 
 [rocsparse_dense_to_sparse]
-buffer_size = "scalar-host"
+buffer_size = ["scalar-host", "nullable"]
 
 ["rocsparse_{c,z}dotci"]
 result = "scalar-pointer-mode"
@@ -194,32 +195,32 @@ c = "scalar-pointer-mode"
 s = "scalar-pointer-mode"
 
 [rocsparse_sparse_to_dense]
-buffer_size = "scalar-host"
+buffer_size = ["scalar-host", "nullable"]
 
 [rocsparse_spgeam_buffer_size]
 error = "nullable"
 
 [rocsparse_spgemm]
-buffer_size = "scalar-host"
+buffer_size = ["scalar-host", "nullable"]
 
 [rocsparse_spitsv]
 host_nmaxiter = "scalar-host"
-buffer_size = "scalar-host"
+buffer_size = ["scalar-host", "nullable"]
 
 [rocsparse_spmm]
-buffer_size = "scalar-host"
+buffer_size = ["scalar-host", "nullable"]
 
 [rocsparse_spmv]
-buffer_size = "scalar-host"
+buffer_size = ["scalar-host", "nullable"]
 
 [rocsparse_spsm]
-buffer_size = "scalar-host"
+buffer_size = ["scalar-host", "nullable"]
 
 [rocsparse_spsv]
-buffer_size = "scalar-host"
+buffer_size = ["scalar-host", "nullable"]
 
 [rocsparse_spvv]
-buffer_size = "scalar-host"
+buffer_size = ["scalar-host", "nullable"]
 
 [rocsparse_v2_spmv]
 error = "nullable"

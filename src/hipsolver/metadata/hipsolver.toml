@@ -19,7 +19,6 @@ niters = "scalar-host"
 hInfo = "scalar-host"
 
 ["hipsolver{S,D,C,Z}geqrfBatched"]
-work = "always-c-ptr"
 hInfo = "scalar-host"
 
 ["hipsolverDn{SS,DD,CC,ZZ}gesv"]
@@ -40,14 +39,7 @@ residual = "scalar-host"
 [hipsolverXgesvdjGetResidual]
 residual = "scalar-host"
 
-["hipsolver{S,D,C,Z}getrfBatched"]
-work = "always-c-ptr"
-
-["hipsolver{S,D,C,Z}getriBatched"]
-work = "always-c-ptr"
-
 ["hipsolver{S,D,C,Z}getrsBatched"]
-work = "always-c-ptr"
 hInfo = "scalar-host"
 
 ["hipsolverDn{C,Z}heevdx"]

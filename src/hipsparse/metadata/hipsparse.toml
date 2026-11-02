@@ -16,8 +16,8 @@ format = 1
 position = "scalar-pointer-mode"
 
 ["hipsparse{S,D,C,Z}bsrilu02_numericBoost"]
-tol = "scalar-pointer-mode"
-boost_val = "scalar-pointer-mode"
+tol = ["scalar-pointer-mode", "nullable"]
+boost_val = ["scalar-pointer-mode", "nullable"]
 
 [hipsparseXbsrilu02_zeroPivot]
 position = "scalar-pointer-mode"
@@ -37,6 +37,7 @@ bsrNnzDevhost = "scalar-pointer-mode"
 ["hipsparse{S,D,C,Z}csrcolor"]
 fractionToColor = "scalar-host"
 ncolors = "scalar-host"
+reordering = "devptr"
 
 [hipsparseXcsrgeam2Nnz]
 nnzTotalDevHostPtr = "scalar-pointer-mode"
@@ -54,8 +55,8 @@ nnzTotalDevHostPtr = "scalar-pointer-mode"
 position = "scalar-pointer-mode"
 
 ["hipsparse{S,D,C,Z}csrilu02_numericBoost"]
-tol = "scalar-pointer-mode"
-boost_val = "scalar-pointer-mode"
+tol = ["scalar-pointer-mode", "nullable"]
+boost_val = ["scalar-pointer-mode", "nullable"]
 
 [hipsparseXcsrilu02_zeroPivot]
 position = "scalar-pointer-mode"

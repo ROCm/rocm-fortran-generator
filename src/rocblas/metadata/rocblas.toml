@@ -59,7 +59,7 @@ x1 = "1d"
 y1 = "1d"
 
 [rocblas_set_solution_fitness_query]
-fitness = "scalar-host"
+fitness = ["scalar-host", "nullable"]
 
 [rocblas_stop_device_memory_size_query]
 size = "scalar-host"
