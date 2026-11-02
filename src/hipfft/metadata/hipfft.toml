@@ -87,7 +87,6 @@ workSize = "scalar-host"
 
 [hipfftXtMakePlanMany]
 workSize = "scalar-host"
-workSize = "scalar-host"
 
 # hipfftMp.h's routines exist only in a hipFFT built with HIPFFT_MPI_ENABLE, which the
 # ROCm packages are not: a wrapper that calls one leaves an undefined symbol in a
