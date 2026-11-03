@@ -41,11 +41,11 @@
 # Options, before the positional arguments:
 #   --libs=<lib>[,<lib>...]  generate only these libraries (each must be one the run selects)
 #   --overwrite              also copy each generated module into its checkout, as
-#                            <rocm-libraries>/projects/<proj>/fortran/<lib>.F90 or
-#                            <rocm-systems>/projects/fortran/<lib>.F90; needs a checkout,
-#                            and that fortran/ directory must already exist
+#                            <rocm-libraries>/bindings/fortran/<proj>/<lib>.F90 or
+#                            <rocm-systems>/bindings/fortran/<lib>.F90; needs a checkout,
+#                            and that directory must already exist
 #
-# Each library's metadata files come from its checkout's projects/<proj>/fortran/metadata/
+# Each library's metadata files come from its checkout's bindings/fortran/<proj>/metadata/
 # when the run reads that checkout and the directory exists, else from src/<lib>/metadata/.
 
 if any(in(("-h", "--help")), ARGS)
@@ -81,7 +81,7 @@ end
 const OUTPUT_ROOT = abspath(isempty(REST) ? joinpath(@__DIR__, "..", "fortran") : REST[1])
 const HIP_VERSION = hip_version(SOURCES)
 
-# rocm-systems keeps its modules in one projects/fortran/ directory.
+# rocm-systems keeps its modules in one bindings/fortran/ directory.
 outdir_of(lib) = repo_of(lib) == "rocm-systems" ? joinpath(OUTPUT_ROOT, "rocm-systems", "fortran") :
                                                    joinpath(OUTPUT_ROOT, "rocm-libraries", lib)
 
@@ -156,7 +156,7 @@ write(joinpath(OUTPUT_ROOT, ".provenance"), """
   hip:        $(HIP_VERSION)
   metadata:   $(let ck = filter(l -> !startswith(lib_metadata(SOURCES, l), normpath(@__DIR__)), generated)
                   isempty(ck) ? "generator (src/<lib>/metadata/)" :
-                  "checkout fortran/metadata/ for $(join(ck, " ")), generator for the others"
+                  "checkout metadata/ for $(join(ck, " ")), generator for the others"
                 end)
   arrays:     $(get(ENV, "ROCM_FORTRAN_ARRAY_INTERFACES", "all"))
   generator:  $(GENERATOR_VERSION) ($(commit))

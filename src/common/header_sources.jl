@@ -125,10 +125,10 @@ function lib_include(s::HeaderSources, lib)
 end
 
 # The directory of a library's Fortran module in its checkout: one shared
-# projects/fortran/ in rocm-systems, projects/<proj>/fortran/ in rocm-libraries.
+# bindings/fortran/ in rocm-systems, bindings/fortran/<proj>/ in rocm-libraries.
 fortran_dir(s::HeaderSources, lib) =
-  repo_of(lib) == "rocm-systems" ? joinpath(s.systems, "projects", "fortran") :
-                                   joinpath(s.libraries, "projects", proj_of(lib), "fortran")
+  repo_of(lib) == "rocm-systems" ? joinpath(s.systems, "bindings", "fortran") :
+                                   joinpath(s.libraries, "bindings", "fortran", proj_of(lib))
 
 # The path --overwrite writes a library's module to, in its checkout.
 overwrite_target(s::HeaderSources, lib) = joinpath(fortran_dir(s, lib), "$(lib).F90")
@@ -181,7 +181,7 @@ end
     check_overwrite(s, libs)
 
 Throws an `ArgumentError` unless --overwrite can write every module of `libs`: the
-run reads a checkout, and each library's fortran/ directory already exists in it.
+run reads a checkout, and each library's binding directory already exists in it.
 Called before generating anything, so a run that cannot finish writes nothing.
 """
 function check_overwrite(s::HeaderSources, libs)
@@ -197,7 +197,7 @@ end
 # A library's metadata file (metadata/<lib>.toml): the checkout's
 # <fortran_dir>/metadata/ when it exists, else the generator's own
 # src/<lib>/metadata/. The file names carry the library name, so the modules sharing
-# a fortran/ directory (hip and roctx, hipfft and hipfftw) share one metadata/.
+# a binding directory (hip and roctx, hipfft and hipfftw) share one metadata/.
 function lib_metadata(s::HeaderSources, lib)
   if from_checkouts(s)
     d = joinpath(fortran_dir(s, lib), "metadata")
