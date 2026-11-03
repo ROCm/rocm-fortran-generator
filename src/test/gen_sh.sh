@@ -65,7 +65,7 @@ expect 1 "it comes from rocm-systems, so set ROCM_SYSTEMS" \
   env ROCM_INCLUDE="$INST" ROCM_LIBRARIES="$LIBS" ./gen.sh hip
 expect 1 "--overwrite needs ROCM_LIBRARIES or ROCM_SYSTEMS" \
   env ROCM_INCLUDE="$INST" ./gen.sh --overwrite rocblas
-expect 1 "projects/rocblas/fortran does not exist" \
+expect 1 "bindings/fortran/rocblas does not exist" \
   env ROCM_INCLUDE="$INST" ROCM_LIBRARIES="$LIBS" ./gen.sh --overwrite rocblas
 expect 0 "C signature: headers not read; no HIP headers" \
   env ROCM_INCLUDE="$TMP/empty" ./gen.sh --explain rocblas_srot_64
@@ -76,9 +76,10 @@ expect 1 "FAILED to generate" env ROCM_INCLUDE="$INST" ./gen.sh   # an empty hip
 # --explain, from a rocm-libraries checkout holding the fixture rocblas.h and its
 # metadata: one parse, whatever the number of functions named.
 CK="$TMP/ck/projects/rocblas"
-mkdir -p "$CK/library/include" "$CK/fortran/metadata"
+META="$TMP/ck/bindings/fortran/rocblas/metadata"
+mkdir -p "$CK/library/include" "$META"
 cp src/test/fixtures/explain/rocblas.h "$CK/library/include/"
-cp src/test/fixtures/explain/rocblas.toml "$CK/fortran/metadata/"
+cp src/test/fixtures/explain/rocblas.toml "$META/"
 out="$(env ROCM_INCLUDE="$INST" ROCM_LIBRARIES="$TMP/ck" \
          ./gen.sh --explain rocblas_daxpy rocblas_dfoo_buffer_size rocblas_dbar rocblas_dnope 2>&1)"
 for text in \

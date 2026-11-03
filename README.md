@@ -111,19 +111,19 @@ Run from this repository:
 
 | Library | Command | Writes |
 |---|---|---|
-| HIP | `ROCM_SYSTEMS=<rocm-systems> ./gen.sh --overwrite hip` | `projects/fortran/hip.F90` |
-| ROCTx | `ROCM_SYSTEMS=<rocm-systems> ./gen.sh --overwrite roctx` | `projects/fortran/roctx.F90` |
-| rocBLAS | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite rocblas` | `projects/rocblas/fortran/rocblas.F90` |
-| hipBLAS | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hipblas` | `projects/hipblas/fortran/hipblas.F90` |
-| rocSOLVER | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite rocsolver` | `projects/rocsolver/fortran/rocsolver.F90` |
-| hipSOLVER | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hipsolver` | `projects/hipsolver/fortran/hipsolver.F90` |
-| rocSPARSE | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite rocsparse` | `projects/rocsparse/fortran/rocsparse.F90` |
-| hipSPARSE | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hipsparse` | `projects/hipsparse/fortran/hipsparse.F90` |
-| rocFFT | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite rocfft` | `projects/rocfft/fortran/rocfft.F90` |
-| hipFFT | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hipfft` | `projects/hipfft/fortran/hipfft.F90` |
-| hipFFTW | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hipfftw` | `projects/hipfft/fortran/hipfftw.F90` |
-| rocRAND | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite rocrand` | `projects/rocrand/fortran/rocrand.F90` |
-| hipRAND | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hiprand` | `projects/hiprand/fortran/hiprand.F90` |
+| HIP | `ROCM_SYSTEMS=<rocm-systems> ./gen.sh --overwrite hip` | `bindings/fortran/hip.F90` |
+| ROCTx | `ROCM_SYSTEMS=<rocm-systems> ./gen.sh --overwrite roctx` | `bindings/fortran/roctx.F90` |
+| rocBLAS | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite rocblas` | `bindings/fortran/rocblas/rocblas.F90` |
+| hipBLAS | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hipblas` | `bindings/fortran/hipblas/hipblas.F90` |
+| rocSOLVER | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite rocsolver` | `bindings/fortran/rocsolver/rocsolver.F90` |
+| hipSOLVER | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hipsolver` | `bindings/fortran/hipsolver/hipsolver.F90` |
+| rocSPARSE | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite rocsparse` | `bindings/fortran/rocsparse/rocsparse.F90` |
+| hipSPARSE | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hipsparse` | `bindings/fortran/hipsparse/hipsparse.F90` |
+| rocFFT | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite rocfft` | `bindings/fortran/rocfft/rocfft.F90` |
+| hipFFT | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hipfft` | `bindings/fortran/hipfft/hipfft.F90` |
+| hipFFTW | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hipfftw` | `bindings/fortran/hipfft/hipfftw.F90` |
+| rocRAND | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite rocrand` | `bindings/fortran/rocrand/rocrand.F90` |
+| hipRAND | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hiprand` | `bindings/fortran/hiprand/hiprand.F90` |
 
 `<rocm-systems>` and `<rocm-libraries>` are the paths of your checkouts, and the
 last column is relative to them. Several libraries can be named in one run
@@ -312,7 +312,7 @@ Without it, `alpha` and `beta` would be buffers: arrays of one element.
 
 | | |
 |---|---|
-| **where** | `src/<lib>/metadata/<lib>.toml` in the generator; when a run reads a checkout, the checkout's own `metadata/` next to the module replaces it (`projects/fortran/metadata/` in rocm-systems, `projects/<proj>/fortran/metadata/` in rocm-libraries) |
+| **where** | `src/<lib>/metadata/<lib>.toml` in the generator; when a run reads a checkout, the checkout's own `metadata/` next to the module replaces it (`bindings/fortran/metadata/` in rocm-systems, `bindings/fortran/<proj>/metadata/` in rocm-libraries) |
 | **none** | a missing or empty file means no metadata: the C declarations alone |
 | **`format = 1`** | required as soon as there is an entry; the version of this schema, not of the generator |
 | **tables** | one per C function, keyed by its arguments' names as the C header spells them |

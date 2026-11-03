@@ -1234,14 +1234,14 @@ overlong_fortran_lines(s::AbstractString) =
         @test lib_include(s, "rocblas") == joinpath(libs, "projects", "rocblas", "library", "include")
         @test hip_installed_include(s) == "" && hip_version(s) == "7.17.3"
 
-        # Metadata: a checkout's projects/<proj>/fortran/metadata/ replaces src/<lib>/metadata/.
+        # Metadata: a checkout's bindings/fortran/<proj>/metadata/ replaces src/<lib>/metadata/.
         gen_meta(lib) = joinpath(GEN_ROOT, lib, "metadata")
-        mkpath(joinpath(libs, "projects", "hipfft", "fortran", "metadata"))
-        mkpath(joinpath(sys, "projects", "fortran", "metadata"))
-        @test lib_metadata(s, "hipfft")  == joinpath(libs, "projects", "hipfft", "fortran", "metadata")
-        @test lib_metadata(s, "hipfftw") == joinpath(libs, "projects", "hipfft", "fortran", "metadata")
-        @test lib_metadata(s, "roctx")   == joinpath(sys, "projects", "fortran", "metadata")
-        @test lib_metadata(s, "hip")     == joinpath(sys, "projects", "fortran", "metadata")
+        mkpath(joinpath(libs, "bindings", "fortran", "hipfft", "metadata"))
+        mkpath(joinpath(sys, "bindings", "fortran", "metadata"))
+        @test lib_metadata(s, "hipfft")  == joinpath(libs, "bindings", "fortran", "hipfft", "metadata")
+        @test lib_metadata(s, "hipfftw") == joinpath(libs, "bindings", "fortran", "hipfft", "metadata")
+        @test lib_metadata(s, "roctx")   == joinpath(sys, "bindings", "fortran", "metadata")
+        @test lib_metadata(s, "hip")     == joinpath(sys, "bindings", "fortran", "metadata")
         @test lib_metadata(s, "rocblas") == gen_meta("rocblas")   # no metadata in the checkout
         let (si, _) = header_sources(Dict{String,String}(), [inst, out])
             @test lib_metadata(si, "hipfft") == gen_meta("hipfft")   # installed: never a checkout
@@ -1260,12 +1260,12 @@ overlong_fortran_lines(s::AbstractString) =
             @test_throws ArgumentError run_libs(sl, ["rocblass"])   # not a library
             @test_throws ArgumentError run_libs(sl, ["hip"])        # rocm-systems is not read
             @test overwrite_target(sl, "hipfftw") ==
-                  joinpath(libs, "projects", "hipfft", "fortran", "hipfftw.F90")
-            @test_throws ArgumentError check_overwrite(sl, ["rocblas"])   # no rocblas/fortran/ yet
-            mkpath(joinpath(libs, "projects", "rocblas", "fortran"))
+                  joinpath(libs, "bindings", "fortran", "hipfft", "hipfftw.F90")
+            @test_throws ArgumentError check_overwrite(sl, ["rocblas"])   # no bindings/fortran/rocblas/ yet
+            mkpath(joinpath(libs, "bindings", "fortran", "rocblas"))
             @test check_overwrite(sl, ["rocblas", "hipfftw"]) === nothing
         end
-        @test overwrite_target(s, "roctx") == joinpath(sys, "projects", "fortran", "roctx.F90")
+        @test overwrite_target(s, "roctx") == joinpath(sys, "bindings", "fortran", "roctx.F90")
         let (si, _) = header_sources(Dict{String,String}(), [inst, out])
             @test_throws ArgumentError check_overwrite(si, ["rocblas"])   # installed: no checkout
         end
