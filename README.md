@@ -5,7 +5,7 @@ Generates the Fortran bindings of the HIP runtime, ROCTx and the ROCm math libra
 It parses the headers with [Clang.jl](https://github.com/JuliaInterop/Clang.jl) and emits, for each library,
 a Fortran module with the `bind(C)` interfaces, the enum constants, the derived types,
 an error-check helper, and overloads that take Fortran arrays and scalars directly.
-The generated modules are committed next to the C headers in
+The generated modules are committed in the `bindings/fortran/` tree of
 [rocm-systems](https://github.com/ROCm/rocm-systems) and [rocm-libraries](https://github.com/ROCm/rocm-libraries).
 This repository holds only the generator.
 
@@ -40,8 +40,9 @@ Every shell script prints its options with `-h`.
 
 `gen.sh` writes one module per library, named after the library (`use hip`, `use rocblas`),
 with its enums, types and, when the library has a status type, a `<lib>Check` routine,
-into `fortran/rocm-systems/fortran/` (HIP, ROCTx) and `fortran/rocm-libraries/<lib>/` (the math libraries),
-where it is committed upstream.
+into `fortran/rocm-systems/fortran/` (HIP, ROCTx) and `fortran/rocm-libraries/<lib>/` (the math libraries).
+Upstream, they are committed as `bindings/fortran/<lib>.F90` in rocm-systems and
+`bindings/fortran/<proj>/<lib>.F90` in rocm-libraries (`--overwrite` copies them there).
 `fortran/.provenance` records the libraries generated, the headers read (installed ROCm or checkouts),
 the HIP version, the array-interface setting and the generator commit that produced it.
 
@@ -133,8 +134,8 @@ the checkout and HIP's from the installed ROCm (`ROCM_INCLUDE`, default
 checkout instead.
 
 The module is identical to the one a full `./gen.sh` run produces for that
-library. `--overwrite` checks that the library's `fortran/` directory exists in
-the checkout before generating anything, and copies a module only once it has
+library. `--overwrite` checks that the binding's directory (`bindings/fortran/<proj>/`
+in rocm-libraries, `bindings/fortran/` in rocm-systems) exists in the checkout before generating anything, and copies a module only once it has
 generated, so a failure leaves the checkout as it was. Without `--overwrite`, the
 module is written to `fortran/` only. Then review the change with `git diff` in
 the checkout, and compile it with `bash check_mods.sh`.

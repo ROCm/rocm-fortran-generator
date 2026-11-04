@@ -63,8 +63,8 @@ note:  A checkout's metadata/<lib>.toml (rocm-systems: bindings/fortran/metadata
 note:  rocm-libraries: bindings/fortran/<proj>/metadata/), when present, replaces the
 note:  generator's src/<lib>/metadata/ for that library.
 note:  The Julia dependencies are installed on the first run (Pkg.instantiate).
-note:  fortran/ is gitignored: the bindings are committed upstream, next to the
-note:  C headers in rocm-systems/ and rocm-libraries/.
+note:  fortran/ is gitignored: the bindings are committed upstream, in the
+note:  bindings/fortran/ tree of rocm-systems and rocm-libraries.
 SPEC
 }
 usage_peek "$@"
