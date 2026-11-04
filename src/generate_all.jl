@@ -24,7 +24,7 @@
 ###############################################################################
 
 # Run every selected library generator, each in its own Julia process. Each module
-# goes where it is committed upstream, under the output root (default ../fortran):
+# goes under the output root (default ../fortran), by upstream repository:
 #   <root>/rocm-systems/fortran/{hip,roctx}.F90   <root>/rocm-libraries/<lib>/<lib>.F90
 # and <root>/.provenance records what was generated, from which headers.
 #
@@ -81,7 +81,7 @@ end
 const OUTPUT_ROOT = abspath(isempty(REST) ? joinpath(@__DIR__, "..", "fortran") : REST[1])
 const HIP_VERSION = hip_version(SOURCES)
 
-# rocm-systems keeps its modules in one bindings/fortran/ directory.
+# rocm-systems' modules share one directory, as they share bindings/fortran/ upstream.
 outdir_of(lib) = repo_of(lib) == "rocm-systems" ? joinpath(OUTPUT_ROOT, "rocm-systems", "fortran") :
                                                    joinpath(OUTPUT_ROOT, "rocm-libraries", lib)
 

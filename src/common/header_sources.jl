@@ -59,7 +59,7 @@ const DEFAULT_INCLUDE = "/opt/rocm/include"
 proj_of(lib) = lib == "hipfftw" ? "hipfft"                :
                lib == "roctx"   ? "rocprofiler-sdk-roctx" : lib
 
-# Upstream repository each module is committed to, next to its C headers.
+# Upstream repository each module is committed to, in its bindings/fortran/ tree.
 repo_of(lib) = lib in ("hip", "roctx") ? "rocm-systems" : "rocm-libraries"
 
 # Each field is an absolute path, or "" when not used by the run.
