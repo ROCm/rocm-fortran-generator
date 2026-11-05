@@ -45,7 +45,7 @@
 # or a code a later CUDA adds.
 # Only enumerators whose CUDA-mode value differs from the HIP one are written.
 #
-# Opt-in like gen_cuda_symbols.jl: it needs a CUDA toolkit's headers, the
+# Opt-in: it needs a CUDA toolkit's headers, the
 # generator itself does not.
 #
 # Usage (from the rocm-fortran repo root, after a regeneration):

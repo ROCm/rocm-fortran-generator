@@ -26,9 +26,9 @@
 
 # rocm-fortran/tools/check_cuda_abi.jl
 # Check that what the USE_CUDA_NAMES bindings pass to CUDA is what CUDA expects.
-# audit_cuda_mappings.jl only proves each bound cu* symbol exists; this compares
-# the hip and cu prototypes and the struct layouts, so a cu* namesake with other
-# arguments, or a struct CUDA lays out differently, does not go unnoticed.
+# This compares the hip and cu prototypes and the struct layouts, so a cu*
+# namesake with other arguments, or a struct CUDA lays out differently, does not
+# go unnoticed.
 #
 # For every `#ifdef USE_CUDA_NAMES` bind pair of the generated layout:
 #   - prototypes, from the HIP and CUDA headers through Clang: argument count and,
@@ -288,7 +288,7 @@ function bind_pairs(layout)
 end
 
 # Differences each candidate (hip, cu) pair would bring, for vetting new map
-# entries (audit_cuda_mappings.jl --suggest/--apply): hip => issues, empty when
+# entries: hip => issues, empty when
 # the pair is safe to bind. ACCEPTED entries count as safe.
 function candidate_issues(cands, layout; cudainc = "/usr/local/cuda/include",
                           rocminc = "/opt/rocm/include")
