@@ -66,8 +66,44 @@ cfp_shape(r, expr) = r == 0 ? "" : ", shape=$(expr)"
 # the latter evaluates size() in default integer first and wraps past 2^31 - 1 elements.
 csz(r, x) = r == 0 ? "int(1, c_size_t)" : "size($(x), kind=c_size_t)"
 
-emit_aux_bind(io, sig::String, hipname::String) =
-  emit_bind_signature(io, "    $(sig)", "bind(c, name=\"$(hipname)\")", "        ")
+# The hipfort layout binds the CUDA symbol under USE_CUDA_NAMES (src/hip/metadata/hip.txt).
+const HIP_CUDA_MAP = EMIT_CUDA ?
+  load_symbol_map(joinpath(get(ENV, "ROCM_FORTRAN_METADATA_DIR", joinpath(GEN_ROOT, "hip", "metadata")),
+                           "hip.txt")) : Dict{String,String}()
+
+function emit_aux_bind(io, sig::String, hipname::String)
+  cu = get(HIP_CUDA_MAP, hipname, nothing)
+  if cu !== nothing
+    println(io, "#ifdef USE_CUDA_NAMES")
+    emit_bind_signature(io, "    $(sig)", "bind(c, name=\"$(cu)\")", "        ")
+    println(io, "#else")
+    emit_bind_signature(io, "    $(sig)", "bind(c, name=\"$(hipname)\")", "        ")
+    println(io, "#endif")
+  else
+    emit_bind_signature(io, "    $(sig)", "bind(c, name=\"$(hipname)\")", "        ")
+  end
+end
+
+# The hipfort layout's docstrings of the families, from the C function's comment
+# with its parameters renamed to the Fortran dummies (hipMalloc's size is sizeBytes).
+# AUX_DOC_DENY: the HIP runtime's constants, set by src/hip/generator.jl.
+const AUX_DOC_DENY = Ref(Set{String}())
+const PARAM_CMD_RE = r"([\\@]param\s*(?:\[[^\]]*\])?\s+)([A-Za-z_]\w*)"
+
+function rename_params(doc::AbstractString, renames)
+  isempty(renames) && return doc
+  replace(doc, PARAM_CMD_RE =>
+    m -> begin
+      c = match(PARAM_CMD_RE, m)
+      c.captures[1] * get(renames, c.captures[2], c.captures[2])
+    end)
+end
+
+emit_doc(io, doc; renames=Dict{String,String}()) =
+  EMIT_DOCS &&
+  (for l in doc_to_fortran_lines(rename_params(doc, renames), "  "; deny=AUX_DOC_DENY[])
+     println(io, l)
+   end)
 
 # Per-dimension lengths come in two kinds (c_int and c_size_t, as in hipfort) so
 # that hipMalloc(ptr, n) also resolves for a c_size_t count.
@@ -142,6 +178,10 @@ function emit_alloc_source_impls(io; family, rawfn, flags=false,
     if r == 0
       println(io, "  function $(name)(ptr, dsource, source$(fa)) result(res)")
       println(io, "    use iso_c_binding")
+      if HIPFORT
+        println(io, "    use hipfort_enums, only: $(src_kind), $(dsrc_kind)")
+        println(io, "    use hipfort_hipmemcpy, only: hipMemcpy")
+      end
       println(io, "    implicit none")
       println(io, "    $(ftype), pointer, intent(inout) :: ptr")
       println(io, "    $(ftype), target, intent(in), optional :: dsource, source")
@@ -175,6 +215,10 @@ function emit_alloc_source_impls(io; family, rawfn, flags=false,
       shp = join(fill(":", r), ",")
       println(io, "  function $(name)(ptr, dims, dims8, lbounds, lbounds8, dsource, source, mold$(fa)) result(res)")
       println(io, "    use iso_c_binding")
+      if HIPFORT
+        println(io, "    use hipfort_enums, only: $(src_kind), $(dsrc_kind)")
+        println(io, "    use hipfort_hipmemcpy, only: hipMemcpy")
+      end
       println(io, "    implicit none")
       println(io, "    $(ftype), pointer, dimension($(shp)), intent(inout) :: ptr")
       println(io, "    integer(c_int), intent(in), optional :: dims($(r)), lbounds($(r))")
@@ -252,6 +296,7 @@ function emit_flagged_alloc_impls(io, family::String, rawfn::String, flagdef::St
     shape   = join(["length$(i)" for i in 1:r], ",")
     println(io, "  function $(name)(ptr, $(lenargs), flags) result(res)")
     println(io, "    use iso_c_binding")
+    HIPFORT && println(io, "    use hipfort_enums, only: $(flagdef)")
     println(io, "    implicit none")
     println(io, "    $(ftype), pointer$(dim_attr(r)), intent(inout) :: ptr")
     println(io, "    integer($(lenkind)), intent(in) :: $(lenargs)")
@@ -499,9 +544,10 @@ drop_rank0_lengths(names) = filter(n -> !(endswith(n, "_0") || endswith(n, "_0_c
 # `interface <gname>`: the bind(C) specific <gname>_ (C symbol <gname>, c_int
 # result, dummies `decls`), then the module procedures written by `procs(io)`.
 function emit_aux_generic(io, gname::String, args::String, decls::Vector{String},
-                          procs::Function)
+                          procs::Function; doc="", renames=Dict{String,String}())
   raw = "$(gname)_"
   println(io, "  interface $(gname)")
+  emit_doc(io, doc; renames=renames)
   emit_aux_bind(io, "function $(raw)($(args))", gname)
   println(io, "      use iso_c_binding")
   println(io, "      implicit none")
@@ -513,26 +559,34 @@ function emit_aux_generic(io, gname::String, args::String, decls::Vector{String}
   println(io, "")
 end
 
-emit_hipmalloc_generic(io) =
+emit_hipmalloc_generic(io, doc="") =
   emit_aux_generic(io, "hipMalloc", "ptr, sizeBytes",
                    ["type(c_ptr) :: ptr",
                     "integer(c_size_t), value :: sizeBytes"],
                    io -> emit_either_tier_proc_list(io, drop_rank0_lengths(
-                           proc_list("hipMalloc"; suffixes=["", "_c_size_t", "_source"]))))
+                           proc_list("hipMalloc"; suffixes=["", "_c_size_t", "_source"])));
+                   doc=doc, renames=Dict("size"=>"sizeBytes"))
 
-emit_flagged_alloc_generic(io, family::String) =
+emit_flagged_alloc_generic(io, family::String, doc=""; renames=Dict{String,String}()) =
   emit_aux_generic(io, family, "ptr, sizeBytes, flags",
                    ["type(c_ptr) :: ptr",
                     "integer(c_size_t), value :: sizeBytes",
                     "integer(c_int), value :: flags"],
                    io -> emit_either_tier_proc_list(io, drop_rank0_lengths(
-                           proc_list(family; suffixes=["", "_c_size_t", "_source"]))))
+                           proc_list(family; suffixes=["", "_c_size_t", "_source"])));
+                   doc=doc, renames=renames)
 
-emit_free_generic(io, name::String) =
+emit_hipmallocmanaged_generic(io, doc="") =
+  emit_flagged_alloc_generic(io, "hipMallocManaged", doc;
+                             renames=Dict("dev_ptr"=>"ptr", "size"=>"sizeBytes"))
+emit_hiphostmalloc_generic(io, doc="") =
+  emit_flagged_alloc_generic(io, "hipHostMalloc", doc; renames=Dict("size"=>"sizeBytes"))
+
+emit_free_generic(io, name::String, doc="") =
   emit_aux_generic(io, name, "ptr", ["type(c_ptr), value :: ptr"],
-                   io -> emit_either_tier_proc_list(io, proc_list(name)))
+                   io -> emit_either_tier_proc_list(io, proc_list(name)); doc=doc)
 
-function emit_memcpy_generic(io, family::String; pitched::Bool, isasync::Bool)
+function emit_memcpy_generic(io, family::String, doc=""; pitched::Bool, isasync::Bool)
   args  = pitched ? "dest, dpitch, src, spitch, width, height, myKind" : "dest, src, sizeBytes, myKind"
   decls = pitched ? ["type(c_ptr), value :: dest",
                      "integer(c_size_t), value :: dpitch",
@@ -552,37 +606,39 @@ function emit_memcpy_generic(io, family::String; pitched::Bool, isasync::Bool)
   sufs = pitched ? ["_c_size_t", "_c_int"] : ["", "_c_size_t", "_c_int"]
   emit_aux_generic(io, family, args, decls,
                    io -> emit_guarded_proc_list(io, proc_list(family; suffixes=sufs),
-                                                    ar_proc_list(family; suffixes=sufs)))
+                                                    ar_proc_list(family; suffixes=sufs));
+                   doc=doc, renames=Dict("dst"=>"dest", "kind"=>"myKind"))
 end
 
-emit_hiphostregister_generic(io) =
+emit_hiphostregister_generic(io, doc="") =
   emit_aux_generic(io, "hipHostRegister", "hostPtr, sizeBytes, flags",
                    ["type(c_ptr), value :: hostPtr",
                     "integer(c_size_t), value :: sizeBytes",
                     "integer(c_int), value :: flags"],
                    io -> emit_either_tier_proc_list(io, drop_rank0_lengths(
-                           proc_list("hipHostRegister"; suffixes=["_nosize", "", "_c_size_t"]))))
+                           proc_list("hipHostRegister"; suffixes=["_nosize", "", "_c_size_t"])));
+                   doc=doc)
 
-emit_hiphostunregister_generic(io) =
+emit_hiphostunregister_generic(io, doc="") =
   emit_aux_generic(io, "hipHostUnregister", "hostPtr", ["type(c_ptr), value :: hostPtr"],
-                   io -> emit_either_tier_proc_list(io, proc_list("hipHostUnregister")))
+                   io -> emit_either_tier_proc_list(io, proc_list("hipHostUnregister")); doc=doc)
 
-emit_hiphostgetdevicepointer_generic(io) =
+emit_hiphostgetdevicepointer_generic(io, doc="") =
   emit_aux_generic(io, "hipHostGetDevicePointer", "devPtr, hstPtr, flags",
                    ["type(c_ptr) :: devPtr",
                     "type(c_ptr), value :: hstPtr",
                     "integer(c_int), value :: flags"],
-                   io -> emit_either_tier_proc_list(io, proc_list("hipHostGetDevicePointer")))
+                   io -> emit_either_tier_proc_list(io, proc_list("hipHostGetDevicePointer")); doc=doc)
 
-emit_hiphostgetflags_generic(io) =
+emit_hiphostgetflags_generic(io, doc="") =
   emit_aux_generic(io, "hipHostGetFlags", "flagsPtr, hostPtr",
                    ["integer(c_int) :: flagsPtr",
                     "type(c_ptr), value :: hostPtr"],
-                   io -> emit_either_tier_proc_list(io, proc_list("hipHostGetFlags")))
+                   io -> emit_either_tier_proc_list(io, proc_list("hipHostGetFlags")); doc=doc)
 
-function hipmemcpy_spec(io)
+function hipmemcpy_spec(io, docs=Dict{String,String}())
   for (family, pitched, isasync) in HIP_MEMCPY_FAMILIES
-    emit_memcpy_generic(io, family; pitched=pitched, isasync=isasync)
+    emit_memcpy_generic(io, family, get(docs, family, ""); pitched=pitched, isasync=isasync)
   end
 end
 
@@ -603,12 +659,12 @@ function hipmemcpy_body(io)
     per_rank_is_default = true)
 end
 
-function hipmalloc_spec(io)
-  emit_hipmalloc_generic(io)
-  emit_flagged_alloc_generic(io, "hipMallocManaged")
-  emit_flagged_alloc_generic(io, "hipHostMalloc")
-  emit_free_generic(io, "hipFree")
-  emit_free_generic(io, "hipHostFree")
+function hipmalloc_spec(io, docs=Dict{String,String}())
+  emit_hipmalloc_generic(io, get(docs, "hipMalloc", ""))
+  emit_hipmallocmanaged_generic(io, get(docs, "hipMallocManaged", ""))
+  emit_hiphostmalloc_generic(io, get(docs, "hipHostMalloc", ""))
+  emit_free_generic(io, "hipFree",     get(docs, "hipFree", ""))
+  emit_free_generic(io, "hipHostFree", get(docs, "hipHostFree", ""))
 end
 
 function hipmalloc_body(io)
@@ -622,11 +678,11 @@ function hipmalloc_body(io)
   emit_hiphostfree_impls(io)
 end
 
-function hiphostregister_spec(io)
-  emit_hiphostregister_generic(io)
-  emit_hiphostunregister_generic(io)
-  emit_hiphostgetdevicepointer_generic(io)
-  emit_hiphostgetflags_generic(io)
+function hiphostregister_spec(io, docs=Dict{String,String}())
+  emit_hiphostregister_generic(io, get(docs, "hipHostRegister", ""))
+  emit_hiphostunregister_generic(io, get(docs, "hipHostUnregister", ""))
+  emit_hiphostgetdevicepointer_generic(io, get(docs, "hipHostGetDevicePointer", ""))
+  emit_hiphostgetflags_generic(io, get(docs, "hipHostGetFlags", ""))
 end
 
 function hiphostregister_body(io)
@@ -638,12 +694,31 @@ end
 
 # The hipGetDeviceProperties generic, bound to the hipGetDevicePropertiesR0600
 # symbol that the HIP header #defines it to.
-function hip_auxiliary_spec(io)
+function hip_auxiliary_spec(io, doc="")
+  emit_doc(io, doc)
   println(io, "  interface hipGetDeviceProperties")
-  println(io, "    function hipGetDeviceProperties_(prop,deviceId) bind(c, name=\"hipGetDevicePropertiesR0600\")")
+  if EMIT_CUDA
+    println(io, "#ifdef USE_CUDA_NAMES")
+    println(io, "    function hipGetDeviceProperties_(prop,deviceId) bind(c, name=\"cudaGetDeviceProperties\")")
+    println(io, "#else")
+    println(io, "    function hipGetDeviceProperties_(prop,deviceId) bind(c, name=\"hipGetDevicePropertiesR0600\")")
+    println(io, "#endif")
+  else
+    println(io, "    function hipGetDeviceProperties_(prop,deviceId) bind(c, name=\"hipGetDevicePropertiesR0600\")")
+  end
   println(io, "      use iso_c_binding")
-  # The enums and types live in the enclosing `module hip`, hence IMPORT.
-  println(io, "      import")
+  if EMIT_CUDA
+    println(io, "#ifdef USE_CUDA_NAMES")
+    println(io, "      use hipfort_cuda_errors")
+    println(io, "#endif")
+  end
+  if HIPFORT
+    println(io, "      use hipfort_enums")
+    println(io, "      use hipfort_types")
+  else
+    # The enums and types live in the enclosing `module hip`, hence IMPORT.
+    println(io, "      import")
+  end
   println(io, "      implicit none")
   # c_int, not kind(hipSuccess): see c_int_if_enum in emit.jl.
   println(io, "      integer(c_int) :: hipGetDeviceProperties_")
@@ -652,4 +727,43 @@ function hip_auxiliary_spec(io)
   println(io, "    end function")
   println(io, "  end interface")
   println(io, "")
+end
+
+# The hipfort layout keeps the families in modules of their own, `use`d by hipfort.
+# Their wrappers use F2008 features, so a build with neither array macro keeps only
+# the bind(C) specifics, and no `contains` with nothing after it.
+function gen_hipfort_family_module(io, name::String, spec, body; uses::Vector{String} = String[])
+  emit_license_header(io; years = "2020-2026")
+  println(io, "module $(name)")
+  println(io, "  use, intrinsic :: iso_c_binding")
+  for u in uses; println(io, "  use $(u)"); end
+  println(io, "  implicit none")
+  println(io, "")
+  # The scopes' `use iso_c_binding` go: the module has it (see hoist_scope_uses).
+  bio = IOBuffer()
+  spec(bio)
+  emit_either_tier(bio, function (o)
+    println(o, "contains")
+    println(o, "")
+    body(o)
+  end)
+  print(io, first(hoist_scope_uses(String(take!(bio)), ==("iso_c_binding"))))
+  println(io, "end module $(name)")
+end
+
+gen_hipmemcpy_module(io, docs) =
+  gen_hipfort_family_module(io, "hipfort_hipmemcpy", o -> hipmemcpy_spec(o, docs), hipmemcpy_body)
+gen_hipmalloc_module(io, docs) =
+  gen_hipfort_family_module(io, "hipfort_hipmalloc", o -> hipmalloc_spec(o, docs), hipmalloc_body;
+                            uses = ["hipfort_hipmemcpy   ! hipMemcpy_ for the source=/dsource= hipMalloc forms"])
+gen_hiphostregister_module(io, docs) =
+  gen_hipfort_family_module(io, "hipfort_hiphostregister", o -> hiphostregister_spec(o, docs),
+                            hiphostregister_body)
+
+# hipfort_auxiliary: the hipGetDeviceProperties interface alone.
+function gen_hip_auxiliary_module(io, doc="")
+  emit_license_header(io; years = "2020-2026")
+  println(io, "module hipfort_auxiliary")
+  hip_auxiliary_spec(io, doc)
+  println(io, "end module hipfort_auxiliary")
 end

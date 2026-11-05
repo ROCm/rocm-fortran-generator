@@ -1,0 +1,8 @@
+  type,bind(c) :: hipKernelNodeParams  ! cudaKernelNodeParams as of cuda 13.3
+    type(c_ptr) :: func
+    type(dim3) :: gridDim
+    type(dim3) :: blockDim
+    integer(c_int) :: sharedMemBytes
+    type(c_ptr) :: kernelParams
+    type(c_ptr) :: extra
+  end type hipKernelNodeParams

@@ -1,0 +1,7 @@
+  type,bind(c) :: hipPointerAttribute_t  ! cudaPointerAttributes as of cuda 13.3
+    integer(c_int) :: type
+    integer(c_int) :: device
+    type(c_ptr) :: devicePointer
+    type(c_ptr) :: hostPointer
+    integer(c_long) :: reserved(8)
+  end type hipPointerAttribute_t

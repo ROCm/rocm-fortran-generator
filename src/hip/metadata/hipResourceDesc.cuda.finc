@@ -1,0 +1,5 @@
+  type,bind(c) :: hipResourceDesc  ! cudaResourceDesc as of cuda 13.3
+    integer(c_int) :: resType
+    integer(c_int64_t) :: res(16)  ! 128-byte C union
+    integer(c_int) :: flags
+  end type hipResourceDesc

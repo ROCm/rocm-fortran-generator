@@ -1,0 +1,8 @@
+  type,bind(c) :: hipMemsetParams  ! cudaMemsetParams as of cuda 13.3
+    type(c_ptr) :: dst
+    integer(c_size_t) :: pitch
+    integer(c_int) :: value
+    integer(c_int) :: elementSize
+    integer(c_size_t) :: width
+    integer(c_size_t) :: height
+  end type hipMemsetParams

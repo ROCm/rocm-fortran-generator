@@ -223,13 +223,16 @@ function emit_generic(io, f::FuncInfo, meta::LibMeta; alias::String = "")
                        alias_of = isempty(alias) ? nothing : f.name,
                        module_procs=procs, module_procs_assumed=procs_ar,
                        module_procs_always=procs_always,
+                       always_rocm_only=maps_to_cuda_driver(f, meta),
                        raw_in_generic=!wants_opt(f, meta))
 end
 
 # The `use` preamble of a forwarding wrapper, down to `implicit none`. The enums,
-# types and sibling-library names come by host association from the module.
-function emit_wrapper_uses(io)
+# types and sibling-library names come by host association from the module, or in
+# the hipfort layout from the library's _enums and _types modules.
+function emit_wrapper_uses(io, f::FuncInfo, meta::LibMeta)
   println(io, "      use iso_c_binding")
+  HIPFORT && for m in hipfort_scope_uses(f, meta); println(io, "      use $(m)"); end
   println(io, "      implicit none")
 end
 
@@ -313,7 +316,7 @@ function emit_rank_wrapper(io, f::FuncInfo, meta::LibMeta, rank::Int = 0;
   else
     println_wrapped(io, "    function $(wname)($joined)", "        ")
   end
-  emit_wrapper_uses(io)
+  emit_wrapper_uses(io, f, meta)
   f.is_void || println(io, "      $(f.ret_ftype) :: $(wname)")
   for (i, a) in enumerate(f.args)
     if a.name in strargs
@@ -373,6 +376,9 @@ function emit_wrappers_body(io, funcs::Vector{FuncInfo}, meta::LibMeta)
   for f in funcs
     wants_native(f, meta) || continue
     dp = wants_rank_devptr(f, meta)
+    # The wrappers call the bind(C) specific, so they share its CUDA guard.
+    guard = hip_only(f, meta)
+    guard && println(io, "#ifndef USE_CUDA_NAMES")
     # Already inside emit_either_tier's `#if`, hence per_rank_is_default.
     emit_tier_guard(io,
       function (o)
@@ -396,6 +402,7 @@ function emit_wrappers_body(io, funcs::Vector{FuncInfo}, meta::LibMeta)
         end
       end;
       per_rank_is_default = true)
+    guard && println(io, "#endif")
   end
 end
 
@@ -404,9 +411,13 @@ end
 function emit_typed_body(io, funcs::Vector{FuncInfo}, meta::LibMeta)
   for f in funcs
     (wants_typed(f, meta) || wants_opt(f, meta)) || continue
+    # A routine bound to the CUDA driver API keeps its bind(C) specific only there.
+    guard = hip_only(f, meta) || (!isempty(meta.cuda_names) && maps_to_cuda_driver(f, meta))
+    guard && println(io, "#ifndef USE_CUDA_NAMES")
     wants_opt(f, meta)    && emit_rank_wrapper(io, f, meta; opt=true)
     wants_typed(f, meta)  && emit_rank_wrapper(io, f, meta; typed=true)
     wants_devptr(f, meta) && emit_rank_wrapper(io, f, meta; typed=true, devptr=true)
+    guard && println(io, "#endif")
   end
 end
 

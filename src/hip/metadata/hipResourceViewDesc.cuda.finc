@@ -1,0 +1,11 @@
+  type,bind(c) :: hipResourceViewDesc  ! cudaResourceViewDesc as of cuda 13.3
+    integer(c_int) :: format
+    integer(c_size_t) :: width
+    integer(c_size_t) :: height
+    integer(c_size_t) :: depth
+    integer(c_int) :: firstMipmapLevel
+    integer(c_int) :: lastMipmapLevel
+    integer(c_int) :: firstLayer
+    integer(c_int) :: lastLayer
+    integer(c_int) :: reserved(16)
+  end type hipResourceViewDesc

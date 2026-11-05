@@ -1,0 +1,13 @@
+  type,bind(c) :: hipArrayMapInfo  ! CUarrayMapInfo as of cuda 13.3
+    integer(c_int) :: resourceType
+    integer(c_int64_t) :: resource(1)  ! 8-byte C union (CUmipmappedArray or CUarray)
+    integer(c_int) :: subresourceType
+    integer(c_int64_t) :: subresource(4)  ! 32-byte C union
+    integer(c_int) :: memOperationType
+    integer(c_int) :: memHandleType
+    type(c_ptr) :: memHandle
+    integer(c_int64_t) :: offset
+    integer(c_int) :: deviceBitMask
+    integer(c_int) :: flags
+    integer(c_int) :: reserved(2)
+  end type hipArrayMapInfo

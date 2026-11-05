@@ -128,6 +128,7 @@ end
 
 function collect_funcs(root, prefix::String) :: Vector{FuncInfo}
   reset_unmapped_cptr!()
+  EMIT_DOCS && (DOCS[] = Dict{String,String}())
   reset_func_docs!()
   carried = Pair{String,String}[]   # the last doc block's @params (function_docs!)
   funcs = FuncInfo[]
@@ -188,7 +189,9 @@ function collect_funcs(root, prefix::String) :: Vector{FuncInfo}
     end
 
     push!(funcs, FuncInfo(name, ret_ft, is_void, args))
+    EMIT_DOCS && (DOCS[][name] = cursor_comment(child))
   end
+  EMIT_DOCS && inherit_forwarder_docs!(root)
   isempty(skipped_variadic) ||
     @info "  skipped $(length(skipped_variadic)) variadic function(s) (no portable Fortran interface):" sort!(unique(skipped_variadic))
   return funcs
@@ -684,7 +687,8 @@ function collect_structs(root; skip::Vector{String} = String[],
         dep = emitname(dep)
         push!(deps, dep)
       end
-      push!(fields, FieldInfo(safe_ident(Clang.spelling(fc)), ft, dims, ""))
+      push!(fields, FieldInfo(safe_ident(Clang.spelling(fc)), ft, dims,
+                              EMIT_DOCS ? field_doc(cursor_comment(fc)) : ""))
     end
 
     if ok && !isempty(fields)

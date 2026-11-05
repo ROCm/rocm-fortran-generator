@@ -1,0 +1,6 @@
+  type,bind(c) :: hipGraphInstantiateParams  ! cudaGraphInstantiateParams as of cuda 13.3
+    integer(c_int64_t) :: flags
+    type(c_ptr) :: uploadStream
+    type(c_ptr) :: errNode_out
+    integer(c_int) :: result_out
+  end type hipGraphInstantiateParams

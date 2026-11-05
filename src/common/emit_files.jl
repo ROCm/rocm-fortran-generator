@@ -60,20 +60,46 @@ function emit_named_interface(io, f::FuncInfo, meta::LibMeta;
                               module_procs::Vector{String} = String[],
                               module_procs_assumed::Vector{String} = String[],
                               module_procs_always::Vector{String} = String[],
+                              always_rocm_only::Bool = false,
                               alias_of::Union{Nothing,String} = nothing,
                               raw_in_generic::Bool = true)
+  if EMIT_DOCS
+    argnames = Set{String}(lowercase(a.name) for a in f.args)
+    for l in doc_to_fortran_lines(get(meta.docs, f.name, ""), "  ";
+                                  argnames=argnames, deny=meta.doc_deny)
+      println(io, l)
+    end
+  end
   sub    = fname * "_"
   kindw  = f.is_void ? "subroutine" : "function"
   joined = join((a.name for a in f.args), ",")
   csym   = bind_symbol(f.name, meta)   # differs from f.name for a forwarding macro
+  # hipfort's NVIDIA backend binds the CUDA symbol under USE_CUDA_NAMES; a routine
+  # with none is compiled for ROCm only.
+  cu     = get(meta.cuda_names, f.name, nothing)
+  guard  = hip_only(f, meta)
+  guard && println(io, "#ifndef USE_CUDA_NAMES")
 
   emit_specific(g, subname) = begin
-    emit_bind_signature(io, "    $(kindw) $(subname)($(joined))", "bind(c, name=\"$(csym)\")", "        ")
+    head = "    $(kindw) $(subname)($(joined))"
+    if cu !== nothing
+      println(io, "#ifdef USE_CUDA_NAMES")
+      emit_bind_signature(io, head, "bind(c, name=\"$(cu)\")", "        ")
+      println(io, "#else")
+      emit_bind_signature(io, head, "bind(c, name=\"$(csym)\")", "        ")
+      println(io, "#endif")
+    else
+      emit_bind_signature(io, head, "bind(c, name=\"$(csym)\")", "        ")
+    end
     println(io, "      use iso_c_binding")
-    # The enums, types and handles live in the host module (and sibling names are
-    # `use`d there), and an interface body only sees the host through IMPORT
-    # (which must follow any USE and precede IMPLICIT NONE).
-    println(io, "      import")
+    if HIPFORT
+      for m in hipfort_scope_uses(g, meta); println(io, "      use $(m)"); end
+    else
+      # The enums, types and handles live in the host module (and sibling names are
+      # `use`d there), and an interface body only sees the host through IMPORT
+      # (which must follow any USE and precede IMPLICIT NONE).
+      println(io, "      import")
+    end
     println(io, "      implicit none")
     g.is_void || println(io, "      $(g.ret_ftype) :: $(subname)")
     for a in g.args
@@ -106,9 +132,20 @@ function emit_named_interface(io, f::FuncInfo, meta::LibMeta;
   # Plain F2003 forms (_typed, _opt, _devptr), listed outside the array guard.
   # They are module procedures, not second bind(C) specifics: F2018 19.2 allows one
   # interface per binding label.
+  # A routine bound to the CUDA driver API has no module procedure under
+  # USE_CUDA_NAMES (see maps_to_cuda_driver): there the generic lists its bind(C)
+  # specific instead, which `procedure` (F2003) may name.
   if !isempty(module_procs_always)
     println(io, "")
+    if always_rocm_only && !raw_in_generic
+      println(io, "#ifdef USE_CUDA_NAMES")
+      println(io, "    procedure $(alias_of === nothing ? sub : alias_of * "_")")
+      println(io, "#else")
+    else
+      always_rocm_only && println(io, "#ifndef USE_CUDA_NAMES")
+    end
     _emit_module_procedure(io, module_procs_always)
+    always_rocm_only && println(io, "#endif")
   end
   # Array overloads, guarded by tier: USE_ASSUMED_SHAPE selects the per-rank set
   # (F2008), USE_ASSUMED_RANK the dimension(..) form (F2018). The two cannot coexist
@@ -127,6 +164,7 @@ function emit_named_interface(io, f::FuncInfo, meta::LibMeta;
     end
   end
   println(io, "  end interface")
+  guard && println(io, "#endif")
   println(io, "")
 end
 
@@ -160,17 +198,34 @@ end
 # The enum declarations of the module's specification part: one `enum, bind(c)`
 # block per C enum, plus integer parameters for the #define constants.
 function emit_enum_decls(io, enums::Vector{EnumInfo},
-                         macros::Vector{Pair{String,Int64}} = Pair{String,Int64}[])
+                         macros::Vector{Pair{String,Int64}} = Pair{String,Int64}[];
+                         meta::LibMeta = LibMeta())
   # Fortran names are case-insensitive: drop the #defines that clash with an enumerator.
   seen = Set{String}()
   for e in enums, (nm, _) in e.constants; push!(seen, lowercase(nm)); end
   fresh = [(nm, val) for (nm, val) in macros if lowercase(nm) ∉ seen]
 
+  # hipfort's CUDA values, keyed by the spelling the module ends up with (the
+  # enum_rename applied after emission).
+  ren = meta.enum_rename
+  cuda_value(nm) = something(get(meta.enum_cuda, nm, nothing),
+                             length(ren) == 2 ? get(meta.enum_cuda, replace(nm, ren[1] => ren[2]), nothing) : nothing,
+                             Some(nothing))
+
   for e in enums
     !isempty(e.name) && println(io, "  ! $(e.name)")
     println(io, "  enum, bind(c)")
     for (nm, val) in e.constants
-      println(io, "    enumerator :: $(nm) = $(val)")
+      cv = cuda_value(nm)
+      if cv !== nothing
+        println(io, "#ifdef USE_CUDA_NAMES")
+        println(io, "    enumerator :: $(nm) = $(cv)")
+        println(io, "#else")
+        println(io, "    enumerator :: $(nm) = $(val)")
+        println(io, "#endif")
+      else
+        println(io, "    enumerator :: $(nm) = $(val)")
+      end
     end
     println(io, "  end enum")
     println(io, "")
@@ -197,7 +252,7 @@ function emit_enum_decls(io, enums::Vector{EnumInfo},
 end
 
 # The bind(C) derived type declarations of the module's specification part.
-function emit_type_decls(io, structs::Vector{StructInfo})
+function emit_type_decls(io, structs::Vector{StructInfo}; meta::LibMeta = LibMeta())
   emit_struct(s) = begin
     println(io, "  type, bind(c) :: $(s.name)")
     for f in s.fields
@@ -214,7 +269,17 @@ function emit_type_decls(io, structs::Vector{StructInfo})
     println(io, "  end type $(s.name)")
   end
   for s in structs
-    emit_struct(s)
+    cbody = get(meta.type_cuda, s.name, nothing)
+    if cbody !== nothing
+      # CUDA's layout of the type, maintained by hand (hipDeviceProp_t).
+      println(io, "#ifdef USE_CUDA_NAMES")
+      println(io, cbody)
+      println(io, "#else")
+      emit_struct(s)
+      println(io, "#endif")
+    else
+      emit_struct(s)
+    end
     println(io, "")
   end
 end
@@ -283,14 +348,27 @@ function emit_check_failure(io, ind::String, label::String, names::Vector{String
   println(io, "$(ind)write (*, \"(a,i0,a)\") \"$(label) ERROR: \" // trim(name) // \" (code \", status, \")\"")
 end
 
+# The names of the intrinsic module iso_c_binding (Fortran 2018).
+const ISO_C_NAMES = Set{String}([
+  "c_int", "c_short", "c_long", "c_long_long", "c_signed_char", "c_size_t",
+  "c_int8_t", "c_int16_t", "c_int32_t", "c_int64_t",
+  "c_int_least8_t", "c_int_least16_t", "c_int_least32_t", "c_int_least64_t",
+  "c_int_fast8_t", "c_int_fast16_t", "c_int_fast32_t", "c_int_fast64_t",
+  "c_intmax_t", "c_intptr_t", "c_ptrdiff_t",
+  "c_float", "c_double", "c_long_double",
+  "c_float_complex", "c_double_complex", "c_long_double_complex",
+  "c_bool", "c_char", "c_null_char", "c_alert", "c_backspace", "c_form_feed",
+  "c_new_line", "c_carriage_return", "c_horizontal_tab", "c_vertical_tab",
+  "c_ptr", "c_funptr", "c_null_ptr", "c_null_funptr",
+  "c_associated", "c_f_pointer", "c_f_procpointer", "c_funloc", "c_loc", "c_sizeof"])
+
 const USE_LINE = r"^\s*use\s*(?:,\s*intrinsic\s*::)?\s*(\w+)\s*$"i
 
-# The `use` lines of the interface bodies and module procedures in `body` that the
-# module makes redundant: a module procedure sees the module by host association,
-# and an interface body through IMPORT. ftn (HPE Cray) reads a module again for
-# each `use`, which made a module of thousands of interfaces and wrappers take an
-# hour to compile, against seconds without; gfortran and amdflang are 2 to 3
-# times faster too.
+# The `use` lines of the interface bodies and module procedures in `body`, moved to
+# the module: a module procedure sees the module by host association, and an
+# interface body through IMPORT. ftn (HPE Cray) reads a module again for each
+# `use`, which made a module of thousands of interfaces and wrappers take an
+# hour to compile, against seconds with IMPORT; gfortran is faster too.
 #
 # Only a `use <module>` of a module that `hoistable(module)` accepts goes; a
 # `use ..., only:` stays, before the IMPORT. The `use` lines of a scope are the
@@ -336,6 +414,30 @@ function hoist_scope_uses(body::AbstractString, hoistable::Function)
   return join(out, '\n'), hoisted
 end
 
+# The lowercase identifiers of `text`.
+identifiers(text::AbstractString) =
+  Set{String}(lowercase(m.match) for m in eachmatch(r"\b[A-Za-z_]\w*\b", text))
+
+# The module-level `use ..., only:` lines that give the module what
+# hoist_scope_uses moved out of its scopes, as (use, names) pairs; the caller
+# makes the names PRIVATE so that the module exports what it did. The names of
+# iso_c_binding, unless the module re-exports it already (`iso_exported`), and
+# the constants of each sibling library's enums module that the scopes name.
+function hoisted_host_uses(body::AbstractString, hoisted::Set{String},
+                           host_mods::Set{String}, iso_exported::Bool,
+                           sibling_consts::Dict{String,Set{String}})
+  ids = identifiers(body)
+  uses = Pair{String,Vector{String}}[]
+  add(use, names) = isempty(names) || push!(uses, use => sort(collect(names)))
+  ("iso_c_binding" in hoisted && !iso_exported) &&
+    add("use, intrinsic :: iso_c_binding", intersect(ids, ISO_C_NAMES))
+  for mod in sort(collect(setdiff(hoisted, host_mods, Set(["iso_c_binding"]))))
+    consts = get(sibling_consts, mod, Set{String}())
+    add("use $(mod)", Set{String}(c for c in consts if lowercase(c) in ids))
+  end
+  return uses
+end
+
 # The library module: the declarations (`decls`), the interfaces and the wrappers,
 # with the <lib>Check routine (`check_routine`, if any) among its procedures. The
 # hooks are called as `hook(io)`.
@@ -345,23 +447,67 @@ function gen_module_file(io, cfg::Dict, meta::LibMeta,
                          extra_generics::Union{Nothing,Function} = nothing,
                          extra_wrappers::Union{Nothing,Function} = nothing,
                          extra_uses::Vector{String} = String[],
-                         check_routine::Union{Nothing,Function} = nothing)
+                         extra_modules::Vector{String} = String[],
+                         check_routine::Union{Nothing,Function} = nothing,
+                         enums_have_iso::Bool = false)
   libname = cfg["general"]["name"]
-  emit_license_header(io)
-  println(io, "module $(libname)")
-  # The interface bodies IMPORT from this module, so names borrowed from a sibling
-  # library (rocSOLVER uses rocBLAS's status) are `use`d here, one narrow
-  # `use, only:` per sibling, wrapped to stay within 132 columns.
-  for u in sibling_module_uses(funcs, libname, meta; extra=extra_uses); println_wrapped(io, "  use $(u)", "    "); end
-  println(io, "  use, intrinsic :: iso_c_binding")
-  println(io, "  implicit none")
-  println(io, "")
-  # The scopes' `use iso_c_binding` go: the module has it (see hoist_scope_uses).
+  mb = modbase(cfg)
+  # The body first: the module-level `use` lines depend on what its scopes name.
   bio = IOBuffer()
   gen_module_body(bio, cfg, meta, funcs, aliases; decls, extra_generics,
                   extra_wrappers, check_routine)
-  print(io, first(hoist_scope_uses(String(take!(bio)), ==("iso_c_binding"))))
-  println(io, "end module $(libname)")
+  sibling_consts = Dict{String,Set{String}}()
+  for (c, m) in meta.sibling_enum_mod; push!(get!(sibling_consts, m, Set{String}()), c); end
+  if HIPFORT
+    host_mods = Set{String}(extra_modules)
+    meta.has_enums && push!(host_mods, "$(mb)_enums")
+    meta.has_types && push!(host_mods, "$(mb)_types")
+    # A types module, the HIP families and an enums module with parameters
+    # re-export iso_c_binding.
+    iso_exported = mb == "hipfort" || meta.has_types || !isempty(extra_modules) ||
+                   (meta.has_enums && enums_have_iso) ||
+                   !(meta.has_enums || meta.has_types || !isempty(extra_modules))
+  else
+    host_mods = Set(["iso_c_binding"])
+    iso_exported = true
+  end
+  hoistable(m) = m == "iso_c_binding" || m in host_mods || haskey(sibling_consts, m)
+  body, hoisted = hoist_scope_uses(String(take!(bio)), hoistable)
+  host_uses = hoisted_host_uses(body, hoisted, host_mods, iso_exported, sibling_consts)
+
+  emit_license_header(io; years = license_years(cfg))
+  println(io, "module $(mb)")
+  if HIPFORT
+    # The enums and types are modules of their own, re-exported from here; the
+    # interface bodies `use` them (and any sibling's) themselves.
+    if EMIT_CUDA && mb == "hipfort"
+      println(io, "#ifdef USE_CUDA_NAMES")
+      println(io, "  use hipfort_cuda_errors")
+      println(io, "#endif")
+    end
+    meta.has_enums && println(io, "  use $(mb)_enums")
+    meta.has_types && println(io, "  use $(mb)_types")
+    for m in extra_modules; println(io, "  use $(m)"); end
+    # Otherwise an enums or types module brings iso_c_binding.
+    (meta.has_enums || meta.has_types || !isempty(extra_modules)) ||
+      println(io, "  use, intrinsic :: iso_c_binding")
+  else
+    # The interface bodies IMPORT from this module, so names borrowed from a sibling
+    # library (rocSOLVER uses rocBLAS's status) are `use`d here, one narrow
+    # `use, only:` per sibling, wrapped to stay within 132 columns.
+    for u in sibling_module_uses(funcs, libname, meta; extra=extra_uses); println_wrapped(io, "  use $(u)", "    "); end
+    println(io, "  use, intrinsic :: iso_c_binding")
+  end
+  for (use, names) in host_uses
+    println_wrapped(io, "  $(use), only: $(join(names, ", "))", "    ")
+  end
+  println(io, "  implicit none")
+  for (_, names) in host_uses
+    println_wrapped(io, "  private :: $(join(names, ", "))", "    ")
+  end
+  println(io, "")
+  print(io, body)
+  println(io, "end module $(mb)")
 end
 
 # The declarations, interfaces and procedures of the library module, down to
@@ -395,5 +541,162 @@ function gen_module_body(io, cfg::Dict, meta::LibMeta, funcs::Vector{FuncInfo},
     needs_wrappers(funcs, meta) && emit_wrappers_body(io, funcs, meta)
     extra_wrappers !== nothing && extra_wrappers(io)
     GUARDED_IFACES && println(io, "#endif")
+  end
+  emit_doxygen_groups(io, cfg)
+end
+
+# ---- hipfort layout ----
+
+# Whether <mb>_enums uses (and so re-exports) iso_c_binding: only for the
+# #define parameters that are not enum constants, whose kinds name it.
+function enums_need_iso(enums::Vector{EnumInfo}, macros::Vector{Pair{String,Int64}})
+  seen = Set{String}(lowercase(nm) for e in enums for (nm, _) in e.constants)
+  return any(m -> lowercase(m.first) ∉ seen, macros)
+end
+
+# <mb>_enums: the library's enum constants and #define parameters, in their own
+# module.
+function gen_hipfort_enums_file(io, cfg::Dict, enums::Vector{EnumInfo},
+                                macros::Vector{Pair{String,Int64}}, meta::LibMeta)
+  mb = meta.modbase
+  emit_license_header(io; years = license_years(cfg))
+  println(io, "module $(mb)_enums")
+  enums_need_iso(enums, macros) && println(io, "  use, intrinsic :: iso_c_binding")
+  println(io, "  implicit none")
+  println(io, "")
+  emit_enum_decls(io, enums, macros; meta)
+  println(io, "end module $(mb)_enums")
+end
+
+# <mb>_types: the library's bind(C) derived types. Only the HIP runtime had a
+# types module in hipfort; the others date from 2026.
+function gen_hipfort_types_file(io, structs::Vector{StructInfo}, meta::LibMeta)
+  mb = meta.modbase
+  emit_license_header(io; years = mb == "hipfort" ? "2020-2026" : "2026")
+  println(io, "module $(mb)_types")
+  println(io, "  use, intrinsic :: iso_c_binding")
+  println(io, "  implicit none")
+  println(io, "")
+  emit_type_decls(io, structs; meta)
+  println(io, "end module $(mb)_types")
+end
+
+# <lib>.checkmeta, assembled with the other libraries' into hipfort_check by
+# generate_all.jl (gen_unified_check_file): the routine name, the success constant,
+# the module defining it ([check] module, for a borrowed status), the label of the
+# message, then the other status names.
+function write_check_meta(output_dir, cfg::Dict, success::String, names::Vector{String},
+                          meta::LibMeta)
+  libname   = cfg["general"]["name"]
+  checkname = get(get(cfg, "check", Dict()), "name", "$(libname)Check")
+  checkmod  = get(get(cfg, "check", Dict()), "module", "$(meta.modbase)_enums")
+  open(joinpath(output_dir, "$(libname).checkmeta"), "w") do io
+    println(io, checkname)
+    println(io, success)
+    println(io, checkmod)
+    println(io, uppercase(libname))
+    for nm in names; println(io, nm); end
+  end
+end
+
+# The .checkmeta files of every generated directory, by file name so the module
+# does not depend on directory order.
+function collect_metas(dirs, suffix::String)
+  paths = String[]
+  for d in dirs, f in readdir(d)
+    endswith(f, suffix) && push!(paths, joinpath(d, f))
+  end
+  return sort(paths; by = basename)
+end
+
+# hipfort_check: every <lib>Check of the hipfort layout in one module. Each
+# subroutine `use`s its constants `only:`, so a constant two enums modules export
+# (rocBLAS and rocSOLVER) never clashes. A library reusing another's status
+# (rocSOLVER) borrows the names of the library that defines it.
+function gen_unified_check_file(dirs, dest_dir::String)
+  metas = collect_metas(dirs, ".checkmeta")
+  isempty(metas) && return
+  entries = Tuple{String,String,String,String,Vector{String}}[]
+  for m in metas
+    ls = readlines(m)
+    length(ls) >= 4 && push!(entries, (ls[1], ls[2], ls[3], ls[4], ls[5:end]))
+  end
+  isempty(entries) && return
+  byok = Dict{String,Vector{String}}()
+  for e in entries
+    isempty(e[5]) || (byok[lowercase(e[2])] = e[5])
+  end
+  open(joinpath(dest_dir, "hipfort_check.F90"), "w") do io
+    emit_license_header(io; years = "2020-2026")
+    println(io, "module hipfort_check")
+    println(io, "  implicit none")
+    println(io, "contains")
+    seen = Set{String}()
+    for (checkname, success, mod, label, own) in entries
+      lowercase(checkname) ∈ seen && continue   # rocSOLVER shares rocBLAS's success code
+      push!(seen, lowercase(checkname))
+      names = isempty(own) ? get(byok, lowercase(success), String[]) : own
+      named = !isempty(names)
+      use_named = "    use $(mod), only: " * join([success; names], ", ")
+      println(io, "  subroutine $(checkname)(status)")
+      if EMIT_CUDA
+        # Under USE_CUDA_NAMES the status is CUDA's, whose values the HIP
+        # enumerators do not follow: that build prints the code only, and the HIP
+        # runtime compares to cudaSuccess.
+        println(io, "#ifdef USE_CUDA_NAMES")
+        if checkname == "hipCheck"
+          println(io, "    use hipfort_cuda_errors, only: cudaSuccess")
+          println(io, "    implicit none")
+          println(io, "    integer(kind(cudaSuccess)) :: status")
+          println(io, "    if (status /= cudaSuccess) then")
+        else
+          println(io, "    use $(mod), only: $(success)")
+          println(io, "    implicit none")
+          println(io, "    integer(kind($(success))) :: status")
+          println(io, "    if (status /= $(success)) then")
+        end
+        println(io, "      write (*, *) \"$(label) ERROR: code = \", status")
+        println(io, "#else")
+      end
+      println_wrapped(io, named ? use_named : "    use $(mod), only: $(success)", "      ")
+      println(io, "    implicit none")
+      println(io, "    integer(kind($(success))) :: status")
+      named && println(io, "    $(check_name_decl(names))")
+      println(io, "    if (status /= $(success)) then")
+      emit_check_failure(io, "      ", label, names)
+      EMIT_CUDA && println(io, "#endif")
+      # `stop 1` is valid in both F2003 and F2008, unlike `error stop`.
+      println(io, "      stop 1")
+      println(io, "    end if")
+      println(io, "  end subroutine $(checkname)")
+    end
+    println(io, "end module hipfort_check")
+  end
+end
+
+# The `\defgroup`s of the library's `[doxygen] groups`, before `end module`. The
+# functions' comments carry `\ingroup <name>`, but the headers define the groups in
+# comments attached to no declaration, which libclang never reports: without these
+# Doxygen warns "Found non-existing group", fatal in hipfort's docs build.
+function emit_doxygen_groups(io, cfg::Dict)
+  EMIT_DOCS || return
+  groups = get(get(cfg, "doxygen", Dict()), "groups", [])
+  isempty(groups) && return
+  for g in groups
+    println(io, "")
+    println(io, "  !>   @defgroup $(g["name"]) $(g["title"])")
+    println(io, "  !>")
+    if haskey(g, "parent")
+      println(io, "  !>   @ingroup $(g["parent"])")
+      println(io, "  !>")
+    end
+    if haskey(g, "brief")
+      println(io, "  !>   $(g["brief"])")
+      println(io, "  !>")
+    end
+    if haskey(g, "note")
+      println(io, "  !>   @note  $(g["note"])")
+      println(io, "  !>")
+    end
   end
 end

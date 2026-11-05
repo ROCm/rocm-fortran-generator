@@ -66,8 +66,10 @@ mini_status_t mini_reset(void);
 #define mini_destroy mini_reset
 
 /* The newer HIP spelling of a versioned name (hipChooseDevice): an inline function
-   forwarding its parameters unchanged is an alias of its target. */
+   forwarding its parameters unchanged is an alias of its target. Only the inline
+   function is documented: the hipfort layout's docstring comes from it. */
 mini_status_t mini_choose_R0600(int device);
+/** @brief Choose a device (documented on the forwarder only). */
 static inline mini_status_t mini_choose(int device) { return mini_choose_R0600(device); }
 
 /* NOT an alias: the arguments are not passed through unchanged. */
