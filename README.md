@@ -140,6 +140,26 @@ generated, so a failure leaves the checkout as it was. Without `--overwrite`, th
 module is written to `fortran/` only. Then review the change with `git diff` in
 the checkout, and compile it with `bash check_mods.sh`.
 
+### Regenerating hipfort
+
+```bash
+ROCM_INCLUDE=/opt/rocm/include ./regenerate.sh <hipfort checkout> [library ...]
+```
+
+writes everything [hipfort](https://github.com/ROCm/hipfort) ships into its checkout,
+from the installed headers only (`ROCM_SYSTEMS`/`ROCM_LIBRARIES` are ignored):
+
+1. the bindings in the hipfort layout (`ROCM_FORTRAN_LAYOUT=hipfort`: `hipfort_<lib>`
+   modules with their `_enums`/`_types` modules, docstrings, and the `USE_CUDA_NAMES`
+   NVIDIA backend from `src/<lib>/metadata/<lib>.txt`) into `lib/hipfort/`;
+2. the bind(C) symbol tests into `test/f2003/<lib>/`;
+3. the supported-API tables into `docs/doxygen/input/`;
+4. the Doxygen denylist, `src/common/doxygen_denylist.txt` (in this repository);
+5. an offline audit of the CUDA symbol maps against `src/common/cuda_symbols/`.
+
+Naming libraries regenerates only their modules in step 1. Review with
+`git -C <hipfort checkout> diff`; `./regenerate.sh -h` has the details.
+
 ## Adding a library
 
 1. Create `src/<lib>/<lib>.toml` with `[general] name`, `[library] prefix` and `opaque_handles`.
