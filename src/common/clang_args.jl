@@ -515,6 +515,7 @@ function run_library_generator(dir::AbstractString;
                                include_dir::AbstractString = "/opt/rocm/include",
                                argshook   = nothing,
                                funcfilter = nothing,
+                               after      = nothing,
                                gen_kwargs...)
   include_dir = abspath(length(ARGS) >= 1 ? ARGS[1] : include_dir)
   output_dir  = length(ARGS) >= 2 ? ARGS[2] : joinpath(dir, "output")
@@ -545,8 +546,10 @@ function run_library_generator(dir::AbstractString;
     sib_enums  = GC.@preserve ctx tu collect_enums(root; own=[sib])
     sib_macros = GC.@preserve ctx tu collect_macros(root; own=[sib])
     append!(sibling_enums, sib_enums)
-    for e in sib_enums, c in e.constants; sibling_enum_mod[first(c)] = sib; end
-    for mm in sib_macros; sibling_enum_mod[first(mm)] = sib; end
+    # The hipfort layout's sibling enums are a module of their own.
+    m = HIPFORT ? "hipfort_$(sib)_enums" : sib
+    for e in sib_enums, c in e.constants; sibling_enum_mod[first(c)] = m; end
+    for mm in sib_macros; sibling_enum_mod[first(mm)] = m; end
   end
 
   aliases = GC.@preserve ctx tu collect_name_aliases(root; own=own_headers)
@@ -558,6 +561,8 @@ function run_library_generator(dir::AbstractString;
 
   gen_files(output_dir, cfg, funcs, enums, structs; macros=macros, aliases=aliases,
             sibling_enum_mod=sibling_enum_mod, sibling_enums=sibling_enums, uses=uses, gen_kwargs...)
+  # hipfort layout: modules a library writes beside its own (the HIP runtime's).
+  after === nothing || after(output_dir, enums, macros)
 end
 
 # BLAS Set/Get Vector/Matrix families: drop them from the bind(C) path and emit

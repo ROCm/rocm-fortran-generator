@@ -48,6 +48,11 @@
 # Each library's metadata files come from its checkout's bindings/fortran/<proj>/metadata/
 # (rocm-libraries) or bindings/fortran/<lib>/metadata/ (rocm-systems) when the run
 # reads that checkout and the directory exists, else from src/<lib>/metadata/.
+#
+# ROCM_FORTRAN_LAYOUT=hipfort writes hipfort's lib/hipfort/ instead, flat into the
+# output root, with the shared hipfort_check module (see regenerate.sh). There,
+# --libs regenerates those libraries' modules and leaves hipfort_check as it was,
+# and --overwrite is refused.
 
 if any(in(("-h", "--help")), ARGS)
   # The usage is the comment block after the license, which ends at the second rule.
@@ -67,8 +72,13 @@ include(joinpath(@__DIR__, "common", "header_sources.jl"))
 const GENERATOR_VERSION = TOML.parsefile(joinpath(@__DIR__, "Project.toml"))["version"]
 @info "rocm-fortran-generator $(GENERATOR_VERSION)"
 
+const HIPFORT_LAYOUT = lowercase(get(ENV, "ROCM_FORTRAN_LAYOUT", "packaged")) == "hipfort"
+
 const SOURCES, REST, LIBS_RUN, OVERWRITE, NAMED = try
   only, overwrite, positional = run_options(ARGS)
+  overwrite && HIPFORT_LAYOUT &&
+    throw(ArgumentError("--overwrite writes into rocm-libraries and rocm-systems checkouts; " *
+                        "with ROCM_FORTRAN_LAYOUT=hipfort the output dir is already hipfort's lib/hipfort"))
   sources, rest = header_sources(ENV, positional)
   libs = run_libs(sources, only)
   # Before generating anything, so a run that cannot write every module writes none.
@@ -82,8 +92,8 @@ end
 const OUTPUT_ROOT = abspath(isempty(REST) ? joinpath(@__DIR__, "..", "fortran") : REST[1])
 const HIP_VERSION = hip_version(SOURCES)
 
-# One directory per library, under its upstream repository.
-outdir_of(lib) = joinpath(OUTPUT_ROOT, repo_of(lib), lib)
+# One directory per library, under its upstream repository; hipfort's lib/hipfort/ is flat.
+outdir_of(lib) = HIPFORT_LAYOUT ? OUTPUT_ROOT : joinpath(OUTPUT_ROOT, repo_of(lib), lib)
 
 @info "Headers: $(describe_sources(SOURCES)) (HIP $(HIP_VERSION))"
 mkpath(OUTPUT_ROOT)
@@ -103,8 +113,10 @@ for lib in LIBS_RUN
     else
       # Not in this include tree: drop any module left from an earlier run.
       @warn "Include dir not found for $lib, skipping"
-      rm(joinpath(outdir_of(lib), "$(lib).F90"); force=true)
-      isdir(outdir_of(lib)) && isempty(readdir(outdir_of(lib))) && rm(outdir_of(lib))
+      if !HIPFORT_LAYOUT
+        rm(joinpath(outdir_of(lib), "$(lib).F90"); force=true)
+        isdir(outdir_of(lib)) && isempty(readdir(outdir_of(lib))) && rm(outdir_of(lib))
+      end
     end
     continue
   end
@@ -150,6 +162,24 @@ end
 if isempty(generated)
   @error "No library was generated: none of their include dirs exists in $(describe_sources(SOURCES))"
   exit(1)
+end
+
+if HIPFORT_LAYOUT
+  # Every <lib>Check in one hipfort_check module, from the generators' .checkmeta.
+  # A run of some libraries only has their .checkmeta, so it leaves hipfort_check as
+  # it was rather than write one that lacks the other libraries' helpers.
+  if LIBS_RUN == selected_libs(SOURCES)
+    include(joinpath(@__DIR__, "common", "fortran_gen.jl"))
+    gen_unified_check_file([OUTPUT_ROOT], OUTPUT_ROOT)
+  else
+    @warn "hipfort_check.F90 left as it was: only $(join(LIBS_RUN, " ")) regenerated. " *
+          "Regenerate every library to update it, for example when a status enum changes."
+  end
+  for f in readdir(OUTPUT_ROOT)
+    endswith(f, ".checkmeta") && rm(joinpath(OUTPUT_ROOT, f))
+  end
+  @info "Done. hipfort modules written to $OUTPUT_ROOT"
+  exit(0)
 end
 
 commit = try

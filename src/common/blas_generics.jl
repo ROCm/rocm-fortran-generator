@@ -62,6 +62,10 @@ blas_shapes(kind) = kind === :vector ? ["rank_0", "full_rank"] :
                                        ["full_rank", "rank_0", "rank_1"]
 
 
+# The hipfort layout's enums module of the library, which the bodies `use`; "" in
+# the packaged layout, where the constants are in the enclosing module.
+blas_enums_mod(naming) = HIPFORT ? (naming === :camel ? "hipfort_hipblas_enums" : "hipfort_rocblas_enums") : ""
+
 # Per family generic, its (per-rank, assumed-rank) overloads. Under USE_ASSUMED_RANK
 # one assumed-rank specific per element type replaces the per-rank set.
 function blas_aux_procs(naming) :: Dict{String,Tuple{Vector{String},Vector{String}}}
@@ -82,6 +86,7 @@ function emit_blas_impls(io, fam, naming, status; assumed=false)
   kind  = fam[3]; isasync = fam[4]
   streamarg  = isasync ? ",stream" : ""
   shapes = assumed ? ["assumed_rank"] : blas_shapes(kind)
+  enums_mod = blas_enums_mod(naming)
   for (tag, ftype, bytes) in BLAS_GEN_TYPES, sh in shapes
     fn = "$(gname)_$(tag)_$(sh)"
     if kind === :vector
@@ -89,6 +94,7 @@ function emit_blas_impls(io, fam, naming, status; assumed=false)
                 sh == "assumed_rank" ? ",dimension(..)" : ",dimension(:)"
       println(io, "    function $(fn)(n,x,incx,y,incy$(streamarg)) result(ret)")
       println(io, "      use iso_c_binding")
+      isempty(enums_mod) || println(io, "      use $(enums_mod)")
       println(io, "      implicit none")
       println(io, "      integer(kind($(status))) :: ret")
       println(io, "      integer(c_int),value :: n")
@@ -109,6 +115,7 @@ function emit_blas_impls(io, fam, naming, status; assumed=false)
       argl = fullrank ? "rows,cols,A,B" : "rows,cols,A,lda,B,ldb"
       println(io, "    function $(fn)($(argl)$(streamarg)) result(ret)")
       println(io, "      use iso_c_binding")
+      isempty(enums_mod) || println(io, "      use $(enums_mod)")
       println(io, "      implicit none")
       println(io, "      integer(kind($(status))) :: ret")
       println(io, "      integer(c_int),value :: rows")

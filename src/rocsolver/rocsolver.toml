@@ -4,6 +4,8 @@ name = "rocsolver"
 [check]
 # rocSOLVER returns rocblas_status and has no status enum of its own.
 success = "ROCBLAS_STATUS_SUCCESS"
+# hipfort layout: the module that defines it, for hipfort_check.
+module  = "hipfort_rocblas_enums"
 
 [library]
 reexport_enums = ["rocblas"]

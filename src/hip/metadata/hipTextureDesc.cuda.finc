@@ -1,0 +1,15 @@
+  type,bind(c) :: hipTextureDesc  ! cudaTextureDesc as of cuda 13.3
+    integer(c_int) :: addressMode(3)
+    integer(c_int) :: filterMode
+    integer(c_int) :: readMode
+    integer(c_int) :: sRGB
+    real(c_float) :: borderColor(4)
+    integer(c_int) :: normalizedCoords
+    integer(c_int) :: maxAnisotropy
+    integer(c_int) :: mipmapFilterMode
+    real(c_float) :: mipmapLevelBias
+    real(c_float) :: minMipmapLevelClamp
+    real(c_float) :: maxMipmapLevelClamp
+    integer(c_int) :: disableTrilinearOptimization
+    integer(c_int) :: seamlessCubemap
+  end type hipTextureDesc

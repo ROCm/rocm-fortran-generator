@@ -1,0 +1,8 @@
+  type,bind(c) :: hipExternalMemoryMipmappedArrayDesc  ! cudaExternalMemoryMipmappedArrayDesc as of cuda 13.3
+    integer(c_int64_t) :: offset
+    type(hipChannelFormatDesc) :: formatDesc
+    type(hipExtent) :: extent
+    integer(c_int) :: flags
+    integer(c_int) :: numLevels
+    integer(c_int) :: reserved(16)
+  end type hipExternalMemoryMipmappedArrayDesc

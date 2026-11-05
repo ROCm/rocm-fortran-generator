@@ -159,7 +159,8 @@ overlong_fortran_lines(s::AbstractString) =
     @testset "wrapper use preamble" begin
         # Nothing but iso_c_binding: the enums, types and sibling names come by
         # host association from the library module.
-        io = IOBuffer(); emit_wrapper_uses(io)
+        f = FuncInfo("zz", "integer(c_int)", false, ArgInfo[])
+        io = IOBuffer(); emit_wrapper_uses(io, f, LibMeta())
         @test String(take!(io)) == "      use iso_c_binding\n      implicit none\n"
     end
 
@@ -176,10 +177,10 @@ overlong_fortran_lines(s::AbstractString) =
         s = String(take!(io))
         @test occursin("  name = \"unknown status\"\n  select case (status)\n  case (ZZ_BAD)\n    name = \"ZZ_BAD\"", s)
         @test !occursin("case default", s)
-        @test occursin("write (*, \"(a,i0,a)\") \"ZZ ERROR: \" // trim(name) // \" (code \", status, \")\"", s)
         # as long as the longest name, "unknown status" included
         @test check_name_decl(["ZZ_BAD"]) == "character(len=14) :: name"
         @test check_name_decl(["ZZ_A_MUCH_LONGER_STATUS"]) == "character(len=23) :: name"
+        @test occursin("write (*, \"(a,i0,a)\") \"ZZ ERROR: \" // trim(name) // \" (code \", status, \")\"", s)
         io = IOBuffer()
         emit_check_failure(io, "  ", "ZZ", String[])
         @test String(take!(io)) == "  write (*, *) \"ZZ ERROR: code = \", status\n"
@@ -199,24 +200,19 @@ overlong_fortran_lines(s::AbstractString) =
         @test occursin("subroutine zzAssert(status)", String(take!(io)))
     end
 
-    @testset "hoist_scope_uses: no use of a module the module has" begin
+    @testset "hoist_scope_uses: one use per module, IMPORT in interface bodies" begin
         body = join([
           "  interface f",
           "    function f_(x) bind(c, name=\"f\")",
           "      use iso_c_binding",
+          "      use zz_enums",
           "      use other, only: k",
           "      implicit none",
+          "      integer(kind(ZZ_A)) :: f_",
           "    end function",
           "  end interface",
           "  interface g",
           "    function g_() bind(c, name=\"g\")",
-          "      use iso_c_binding",
-          "      import",
-          "      implicit none",
-          "    end function",
-          "  end interface",
-          "  interface h",
-          "    function h_() bind(c, name=\"h\")",
           "#ifdef X",
           "      use iso_c_binding",
           "#endif",
@@ -226,20 +222,28 @@ overlong_fortran_lines(s::AbstractString) =
           "  contains",
           "    function w(x)",
           "      use iso_c_binding",
+          "      use sib_enums",
           "      implicit none",
+          "      integer(kind(SIB_B)) :: w",
           "      type(c_ptr) :: x",
           "    end function"], "\n")
-        out, hoisted = hoist_scope_uses(body, ==("iso_c_binding"))
-        @test hoisted == Set(["iso_c_binding"])
-        # the `use, only:` stays, before the IMPORT that replaces the rest
-        @test occursin("      use other, only: k\n      import\n      implicit none", out)
-        # an existing IMPORT is kept, not doubled
-        @test occursin("bind(c, name=\"g\")\n      import\n      implicit none", out)
+        out, hoisted = hoist_scope_uses(body, m -> m in ("iso_c_binding", "zz_enums", "sib_enums"))
+        @test hoisted == Set(["iso_c_binding", "zz_enums", "sib_enums"])
+        # the `use, only:` stays, before the IMPORT
+        @test occursin("      use other, only: k\n      import\n      implicit none\n      integer(kind(ZZ_A))", out)
         # a conditional `use` is left as it was
         @test occursin("#ifdef X\n      use iso_c_binding\n#endif\n      implicit none", out)
         # a module procedure needs no IMPORT
         @test occursin("    function w(x)\n      implicit none", out)
-        @test count("import", out) == 2
+        @test count("import", out) == 1
+
+        # The names the module lacks come PRIVATE: iso_c_binding's unless the module
+        # re-exports it, and the sibling's constants that the scopes name.
+        sib = Dict("sib_enums" => Set(["SIB_A", "SIB_B"]))
+        uses = hoisted_host_uses(out, hoisted, Set(["zz_enums"]), false, sib)
+        @test uses == ["use, intrinsic :: iso_c_binding" => ["c_ptr"], "use sib_enums" => ["SIB_B"]]
+        @test hoisted_host_uses(out, hoisted, Set(["zz_enums"]), true, sib) ==
+              ["use sib_enums" => ["SIB_B"]]
     end
 
     @testset "emit_generic interface + module procedures" begin
