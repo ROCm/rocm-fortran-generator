@@ -246,6 +246,20 @@ overlong_fortran_lines(s::AbstractString) =
               ["use sib_enums" => ["SIB_B"]]
     end
 
+    @testset "hoist_scope_uses: an existing IMPORT is kept, not doubled" begin
+        body = join([
+          "  interface g",
+          "    function g_() bind(c, name=\"g\")",
+          "      use iso_c_binding",
+          "      import",
+          "      implicit none",
+          "    end function",
+          "  end interface"], "\n")
+        out, _ = hoist_scope_uses(body, ==("iso_c_binding"))
+        @test occursin("bind(c, name=\"g\")\n      import\n      implicit none", out)
+        @test count("import", out) == 1
+    end
+
     @testset "emit_generic interface + module procedures" begin
         io = IOBuffer()
         # array overloads: any function with a data buffer gets them
