@@ -155,8 +155,7 @@ from the installed headers only (`ROCM_SYSTEMS`/`ROCM_LIBRARIES` are ignored):
    NVIDIA backend from `src/<lib>/metadata/<lib>.txt`) into `lib/hipfort/`;
 2. the bind(C) symbol tests into `test/f2003/<lib>/`;
 3. the supported-API tables into `docs/doxygen/input/`;
-4. the Doxygen denylist, `src/common/doxygen_denylist.txt` (in this repository);
-5. an offline audit of the CUDA symbol maps against `src/common/cuda_symbols/`.
+4. the Doxygen denylist, `src/common/doxygen_denylist.txt` (in this repository).
 
 Naming libraries regenerates only their modules in step 1. Review with
 `git -C <hipfort checkout> diff`; `./regenerate.sh -h` has the details.

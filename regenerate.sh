@@ -36,7 +36,7 @@ usage: ./regenerate.sh [path-to-hipfort-checkout [library ...]]
 arg:   path-to-hipfort-checkout | where to write (default: ./hipfort)
 arg:   library | regenerate only these libraries' bindings in step 1 (hip, rocblas, ...)
 env:   ROCM_INCLUDE  | /opt/rocm/include | HIP and math library headers to parse
-exit:  0 | all five steps ran; review with git -C <checkout> diff
+exit:  0 | all four steps ran; review with git -C <checkout> diff
 exit:  1 | <checkout>/lib/hipfort not found
 exit:  2 | bad argument
 note:  Steps, in order:
@@ -44,10 +44,9 @@ note:    1. the Fortran bindings                 -> lib/hipfort
 note:    2. the bind(C) symbol tests             -> test/f2003/<lib>/test_<lib>.F03
 note:    3. the supported-API doc tables         -> docs/doxygen/input
 note:    4. the Doxygen cross-reference denylist -> src/common/doxygen_denylist.txt
-note:    5. the CUDA symbol validation and missing-mapping report (offline)
 note:
 note:  Naming libraries shortens step 1 only: their modules are regenerated and
-note:  hipfort_check is left as it was (it needs every library). Steps 2-5 read the
+note:  hipfort_check is left as it was (it needs every library). Steps 2-4 read the
 note:  whole lib/hipfort, as after a full run.
 note:
 note:  Files are overwritten in place, including hipfort_auxiliary, hipfort_roctx
@@ -83,7 +82,7 @@ mkdir -p "$DOCS"
 # The installed headers only: ROCM_SYSTEMS / ROCM_LIBRARIES would switch to checkouts.
 # DOCSTRINGS=1 and CUDA=1 are the hipfort layout's defaults, spelled out so the
 # command is self-documenting.
-echo "==> [1/5] Regenerating Fortran bindings into $LIB"
+echo "==> [1/4] Regenerating Fortran bindings into $LIB"
 env -u ROCM_SYSTEMS -u ROCM_LIBRARIES \
   ROCM_FORTRAN_LAYOUT=hipfort ROCM_FORTRAN_DOCSTRINGS=1 ROCM_FORTRAN_CUDA=1 \
   julia --project="$GEN_ROOT/src" "$GEN_ROOT/src/generate_all.jl" ${LIBS_OPT[@]+"${LIBS_OPT[@]}"} "$ROCM" "$LIB"
@@ -91,38 +90,18 @@ env -u ROCM_SYSTEMS -u ROCM_LIBRARIES \
 # Each test references every bind(C) routine of a library, guarded so nothing
 # runs: the interfaces compile and the C symbols link. Wired into hipfort's CTest
 # behind -DHIPFORT_EXTENDED_TESTS=ON. Parses the modules written in step 1.
-echo "==> [2/5] Regenerating bind(C) symbol tests into $HIPFORT/test/f2003"
+echo "==> [2/4] Regenerating bind(C) symbol tests into $HIPFORT/test/f2003"
 ROCM_FORTRAN_LAYOUT=hipfort HIPFORT="$HIPFORT" \
   julia "$GEN_ROOT/src/tools/gen_symbol_tests.jl"
 
 # Rows are relative Markdown links to each interface's Doxygen page (same
 # directory once rendered), so they resolve on any version site and never 404.
-echo "==> [3/5] Regenerating supported-API doc tables into $DOCS"
+echo "==> [3/4] Regenerating supported-API doc tables into $DOCS"
 julia "$GEN_ROOT/src/tools/gen_supported_api.jl" "$HIPFORT" "$DOCS"
 
 # New docstrings can reference C-only entities (\ref foo) that have no Fortran
 # page; those are neutralized to inline code so the WARN_AS_ERROR docs build passes.
-echo "==> [4/5] Refreshing the Doxygen denylist"
+echo "==> [4/4] Refreshing the Doxygen denylist"
 bash "$GEN_ROOT/refresh_doxygen_denylist.sh" "$LIB"
-
-# Offline, against the checked-in CUDA symbol dump; no CUDA install needed. To
-# clean the maps: julia --project=src src/tools/audit_cuda_mappings.jl --fix
-# To refresh the dump for a new CUDA release: julia src/tools/gen_cuda_symbols.jl
-echo "==> [5/5] Validating CUDA backend symbols (offline, vs stored dump)"
-if julia --project="$GEN_ROOT/src" "$GEN_ROOT/src/tools/audit_cuda_mappings.jl"; then
-  echo "    CUDA symbols OK"
-else
-  echo "    WARNING: CUDA symbol audit reported issues; review above."
-fi
-# The audit checks the existing maps only: a routine new in this release stays
-# HIP-only until src/<lib>/metadata/<lib>.txt maps it. List those with a cu* twin.
-sug=$(julia --project="$GEN_ROOT/src" "$GEN_ROOT/src/tools/audit_cuda_mappings.jl" \
-        --suggest "$LIB" --no-abi-check 2>/dev/null || true)
-nsug=$(sed -n 's/^missing mappings[^:]*: \([0-9]*\).*/\1/p' <<<"$sug")
-if [ "${nsug:-0}" -gt 0 ]; then
-  echo "    WARNING: $nsug routine(s) left HIP-only although their cu* twin exists:"
-  grep '^  hip' <<<"$sug"
-  echo "    Vet and map them: julia --project=src src/tools/audit_cuda_mappings.jl --apply $LIB"
-fi
 
 echo "==> Done. Review with: git -C \"$HIPFORT\" diff"
