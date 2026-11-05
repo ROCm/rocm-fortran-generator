@@ -41,3 +41,28 @@ defines = [
   "ROCSPARSE_WITH_U16_REMOVED",
 ]
 extra_include_dirs = []
+
+# hipfort layout: the Doxygen groups the docstrings' \ingroup name (see emit_doxygen_groups).
+[doxygen]
+# Groups the generated docstrings reference with \ingroup but never define.
+# rocSPARSE declares them in its own documentation sources, which are not part of
+# the shipped headers, so libclang cannot surface them (unlike HIP's, which at
+# least live in the header). hipSPARSE reuses the same group names and therefore
+# does NOT redeclare them: a second \defgroup with a different title makes Doxygen
+# warn, and hipfort's docs build treats warnings as fatal.
+#
+# Titles are not upstream verbatim (they are not shipped anywhere); they were
+# derived from the actual membership of each group, e.g. level1_module holds
+# rocsparse_axpyi / doti / dotci / gthr.
+groups = [
+  { name = "aux_module",        title = "Sparse Auxiliary Functions",  brief = "Auxiliary functions, such as handle, descriptor and info object management." },
+  { name = "level1_module",     title = "Sparse Level 1 Functions",    brief = "Operations between a vector in sparse format and a vector in dense format." },
+  { name = "level2_module",     title = "Sparse Level 2 Functions",    brief = "Operations between a matrix in sparse format and a vector in dense format." },
+  { name = "level3_module",     title = "Sparse Level 3 Functions",    brief = "Operations between a matrix in sparse format and multiple vectors in dense format." },
+  { name = "extra_module",      title = "Sparse Extra Functions",      brief = "Operations that manipulate sparse matrices, such as addition and multiplication." },
+  { name = "precond_module",    title = "Preconditioner Functions",    brief = "Manipulations on a matrix in sparse format to obtain a preconditioner." },
+  { name = "conv_module",       title = "Sparse Conversion Functions", brief = "Conversions between different sparse matrix storage formats." },
+  { name = "reordering_module", title = "Sparse Reordering Functions", brief = "Reordering operations on a matrix in sparse format." },
+  { name = "utility_module",    title = "Sparse Utility Functions",    brief = "Checks on a matrix in sparse format." },
+  { name = "generic_module",    title = "Sparse Generic Functions",    brief = "Generic sparse API operating on the descriptor-based sparse and dense types." },
+]

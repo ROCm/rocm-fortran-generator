@@ -32,6 +32,7 @@
 #   config.jl         collectors filled by the Clang frontend, small IR helpers
 #   doc_check.jl      the doc comments of the headers, checked against the metadata
 #   format.jl         Fortran line formatting (continuations, import lists)
+#   docstrings.jl     Doxygen docstrings (hipfort layout)
 #   type_mapping.jl   C -> Fortran type mapping
 #   clang_frontend.jl libclang walk filling the IR (collect_funcs, collect_enums, ...)
 #   emit.jl           bind(C) interfaces and typed/rank/string wrappers
@@ -50,6 +51,7 @@ include(joinpath(@__DIR__, "metadata.jl"))
 include(joinpath(@__DIR__, "config.jl"))
 include(joinpath(@__DIR__, "doc_check.jl"))
 include(joinpath(@__DIR__, "format.jl"))
+include(joinpath(@__DIR__, "docstrings.jl"))
 include(joinpath(@__DIR__, "type_mapping.jl"))
 include(joinpath(@__DIR__, "clang_frontend.jl"))
 include(joinpath(@__DIR__, "emit.jl"))
