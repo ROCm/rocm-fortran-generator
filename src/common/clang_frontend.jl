@@ -413,15 +413,16 @@ end
 # parameters, `static inline hipError_t hipChooseDevice(int* device, ...)
 # { return hipChooseDeviceR0600(device, ...); }`: the newer HIP headers spell their
 # versioned names this way instead of with a #define. The inline function has no
-# symbol, so it becomes an alias of its target. Returns LONG => SHORT.
-function collect_inline_forwarders(root; own::Vector{String} = String[]) :: Dict{String,String}
+# symbol, so it becomes an alias of its target. Returns LONG => SHORT. `own =
+# nothing` takes the forwarders of every header.
+function collect_inline_forwarders(root; own::Union{Nothing,Vector{String}} = String[]) :: Dict{String,String}
   out = Dict{String,String}()
   sources = Dict{String,String}()
   for c in Clang.children(root)
     Clang.kind(c) == Clang.CXCursor_FunctionDecl || continue
     Clang.LibClang.clang_Cursor_isFunctionInlined(c.cursor) == 0 && continue
     file = cursor_file(c)
-    (isempty(file) || !owns_decl(file, own)) && continue
+    (isempty(file) || !(own === nothing || owns_decl(file, own))) && continue
     short  = Clang.spelling(c)
     params = String[Clang.spelling(p) for p in Clang.children(c)
                     if Clang.kind(p) == Clang.CXCursor_ParmDecl]
