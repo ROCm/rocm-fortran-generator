@@ -1,0 +1,6 @@
+  type,bind(c) :: hipGraphEdgeData  ! cudaGraphEdgeData as of cuda 13.3
+    character(c_char) :: from_port
+    character(c_char) :: to_port
+    character(c_char) :: type
+    character(c_char) :: reserved(5)
+  end type hipGraphEdgeData

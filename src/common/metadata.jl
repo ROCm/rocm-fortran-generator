@@ -60,6 +60,26 @@ Base.@kwdef struct LibMeta
   (the BLAS Set/Get typed overloads); listed in the generic beside its own."
   extra_procs::Dict{String,Tuple{Vector{String},Vector{String}}} =
     Dict{String,Tuple{Vector{String},Vector{String}}}()
+
+  # The hipfort layout only (empty or false in the packaged one).
+  "Module base name: `hipfort` for the HIP runtime, `hipfort_<lib>` otherwise."
+  modbase::String = ""
+  "The library has an `<modbase>_enums` module, `use`d by every interface body."
+  has_enums::Bool = false
+  "The library has an `<modbase>_types` module, `use`d where a type is referenced."
+  has_types::Bool = false
+  "HIP symbol => CUDA symbol, for the USE_CUDA_NAMES bind pairs (<lib>.txt)."
+  cuda_names::Dict{String,String} = Dict{String,String}()
+  "Enumerator => its CUDA value (<lib>_enums_cuda.txt)."
+  enum_cuda::Dict{String,String} = Dict{String,String}()
+  "Type name => its CUDA declaration (<Type>.cuda.finc)."
+  type_cuda::Dict{String,String} = Dict{String,String}()
+  "[library] enum_rename, applied after emission: the CUDA values are keyed by the renamed spelling."
+  enum_rename::Vector{String} = String[]
+  "C function => its Doxygen comment, for the docstrings."
+  docs::Dict{String,String} = Dict{String,String}()
+  "Names a docstring must not reference with \\ref (Doxygen cannot resolve them): this library's constants."
+  doc_deny::Set{String} = Set{String}()
 end
 
 """
@@ -463,6 +483,46 @@ function revert_unknown_structs(funcs::Vector{FuncInfo}, structs) :: Vector{Func
     push!(out, FuncInfo(f.name, rft, f.is_void, newargs))
   end
   return out
+end
+
+# The CUDA tables of the hipfort layout, from the metadata directory.
+
+# A "hipName cuName" (or "NAME value") map, one pair per line.
+function load_symbol_map(path::String) :: Dict{String,String}
+  d = Dict{String,String}()
+  isfile(path) || return d
+  for ln in eachline(path)
+    parts = split(strip(ln))
+    length(parts) == 2 && (d[parts[1]] = parts[2])
+  end
+  return d
+end
+
+# Per-type CUDA declarations, <Type>.cuda.finc.
+function load_type_overrides(dir::String) :: Dict{String,String}
+  d = Dict{String,String}()
+  isdir(dir) || return d
+  for f in readdir(dir)
+    endswith(f, ".cuda.finc") || continue
+    d[replace(f, ".cuda.finc" => "")] = rstrip(read(joinpath(dir, f), String))
+  end
+  return d
+end
+
+# An ILP64 X_64 whose base X maps to cuY gets cuY_64 (cuBLAS appends _64 after
+# _v2). rotg/rotmg take no vector length, so cuBLAS has no _64 variant. Returns the
+# number of names derived.
+function derive_ilp64_cuda_names!(cuda_names::Dict{String,String},
+                                  funcs::Vector{FuncInfo}) :: Int
+  nderived = 0
+  for f in funcs
+    n = f.name
+    if endswith(n, "_64") && !haskey(cuda_names, n) && !occursin(r"rot(g|mg)_64$", n)
+      b = n[1:end-3]
+      haskey(cuda_names, b) && (cuda_names[n] = cuda_names[b] * "_64"; nderived += 1)
+    end
+  end
+  return nderived
 end
 
 """

@@ -1,0 +1,3 @@
+# USE_CUDA_NAMES values of the enumerators that differ from HIP, from the CUDA 13.3 headers.
+# Regenerate with src/tools/gen_cuda_enums.jl; it explains how a counterpart is chosen.
+HIPFFT_FORMAT_UNDEFINED 7

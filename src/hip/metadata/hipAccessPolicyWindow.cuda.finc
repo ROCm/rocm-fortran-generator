@@ -1,0 +1,7 @@
+  type,bind(c) :: hipAccessPolicyWindow  ! cudaAccessPolicyWindow as of cuda 13.3
+    type(c_ptr) :: base_ptr
+    integer(c_size_t) :: num_bytes
+    real(c_float) :: hitRatio
+    integer(c_int) :: hitProp
+    integer(c_int) :: missProp
+  end type hipAccessPolicyWindow

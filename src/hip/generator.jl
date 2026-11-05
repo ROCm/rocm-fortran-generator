@@ -34,13 +34,39 @@ include("../common/hip_generics.jl")
 # `run` is run_library_generator, or library_funcs to parse without generating
 # (explain_metadata.jl).
 function main(run = run_library_generator)
-  run(@__DIR__;
-    funcfilter = funcs -> filter(funcs) do f
+  # The docstrings of the functions hip_generics.jl emits (hipfort layout), read
+  # before the filter below drops those functions.
+  hip_docs = Dict{String,String}()
+  aux_doc  = Ref("")
+  dropped(funcs) = begin
+    for n in HIP_TYPED_FAMILIES; hip_docs[n] = get(DOCS[], n, ""); end
+    aux_doc[] = get(DOCS[], "hipGetDevicePropertiesR0600", "")
+    filter(funcs) do f
       # The typed memory families are emitted by hip_generics.jl, and
       # hipGetDeviceProperties by hip_auxiliary_spec (dropping its R0600 target also
       # drops the #define alias): keep them out of the main module.
       !(f.name in HIP_TYPED_FAMILIES) && f.name != "hipGetDevicePropertiesR0600"
-    end,
+    end
+  end
+
+  if HIPFORT
+    # hipfort keeps the families and the auxiliary interface in modules of their
+    # own, which `use hipfort` re-exports.
+    run(@__DIR__; funcfilter = dropped,
+      extra_modules = ["hipfort_hipmalloc", "hipfort_hipmemcpy",
+                       "hipfort_hiphostregister", "hipfort_auxiliary"],
+      after = function (output_dir, enums, macros)
+        AUX_DOC_DENY[] = Set{String}([(nm for e in enums for (nm, _) in e.constants)...,
+                                      first.(macros)...])
+        write_module_file(io -> gen_hipmemcpy_module(io, hip_docs),       output_dir, "hipfort_hipmemcpy")
+        write_module_file(io -> gen_hipmalloc_module(io, hip_docs),       output_dir, "hipfort_hipmalloc")
+        write_module_file(io -> gen_hiphostregister_module(io, hip_docs), output_dir, "hipfort_hiphostregister")
+        write_module_file(io -> gen_hip_auxiliary_module(io, aux_doc[]),  output_dir, "hipfort_auxiliary")
+      end)
+    return
+  end
+
+  run(@__DIR__; funcfilter = dropped,
     # `module hip` also holds the typed memory families and the auxiliary interface.
     extra_generics = io -> begin
       hipmemcpy_spec(io)

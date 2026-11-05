@@ -43,6 +43,7 @@ function apply_bind_renames!(funcs::Vector{FuncInfo}, fwd::Dict{String,String}) 
       push!(out, f)
     else
       BIND_NAMES[][short] = f.name
+      haskey(DOCS[], f.name) && (DOCS[][short] = DOCS[][f.name])
       push!(out, FuncInfo(short, f.ret_ftype, f.is_void, f.args))
     end
   end
@@ -149,14 +150,60 @@ function sibling_use_onlys(f::FuncInfo, libname::String, meta::LibMeta) :: Vecto
            for (mod, names) in sort(collect(bymod); by = first) ]
 end
 
+# ---- hipfort layout ----
+
+# C function => its Doxygen comment, filled by collect_funcs when EMIT_DOCS and
+# copied into LibMeta.docs by gen_files. Global like BIND_NAMES: the frontend fills
+# it before gen_files runs.
+const DOCS = Ref(Dict{String,String}())
+
+# Module base name: `hipfort` for the HIP runtime and `hipfort_<lib>` otherwise in
+# the hipfort layout, the library name in the packaged one.
+modbase(cfg::Dict) = (name = cfg["general"]["name"];
+                      !HIPFORT ? name : name == "hip" ? "hipfort" : "hipfort_$(name)")
+
+# The `use` lines of an interface body or a module procedure in the hipfort layout,
+# where the enums and types are separate modules: the library's own, and for a
+# borrowed kind the sibling's enums module (rocSOLVER's rocblas_operation) or the
+# HIP runtime's (hipDataType). The HIP runtime defines its enums itself.
+function hipfort_scope_uses(f::FuncInfo, meta::LibMeta) :: Vector{String}
+  mb = meta.modbase
+  uses = String[]
+  meta.has_enums && push!(uses, "$(mb)_enums")
+  (meta.has_types && refs_derived_type(f)) && push!(uses, "$(mb)_types")
+  mb == "hipfort" && return uses
+  mods = String[]
+  scan(ft) = for m in eachmatch(r"kind\((\w+)\)", ft)
+    c = m.captures[1]
+    c in meta.own_consts && continue
+    push!(mods, get(meta.sibling_enum_mod, c, "hipfort_enums"))
+  end
+  for a in f.args; scan(a.ftype); end
+  f.is_void || scan(f.ret_ftype)
+  return vcat(uses, unique(mods))
+end
+
+# On the NVIDIA backend a HIP routine may map to the CUDA driver API (cu[A-Z]...,
+# libcuda) rather than the runtime. hipfort links only the runtime there, which
+# holds as long as no module procedure calls a driver entry point: under
+# USE_CUDA_NAMES such a routine keeps its bind(C) specific only.
+maps_to_cuda_driver(f::FuncInfo, meta::LibMeta) =
+  (cu = get(meta.cuda_names, f.name, nothing); cu !== nothing && occursin(r"^cu[A-Z]", cu))
+
+# A routine of a HIP library with no CUDA counterpart: compiled for ROCm only.
+hip_only(f::FuncInfo, meta::LibMeta) =
+  !isempty(meta.cuda_names) && !haskey(meta.cuda_names, f.name)
+
 # Empty the per-library collectors above (BIND_NAMES, RECORD_ALIASES,
-# UNMAPPED_CPTR) and FUNC_DOCS (doc_check.jl). run_library_generator calls it before each library, so that
+# UNMAPPED_CPTR, DOCS) and FUNC_DOCS (doc_check.jl). run_library_generator calls
+# it before each library, so that
 # several libraries generated in one process (as the tests do) never see each
 # other's names; generate_all.jl runs each library in a process of its own anyway.
 function reset_generator_state!()
   BIND_NAMES[] = Dict{String,String}()
   RECORD_ALIASES[] = Dict{String,String}()
   reset_unmapped_cptr!()
+  DOCS[] = Dict{String,String}()   # the hipfort layout's docstrings
   reset_func_docs!()
   return nothing
 end
