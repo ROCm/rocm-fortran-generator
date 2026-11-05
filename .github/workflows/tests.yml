@@ -37,6 +37,8 @@ jobs:
         run: julia --project=src -e 'using Pkg; Pkg.instantiate()'
       - name: Unit tests
         run: julia --project=src src/test/runtests.jl
+      - name: hipfort layout
+        run: julia --project=src src/test/hipfort_layout.jl
       - name: Golden compiles
         run: julia --project=src src/test/compile_golden.jl
       - name: Array-interface tiers
