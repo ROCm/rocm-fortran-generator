@@ -126,7 +126,8 @@ function is_ptr_array(t) :: Bool
   return Clang.kind(pt) == Clang.CXType_Pointer && Clang.LibClang.clang_isConstQualifiedType(pt.type) != 0
 end
 
-function collect_funcs(root, prefix::String) :: Vector{FuncInfo}
+# `own`, when given, also keeps only the functions declared in those headers.
+function collect_funcs(root, prefix::String; own::Union{Nothing,Vector{String}} = nothing) :: Vector{FuncInfo}
   reset_unmapped_cptr!()
   reset_func_docs!()
   carried = Pair{String,String}[]   # the last doc block's @params (function_docs!)
@@ -139,6 +140,7 @@ function collect_funcs(root, prefix::String) :: Vector{FuncInfo}
     Clang.kind(child) == Clang.CXCursor_FunctionDecl || continue
     name = Clang.spelling(child)
     (startswith(name, prefix) || name == bare) || continue
+    own === nothing || owns_decl(cursor_file(child), own) || continue
     # `static inline` has no exported symbol: binding it is a link error.
     Clang.LibClang.clang_Cursor_isFunctionInlined(child.cursor) != 0 && continue
     # Skip (and log) variadic functions: Fortran cannot declare `...`, and calling

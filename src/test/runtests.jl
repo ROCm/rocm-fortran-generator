@@ -765,6 +765,16 @@ overlong_fortran_lines(s::AbstractString) =
             # unknown names are not `use`d.
             @test sibling_module_uses([fe], "zz", meta; extra=["SIB_C", "OWN_C", "UNK_C"]) ==
                   ["sib, only: SIB_C, sib_pair_t"]
+            # [library] uses: the used module comes first, bare (re-exported whole),
+            # and replaces its narrow `use, only:`.
+            let mu = LibMeta(own_consts = meta.own_consts, sibling_enum_mod = meta.sibling_enum_mod,
+                             uses = ["sib"])
+                @test sibling_module_uses([fe], "zz", mu; extra=["SIB_C"]) == ["sib"]
+                @test sibling_module_uses([fe], "zz", LibMeta(uses = ["sib"])) == ["sib"]
+                @test sibling_module_uses([fe], "zz", LibMeta(own_consts = meta.own_consts,
+                          sibling_enum_mod = Dict("SIB_C" => "sib", "OTH_C" => "oth"), uses = ["oth"])) ==
+                      ["oth", "sib, only: SIB_C, sib_pair_t"]
+            end
             let m2 = LibMeta(own_consts = meta.own_consts,
                              sibling_enum_mod = Dict("SIB_C" => "sib", "SIB_BAD" => "sib"))
                 @test sibling_module_uses([fe], "zz", m2; extra=["SIB_BAD"]) ==
@@ -1186,6 +1196,54 @@ overlong_fortran_lines(s::AbstractString) =
         @test_throws ErrorException find_headers(Dict("general" => Dict("name" => "nope")), fx)
     end
 
+    @testset "[library] uses: one module per header (uses/ fixture, as hipfft and hipfftxt)" begin
+        fx  = joinpath(@__DIR__, "fixtures", "uses")
+        inc = joinpath(fx, "include")
+        tmp = mktempdir()
+        src = Dict{String,String}()
+        for lib in ("ulib", "ulibxt")
+            d = joinpath(tmp, lib); mkpath(d)
+            cp(joinpath(fx, "$(lib).toml"), joinpath(d, "$(lib).toml"))
+            run_library_generator(d; include_dir = inc)
+            src[lib] = read(joinpath(d, "output", "$(lib).F90"), String)
+        end
+        base, xt = src["ulib"], src["ulibxt"]
+        bound(f) = Set(m.captures[1] for m in eachmatch(r"bind\(c, name=\"(\w+)\"\)", f))
+        # Each module binds the functions of its own header only.
+        @test bound(base) == Set(["ulibCreate", "ulibExec"])
+        @test bound(xt) == Set(["ulibXtMalloc", "ulibXtFree"])
+        # ulibxt uses ulib whole, so `use ulibxt` alone gives both APIs...
+        @test occursin("module ulibxt\n  use ulib\n  use, intrinsic :: iso_c_binding\n", xt)
+        @test !occursin("use ulib,", xt)
+        # ...and declares only what its header adds: its enums, constants and types.
+        @test occursin("ULIB_XT_FORMAT_INPUT = 0", xt) && occursin("ULIB_XT_MAX_GPUS = 8", xt)
+        @test occursin("type, bind(c) :: ulibXtDesc", xt)
+        @test !occursin("ULIB_SUCCESS =", xt) && !occursin("ULIB_FORWARD", xt)
+        @test !occursin("ulibxt", lowercase(base)) && !occursin("ULIB_XT", base)
+        @test occursin("subroutine ulibCheck", base) && !occursin("Check(", xt)
+
+        # Both compile, and a program using ulibxt alone reaches ulib's entities.
+        if Sys.which("gfortran") !== nothing
+            write(joinpath(tmp, "ulib.F90"), base); write(joinpath(tmp, "ulibxt.F90"), xt)
+            write(joinpath(tmp, "prog.f90"), """
+                program p
+                  use ulibxt
+                  type(c_ptr) :: plan
+                  type(c_ptr) :: desc
+                  integer(kind(ULIB_SUCCESS)) :: st
+                  st = ulibXtMalloc(plan, desc, ULIB_XT_FORMAT_INPUT)
+                  if (st == ULIB_SUCCESS) st = ulibCreate(plan)
+                  call ulibCheck(st)
+                end program p
+                """)
+            cd(tmp) do
+                for f in ("ulib.F90", "ulibxt.F90", "prog.f90")
+                    @test success(pipeline(`gfortran -std=f2018 -cpp -c $f`; stderr = devnull))
+                end
+            end
+        end
+    end
+
     @testset "header sources (generate_all.jl selection)" begin
         tmp = mktempdir()
         libs, sys, inst, out = (joinpath(tmp, d) for d in ("libs", "sys", "inst", "out"))
@@ -1200,8 +1258,9 @@ overlong_fortran_lines(s::AbstractString) =
         write(joinpath(inst, "hip", "hip_version.h"),
               "#define HIP_VERSION_MAJOR 7\n#define HIP_VERSION_MINOR 16\n#define HIP_VERSION_PATCH 26385\n")
         math = filter(l -> repo_of(l) == "rocm-libraries", LIBS)
-        @test length(math) == 11 && filter(l -> repo_of(l) == "rocm-systems", LIBS) == ["hip", "roctx"]
+        @test length(math) == 12 && filter(l -> repo_of(l) == "rocm-systems", LIBS) == ["hip", "roctx"]
         @test repo_of("hipfftw") == "rocm-libraries" && proj_of("hipfftw") == "hipfft"
+        @test repo_of("hipfftxt") == "rocm-libraries" && proj_of("hipfftxt") == "hipfft"
 
         # Neither checkout: every library, from the installed dir.
         s, rest = header_sources(Dict{String,String}(), [inst, out])
@@ -1240,6 +1299,7 @@ overlong_fortran_lines(s::AbstractString) =
         mkpath(joinpath(sys, "bindings", "fortran", "metadata"))
         @test lib_metadata(s, "hipfft")  == joinpath(libs, "bindings", "fortran", "hipfft", "metadata")
         @test lib_metadata(s, "hipfftw") == joinpath(libs, "bindings", "fortran", "hipfft", "metadata")
+        @test lib_metadata(s, "hipfftxt") == joinpath(libs, "bindings", "fortran", "hipfft", "metadata")
         @test lib_metadata(s, "roctx")   == joinpath(sys, "bindings", "fortran", "metadata")
         @test lib_metadata(s, "hip")     == joinpath(sys, "bindings", "fortran", "metadata")
         @test lib_metadata(s, "rocblas") == gen_meta("rocblas")   # no metadata in the checkout
@@ -1261,6 +1321,9 @@ overlong_fortran_lines(s::AbstractString) =
             @test_throws ArgumentError run_libs(sl, ["hip"])        # rocm-systems is not read
             @test overwrite_target(sl, "hipfftw") ==
                   joinpath(libs, "bindings", "fortran", "hipfft", "hipfftw.F90")
+            @test overwrite_target(sl, "hipfftxt") ==
+                  joinpath(libs, "bindings", "fortran", "hipfft", "hipfftxt.F90")
+            @test run_libs(sl, ["hipfftw", "hipfftxt", "hipfft"]) == ["hipfft", "hipfftxt", "hipfftw"]
             @test_throws ArgumentError check_overwrite(sl, ["rocblas"])   # no bindings/fortran/rocblas/ yet
             mkpath(joinpath(libs, "bindings", "fortran", "rocblas"))
             @test check_overwrite(sl, ["rocblas", "hipfftw"]) === nothing

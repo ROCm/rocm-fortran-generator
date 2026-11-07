@@ -450,7 +450,9 @@ function parse_library(dir::AbstractString, include_dir::AbstractString;
   root = Clang.getTranslationUnitCursor(tu)
 
   prefix = cfg["library"]["prefix"]
-  funcs = GC.@preserve ctx tu collect_funcs(root, prefix)
+  # With [library] uses, the functions of a used module's headers are that module's.
+  fown = isempty(uses_of(cfg)) ? nothing : own_headers_of(cfg)
+  funcs = GC.@preserve ctx tu collect_funcs(root, prefix; own=fown)
   @info "Found $(length(funcs)) $(prefix)* functions"
   declared = [f.name for f in funcs]
   funcfilter === nothing || (funcs = funcfilter(funcs))
@@ -463,6 +465,7 @@ end
 # An empty TOML array parses as Vector{Any}, which the typed keywords reject.
 strlist(x) = collect(String, x)
 own_headers_of(cfg::Dict) = strlist(get(cfg["library"], "own_headers", [cfg["general"]["name"]]))
+uses_of(cfg::Dict) = strlist(get(cfg["library"], "uses", String[]))
 
 """
     library_funcs(dir; include_dir, headers, argshook, funcfilter, gen_kwargs...) -> (cfg, funcs, parsed)
@@ -527,9 +530,12 @@ function run_library_generator(dir::AbstractString;
   @info "Found $(length(macros)) #define constants"
 
   # Each sibling constant, mapped to the module defining it, for the `use` lines.
+  # uses: modules `use`d whole, and so re-exported (hipfftxt uses hipfft); their
+  # enums, constants, types and functions are not redeclared.
+  uses = uses_of(cfg)
   sibling_enum_mod = Dict{String,String}()
   sibling_enums = EnumInfo[]
-  for sib in reexport
+  for sib in vcat(reexport, uses)
     sib_enums  = GC.@preserve ctx tu collect_enums(root; own=[sib])
     sib_macros = GC.@preserve ctx tu collect_macros(root; own=[sib])
     append!(sibling_enums, sib_enums)
@@ -545,7 +551,7 @@ function run_library_generator(dir::AbstractString;
   @info "Found $(length(structs)) derived types"
 
   gen_files(output_dir, cfg, funcs, enums, structs; macros=macros, aliases=aliases,
-            sibling_enum_mod=sibling_enum_mod, sibling_enums=sibling_enums, gen_kwargs...)
+            sibling_enum_mod=sibling_enum_mod, sibling_enums=sibling_enums, uses=uses, gen_kwargs...)
 end
 
 # BLAS Set/Get Vector/Matrix families: drop them from the bind(C) path and emit

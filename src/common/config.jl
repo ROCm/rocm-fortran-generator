@@ -107,10 +107,11 @@ neutralize_funcs(funcs::Vector{FuncInfo}, meta::LibMeta) = [
 # One module-level `use <sib>, only: ...` per sibling, naming the union of what
 # this library borrows. A bare `use rocblas` makes every interface's IMPORT copy
 # all of rocBLAS (>5.9 GB on rocsolver); a per-routine `use, only` makes gfortran
-# re-read rocblas.mod thousands of times.
+# re-read rocblas.mod thousands of times. The `uses` modules come first, bare, so
+# that the module re-exports them.
 function sibling_module_uses(funcs::Vector{FuncInfo}, libname::String, meta::LibMeta;
                              extra::Vector{String} = String[]) :: Vector{String}
-  isempty(meta.sibling_enum_mod) && return String[]
+  isempty(meta.sibling_enum_mod) && return copy(meta.uses)
   bymod = Dict{String,Set{String}}()
   for f in funcs, u in sibling_use_onlys(f, libname, meta)
     mod, names = split(u, ", only: "; limit = 2)
@@ -121,8 +122,9 @@ function sibling_module_uses(funcs::Vector{FuncInfo}, libname::String, meta::Lib
     (c in meta.own_consts || !haskey(meta.sibling_enum_mod, c)) && continue
     push!(get!(bymod, meta.sibling_enum_mod[c], Set{String}()), c)
   end
-  return [ "$(mod), only: " * join(sort(collect(names)), ", ")
-           for (mod, names) in sort(collect(bymod); by = first) ]
+  return vcat(meta.uses,
+              [ "$(mod), only: " * join(sort(collect(names)), ", ")
+                for (mod, names) in sort(collect(bymod); by = first) if !(mod in meta.uses) ])
 end
 
 function sibling_use_onlys(f::FuncInfo, libname::String, meta::LibMeta) :: Vector{String}

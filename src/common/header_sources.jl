@@ -28,11 +28,11 @@
 # modules from its own checkout:
 #
 #   ROCM_SYSTEMS  ROCM_LIBRARIES  generated            headers
-#   -             -               all 13               the installed include dir
+#   -             -               all 14               the installed include dir
 #   set           -               hip, roctx           the rocm-systems checkout
 #   -             set             the math libraries   the rocm-libraries checkout; HIP
 #                                                      from the installed include dir
-#   set           set             all 13               the two checkouts
+#   set           set             all 14               the two checkouts
 #
 # The installed include dir is a positional argument, read only when ROCM_SYSTEMS
 # is unset: with it, HIP comes from the checkout.
@@ -47,6 +47,7 @@ const LIBS = [
   "hipsolver",
   "rocfft",
   "hipfft",
+  "hipfftxt",
   "hipfftw",
   "rocrand",
   "hiprand",
@@ -56,8 +57,8 @@ const LIBS = [
 const DEFAULT_INCLUDE = "/opt/rocm/include"
 
 # Header subdirectory (installed) / project (checkout) of a library.
-proj_of(lib) = lib == "hipfftw" ? "hipfft"                :
-               lib == "roctx"   ? "rocprofiler-sdk-roctx" : lib
+proj_of(lib) = lib in ("hipfftxt", "hipfftw") ? "hipfft" :
+               lib == "roctx" ? "rocprofiler-sdk-roctx" : lib
 
 # Upstream repository each module is committed to, in its bindings/fortran/ tree.
 repo_of(lib) = lib in ("hip", "roctx") ? "rocm-systems" : "rocm-libraries"
@@ -197,7 +198,7 @@ end
 # A library's metadata file (metadata/<lib>.toml): the checkout's
 # <fortran_dir>/metadata/ when it exists, else the generator's own
 # src/<lib>/metadata/. The file names carry the library name, so the modules sharing
-# a binding directory (hip and roctx, hipfft and hipfftw) share one metadata/.
+# a binding directory (hip and roctx; hipfft, hipfftxt and hipfftw) share one metadata/.
 function lib_metadata(s::HeaderSources, lib)
   if from_checkouts(s)
     d = joinpath(fortran_dir(s, lib), "metadata")

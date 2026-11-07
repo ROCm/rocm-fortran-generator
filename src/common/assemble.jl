@@ -33,6 +33,7 @@ function gen_files(output_dir::String, cfg::Dict, funcs::Vector{FuncInfo},
                    aliases::Dict{String,String} = Dict{String,String}(),
                    sibling_enum_mod::Dict{String,String} = Dict{String,String}(),
                    sibling_enums::Vector{EnumInfo} = EnumInfo[],
+                   uses::Vector{String} = String[],
                    extra_generics::Union{Nothing,Function} = nothing,
                    extra_wrappers::Union{Nothing,Function} = nothing,
                    extra_procs::Dict{String,Tuple{Vector{String},Vector{String}}} =
@@ -74,7 +75,7 @@ function gen_files(output_dir::String, cfg::Dict, funcs::Vector{FuncInfo},
                  # only withholds their _typed form.
                  devonly = md.devonly,
                  string_args = get(cfg["library"], "string_args", false),
-                 own_consts, sibling_enum_mod,
+                 own_consts, sibling_enum_mod, uses,
                  bind_names = copy(BIND_NAMES[]), extra_procs)
 
   # Must precede all emission.
