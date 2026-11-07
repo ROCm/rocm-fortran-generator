@@ -6,10 +6,13 @@ prefix = "hipfft"
 opaque_handles = [
   "hipfftHandle",
 ]
-# hipfftXt.h, hipfftMp.h and the descriptor types of hiplibxt.h; hipfft.h is the
-# hipfft module's, used (and so re-exported) whole.
+# The enums, constants and types of hipfftXt.h, hipfftMp.h and hiplibxt.h; hipfft.h
+# is the hipfft module's, used (and so re-exported) whole.
 own_headers = ["hipfft/hipfftXt", "hipfft/hipfftMp", "hipfft/hiplibxt"]
 uses = ["hipfft"]
+# Every hipfftXt* and hipfftMp* function, as cufftXt's in CUDA Fortran, whatever
+# header declares it (hipfft.h declares hipfftXtSetWorkArea).
+function_prefixes = ["hipfftXt", "hipfftMp"]
 
 [headers]
 # hipfftMp.h (the multi-process API) includes hipfft.h; hipfftXt.h is force-included

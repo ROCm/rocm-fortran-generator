@@ -450,9 +450,15 @@ function parse_library(dir::AbstractString, include_dir::AbstractString;
   root = Clang.getTranslationUnitCursor(tu)
 
   prefix = cfg["library"]["prefix"]
-  # With [library] uses, the functions of a used module's headers are that module's.
-  fown = isempty(uses_of(cfg)) ? nothing : own_headers_of(cfg)
-  funcs = GC.@preserve ctx tu collect_funcs(root, prefix; own=fown)
+  # The functions go by name, whatever header declares them (hipfft.h declares
+  # hipfftXtSetWorkArea, hipfftxt's): only those of function_prefixes when set,
+  # less those of skip_function_prefixes, which another library binds.
+  fpre = strlist(get(cfg["library"], "function_prefixes", String[]))
+  skip = strlist(get(cfg["library"], "skip_function_prefixes", String[]))
+  funcs = GC.@preserve ctx tu collect_funcs(root, prefix)
+  starts(f, ps) = any(p -> startswith(f.name, p), ps)
+  isempty(fpre) || filter!(f -> starts(f, fpre), funcs)
+  filter!(f -> !starts(f, skip), funcs)
   @info "Found $(length(funcs)) $(prefix)* functions"
   declared = [f.name for f in funcs]
   funcfilter === nothing || (funcs = funcfilter(funcs))
@@ -531,7 +537,7 @@ function run_library_generator(dir::AbstractString;
 
   # Each sibling constant, mapped to the module defining it, for the `use` lines.
   # uses: modules `use`d whole, and so re-exported (hipfftxt uses hipfft); their
-  # enums, constants, types and functions are not redeclared.
+  # enums, constants and types are not redeclared.
   uses = uses_of(cfg)
   sibling_enum_mod = Dict{String,String}()
   sibling_enums = EnumInfo[]

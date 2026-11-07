@@ -173,8 +173,10 @@ If the generator finds far fewer functions than expected, check the `prefix` spe
 | `[general] name` | required | the library and module name, and the metadata file name |
 | `[library] prefix` | required | only functions whose name starts with it are bound |
 | `[library] opaque_handles` | required (may be `[]`) | struct tags never emitted as derived types (handles) |
-| `[library] own_headers` | `[name]` | header-path markers of the files whose enums, structs and macros (and, with `uses`, functions) are this library's |
-| `[library] uses` | `[]` | modules `use`d whole, so the module re-exports them; their headers' functions, enums, constants and types are not redeclared (hipfftxt: `["hipfft"]`, as CUDA Fortran's cufftXt includes cufft) |
+| `[library] own_headers` | `[name]` | header-path markers of the files whose enums, structs and macros are this library's |
+| `[library] uses` | `[]` | modules `use`d whole, so the module re-exports them; their headers' enums, constants and types are not redeclared (hipfftxt: `["hipfft"]`, as CUDA Fortran's cufftXt includes cufft) |
+| `[library] function_prefixes` | `[]` | when set, the functions bound are those starting with one of them, whatever header declares them (hipfftxt: `["hipfftXt", "hipfftMp"]`) |
+| `[library] skip_function_prefixes` | `[]` | functions starting with one of them are not bound: another library binds them (hipfft: `["hipfftXt", "hipfftMp"]`) |
 | `[library] reexport_enums` | `[]` | sibling libraries whose enums are `use`d from the sibling module instead of copied (rocSOLVER: `["rocblas"]`) |
 | `[library] keep_structs` | `[]` | HIP vector types to emit anyway, when a function takes one by value (rocRAND: `["uint4"]`) |
 | `[library] pointer_mode` | `false` | the handle has a pointer mode: a `const` pointer named `alpha` or `beta` is `scalar-pointer-mode` (BLAS, SPARSE) |
@@ -500,7 +502,7 @@ The version is in `src/Project.toml` and follows semantic versioning; releases a
 | hipSOLVER | `hipsolver` |
 | hipSPARSE | `hipsparse` |
 | hipFFT | `hipfft` |
-| hipFFT Xt and Mp (`hipfftXt.h`, `hipfftMp.h`) | `hipfftxt` (uses and re-exports `hipfft`) |
+| hipFFT Xt and Mp (`hipfftXt*`, `hipfftMp*`) | `hipfftxt` (uses and re-exports `hipfft`) |
 | hipFFTW | `hipfftw` |
 | hipRAND | `hiprand` |
 

@@ -1209,9 +1209,10 @@ overlong_fortran_lines(s::AbstractString) =
         end
         base, xt = src["ulib"], src["ulibxt"]
         bound(f) = Set(m.captures[1] for m in eachmatch(r"bind\(c, name=\"(\w+)\"\)", f))
-        # Each module binds the functions of its own header only.
+        # The functions go by name, not by header: ulibXtSetArea, declared in ulib.h,
+        # is ulibxt's (function_prefixes), and ulib skips it (skip_function_prefixes).
         @test bound(base) == Set(["ulibCreate", "ulibExec"])
-        @test bound(xt) == Set(["ulibXtMalloc", "ulibXtFree"])
+        @test bound(xt) == Set(["ulibXtMalloc", "ulibXtFree", "ulibXtSetArea"])
         # ulibxt uses ulib whole, so `use ulibxt` alone gives both APIs...
         @test occursin("module ulibxt\n  use ulib\n  use, intrinsic :: iso_c_binding\n", xt)
         @test !occursin("use ulib,", xt)
@@ -1233,6 +1234,7 @@ overlong_fortran_lines(s::AbstractString) =
                   integer(kind(ULIB_SUCCESS)) :: st
                   st = ulibXtMalloc(plan, desc, ULIB_XT_FORMAT_INPUT)
                   if (st == ULIB_SUCCESS) st = ulibCreate(plan)
+                  if (st == ULIB_SUCCESS) st = ulibXtSetArea(plan, desc)
                   call ulibCheck(st)
                 end program p
                 """)

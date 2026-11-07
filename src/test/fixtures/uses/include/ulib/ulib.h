@@ -15,5 +15,7 @@ typedef enum ulib_status_t {
 
 ulibStatus ulibCreate(ulibHandle* plan);
 ulibStatus ulibExec(ulibHandle plan, float* data, int direction);
+/* An Xt function the base header declares, as hipfft.h's hipfftXtSetWorkArea. */
+ulibStatus ulibXtSetArea(ulibHandle plan, void* area);
 
 #endif

@@ -6,6 +6,9 @@ prefix = "hipfft"
 opaque_handles = [
   "hipfftHandle",
 ]
+# The hipfftxt module's, as cufftXt's in CUDA Fortran (hipfft.h declares
+# hipfftXtSetWorkArea).
+skip_function_prefixes = ["hipfftXt", "hipfftMp"]
 
 [headers]
 subdir = "hipfft"
