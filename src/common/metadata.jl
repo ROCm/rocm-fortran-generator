@@ -54,6 +54,8 @@ Base.@kwdef struct LibMeta
   own_consts::Set{String} = Set{String}()
   "Foreign enum constant => sibling module that defines it (rocSOLVER uses rocBLAS kinds)."
   sibling_enum_mod::Dict{String,String} = Dict{String,String}()
+  "`[library] uses`: modules `use`d whole, so everything they define is re-exported."
+  uses::Vector{String} = String[]
   "Fortran routine name => C symbol for `bind(C, name=...)`, when they differ."
   bind_names::Dict{String,String} = Dict{String,String}()
   "Generic => module procedures a library emits itself, (per-rank, assumed-rank)

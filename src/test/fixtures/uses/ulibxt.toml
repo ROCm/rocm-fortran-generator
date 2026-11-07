@@ -1,0 +1,20 @@
+# Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+
+[general]
+name = "ulibxt"
+
+[library]
+prefix = "ulib"
+opaque_handles = ["ulibHandle"]
+own_headers = ["ulib/ulibXt"]
+uses = ["ulib"]
+function_prefixes = ["ulibXt"]
+
+[headers]
+subdir = "ulib"
+file   = "ulibXt.h"
+
+[clang]
+defines = []
+extra_include_dirs = []

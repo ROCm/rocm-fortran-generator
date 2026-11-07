@@ -23,7 +23,8 @@
 #
 ###############################################################################
 
-# Fortran bindings for hipFFT.
+# Fortran bindings for hipFFT (hipfft/hipfft.h). hipfftXt.h and hipfftMp.h are
+# the hipfftxt module's (src/hipfftxt).
 #
 # Usage (from the repo root):
 #   julia --project=src src/hipfft/generator.jl [include_dir] [output_dir]
@@ -34,16 +35,8 @@ include("../common/fortran_gen.jl")
 # (explain_metadata.jl).
 function main(run = run_library_generator)
   run(@__DIR__;
-    # hipfftMp.h uses hipfftXtSubFormat without including hipfftXt.h, and only one
-    # translation unit is walked: force-include hipfftXt.h ahead of it.
-    # hipfftXt.h includes <cstddef>, a C++ header: src/hipfft/cstddef stands in.
-    argshook = function (args, include_dir, hdrs)
-      xt = joinpath(dirname(hdrs[1]), "hipfftXt.h")
-      isfile(xt) || error("Header not found: $xt")
-      push!(args, "-I$(dirname(hdrs[1]))")
-      push!(args, "-I$(@__DIR__)")
-      push!(args, "-include", xt)
-    end)
+    # hipfft.h includes <cstddef>, a C++ header: src/hipfft/cstddef stands in.
+    argshook = (args, include_dir, hdrs) -> push!(args, "-I$(dirname(hdrs[1]))", "-I$(@__DIR__)"))
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__

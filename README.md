@@ -122,13 +122,14 @@ Run from this repository:
 | hipSPARSE | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hipsparse` | `bindings/fortran/hipsparse/hipsparse.F90` |
 | rocFFT | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite rocfft` | `bindings/fortran/rocfft/rocfft.F90` |
 | hipFFT | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hipfft` | `bindings/fortran/hipfft/hipfft.F90` |
+| hipFFT Xt and Mp | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hipfftxt` | `bindings/fortran/hipfft/hipfftxt.F90` |
 | hipFFTW | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hipfftw` | `bindings/fortran/hipfft/hipfftw.F90` |
 | rocRAND | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite rocrand` | `bindings/fortran/rocrand/rocrand.F90` |
 | hipRAND | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hiprand` | `bindings/fortran/hiprand/hiprand.F90` |
 
 `<rocm-systems>` and `<rocm-libraries>` are the paths of your checkouts, and the
 last column is relative to them. Several libraries can be named in one run
-(`./gen.sh --overwrite hipfft hipfftw`). A math library reads its own headers from
+(`./gen.sh --overwrite hipfft hipfftxt hipfftw`). A math library reads its own headers from
 the checkout and HIP's from the installed ROCm (`ROCM_INCLUDE`, default
 `/opt/rocm/include`); set `ROCM_SYSTEMS` as well to take HIP from a rocm-systems
 checkout instead.
@@ -158,7 +159,7 @@ the checkout, and compile it with `bash check_mods.sh`.
 
    main()
    ```
-   The others pass `argshook=` to add include directories or force-included headers (see `src/hipfft/generator.jl`).
+   The others pass `argshook=` to add include directories or force-included headers (see `src/hipfftxt/generator.jl`).
 3. Add `"<lib>"` to `LIBS` in `src/common/header_sources.jl`
    (and to `proj_of`, `repo_of` and `lib_include` there if its header directory is not `<lib>/` or it ships in rocm-systems).
 4. Run `./gen.sh && bash check_mods.sh`, then add `src/<lib>/metadata/<lib>.toml` as needed (see [Fixing a binding](#fixing-a-binding)).
@@ -173,6 +174,9 @@ If the generator finds far fewer functions than expected, check the `prefix` spe
 | `[library] prefix` | required | only functions whose name starts with it are bound |
 | `[library] opaque_handles` | required (may be `[]`) | struct tags never emitted as derived types (handles) |
 | `[library] own_headers` | `[name]` | header-path markers of the files whose enums, structs and macros are this library's |
+| `[library] uses` | `[]` | modules `use`d whole, so the module re-exports them; their headers' enums, constants and types are not redeclared (hipfftxt: `["hipfft"]`, as CUDA Fortran's cufftXt includes cufft) |
+| `[library] function_prefixes` | `[]` | when set, the functions bound are those starting with one of them, whatever header declares them (hipfftxt: `["hipfftXt", "hipfftMp"]`) |
+| `[library] skip_function_prefixes` | `[]` | functions starting with one of them are not bound: another library binds them (hipfft: `["hipfftXt", "hipfftMp"]`) |
 | `[library] reexport_enums` | `[]` | sibling libraries whose enums are `use`d from the sibling module instead of copied (rocSOLVER: `["rocblas"]`) |
 | `[library] keep_structs` | `[]` | HIP vector types to emit anyway, when a function takes one by value (rocRAND: `["uint4"]`) |
 | `[library] pointer_mode` | `false` | the handle has a pointer mode: a `const` pointer named `alpha` or `beta` is `scalar-pointer-mode` (BLAS, SPARSE) |
@@ -498,6 +502,7 @@ The version is in `src/Project.toml` and follows semantic versioning; releases a
 | hipSOLVER | `hipsolver` |
 | hipSPARSE | `hipsparse` |
 | hipFFT | `hipfft` |
+| hipFFT Xt and Mp (`hipfftXt*`, `hipfftMp*`) | `hipfftxt` (uses and re-exports `hipfft`) |
 | hipFFTW | `hipfftw` |
 | hipRAND | `hiprand` |
 
