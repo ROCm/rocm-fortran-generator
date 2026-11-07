@@ -1,0 +1,29 @@
+[general]
+name = "hipfftxt"
+
+[library]
+prefix = "hipfft"
+opaque_handles = [
+  "hipfftHandle",
+]
+# The enums, constants and types of hipfftXt.h, hipfftMp.h and hiplibxt.h; hipfft.h
+# is the hipfft module's, used (and so re-exported) whole.
+own_headers = ["hipfft/hipfftXt", "hipfft/hipfftMp", "hipfft/hiplibxt"]
+uses = ["hipfft"]
+# Every hipfftXt* and hipfftMp* function, as cufftXt's in CUDA Fortran, whatever
+# header declares it (hipfft.h declares hipfftXtSetWorkArea).
+function_prefixes = ["hipfftXt", "hipfftMp"]
+
+[headers]
+# hipfftMp.h (the multi-process API) includes hipfft.h; hipfftXt.h is force-included
+# ahead of it (see generator.jl). hipfftMp.h's routines exist only in a hipFFT built
+# with HIPFFT_MPI_ENABLE; a bind(C) interface costs nothing until called.
+subdir = "hipfft"
+file   = "hipfftMp.h"
+
+[clang]
+defines = [
+  "HIPFFT_EXPORT=",
+  "__HIP_PLATFORM_AMD__=1",
+]
+extra_include_dirs = []

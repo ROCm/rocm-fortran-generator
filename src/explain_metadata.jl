@@ -95,7 +95,13 @@ end
 function explain(io, name, s::HeaderSources, parse)
   # The library binding `name`: the longest prefix that matches (hipfft before hip).
   owners = [lib for lib in LIBS if !isempty(lib_prefix(lib)) && startswith(name, lib_prefix(lib))]
-  owner = isempty(owners) ? "" : owners[argmax(length.(lib_prefix.(owners)))]
+  isempty(owners) || (owners = filter(l -> length(lib_prefix(l)) == maximum(length ∘ lib_prefix, owners), owners))
+  # Libraries sharing a prefix (hipfft, hipfftxt): the one whose headers declare it,
+  # else the one whose metadata names it.
+  declares(lib) = (p = parse(lib); !(p isa AbstractString) && any(f -> f.name == name, first(p).funcs))
+  named(lib) = applying_table(load_metadata(joinpath(lib_metadata(s, lib), "$(lib).toml")), name) !== nothing
+  owner = isempty(owners) ? "" : length(owners) == 1 ? only(owners) :
+          something(findfirst(declares, owners), findfirst(named, owners), 1) |> i -> owners[i]
   found = false
   for lib in LIBS
     path = joinpath(lib_metadata(s, lib), "$(lib).toml")
