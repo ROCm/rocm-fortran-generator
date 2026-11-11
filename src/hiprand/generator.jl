@@ -34,12 +34,8 @@ include("../common/fortran_gen.jl")
 # (explain_metadata.jl).
 function main(run = run_library_generator)
   run(@__DIR__;
-    # hiprand_compat.h stubs out the C++ HIP headers hiprand.h includes.
+    # <rocrand/rocrand.h> is a separate project in a rocm-libraries checkout.
     argshook = function (args, include_dir, hdrs)
-      push!(args, "-I$(@__DIR__)")
-      push!(args, "-include", "hiprand_compat.h")
-      push!(args, "-Wno-macro-redefined")
-      # <rocrand/rocrand.h> is a separate project in a rocm-libraries checkout.
       rocrand = abspath(joinpath(include_dir, "..", "..", "..", "rocrand", "library", "include"))
       isdir(rocrand) && push!(args, "-I$(rocrand)")
     end)

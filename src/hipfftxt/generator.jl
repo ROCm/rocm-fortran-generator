@@ -35,14 +35,16 @@ include("../common/fortran_gen.jl")
 # (explain_metadata.jl).
 function main(run = run_library_generator)
   run(@__DIR__;
-    # hipfftMp.h uses hipfftXtSubFormat without including hipfftXt.h, and only one
-    # translation unit is walked: force-include hipfftXt.h ahead of it.
-    # hipfftXt.h includes <cstddef>, a C++ header: src/hipfft/cstddef stands in.
+    # Two hipFFT header bugs, both hipFFT ticket AIFFT-577:
+    # - hipfftMp.h uses hipfftXtSubFormat without including hipfftXt.h, and only
+    #   one translation unit is walked: force-include hipfftXt.h ahead of it;
+    # - hipfftXt.h includes <cstddef>, a C++ header, outside any __cplusplus
+    #   guard: src/hipfftxt/cstddef stands in.
     argshook = function (args, include_dir, hdrs)
       xt = joinpath(dirname(hdrs[1]), "hipfftXt.h")
       isfile(xt) || error("Header not found: $xt")
       push!(args, "-I$(dirname(hdrs[1]))")
-      push!(args, "-I$(joinpath(@__DIR__, "..", "hipfft"))")
+      push!(args, "-I$(@__DIR__)")
       push!(args, "-include", xt)
     end)
 end

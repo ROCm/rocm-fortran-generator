@@ -1,0 +1,5 @@
+// Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
+// SPDX-License-Identifier: MIT
+/* hipfftXt.h includes <cstddef> outside any __cplusplus guard (hipFFT ticket
+ * AIFFT-577); the generator parses the headers as C. */
+#include <stddef.h>

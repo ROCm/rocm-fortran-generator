@@ -15,5 +15,4 @@ opaque_handles = [
 defines = [
   "ROCFFT_EXPORT=",
 ]
-extra_args = ["-include", "stddef.h"]
 extra_include_dirs = []
