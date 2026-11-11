@@ -12,8 +12,5 @@ opaque_handles = [
 ]
 
 [clang]
-defines = [
-  "HIPBLAS_EXPORT=",
-  "__HIP_PLATFORM_AMD__=1",
-]
+defines = []
 extra_include_dirs = []

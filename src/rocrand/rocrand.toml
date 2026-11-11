@@ -11,8 +11,5 @@ opaque_handles = [
 keep_structs = ["uint4"]
 
 [clang]
-defines = [
-  "ROCRANDAPI=",
-  "ROCRAND_KERNEL_ATTRS=",
-]
+defines = []
 extra_include_dirs = []

@@ -31,8 +31,6 @@ opaque_handles = [
 ]
 
 [clang]
-defines = [
-  "ROCSPARSE_EXPORT=",
-  # ROCSPARSE_WITH_* feature flags are detected by auto_feature_defines.
-]
+# ROCSPARSE_WITH_* feature flags are detected by auto_feature_defines.
+defines = []
 extra_include_dirs = []

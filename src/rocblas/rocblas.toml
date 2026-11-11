@@ -10,7 +10,5 @@ opaque_handles = [
 ]
 
 [clang]
-defines = [
-  "ROCBLAS_EXPORT=",
-]
+defines = []
 extra_include_dirs = []

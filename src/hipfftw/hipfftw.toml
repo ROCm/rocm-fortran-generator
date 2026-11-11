@@ -12,5 +12,5 @@ subdir = "hipfft"
 file   = "hipfftw.h"
 
 [clang]
-defines    = ["HIPFFT_EXPORT="]
+defines = []
 extra_include_dirs = []

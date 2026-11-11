@@ -12,7 +12,5 @@ opaque_handles = [
 ]
 
 [clang]
-defines = [
-  "ROCFFT_EXPORT=",
-]
+defines = []
 extra_include_dirs = []
