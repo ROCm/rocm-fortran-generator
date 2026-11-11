@@ -16,17 +16,22 @@ opaque_handles = [
   "rocblas_handle",
   "rocsolver_rfinfo",
 ]
+# rocsolver-aliases.h: deprecated aliases of the rocBLAS auxiliary functions,
+# which the rocblas module binds.
+skip_function_prefixes = [
+  "rocsolver_create_handle",
+  "rocsolver_destroy_handle",
+  "rocsolver_set_stream",
+  "rocsolver_get_stream",
+  "rocsolver_set_vector",
+  "rocsolver_get_vector",
+  "rocsolver_set_matrix",
+  "rocsolver_get_matrix",
+]
 
 [headers]
-# rocsolver-functions.h, not rocsolver.h: rocsolver-aliases.h needs the
-# CMake-generated rocsolver-export.h.
-file = "rocsolver-functions.h"
+file = "rocsolver.h"
 
 [clang]
-defines = [
-  "ROCSOLVER_EXPORT=",
-  "ROCBLAS_EXPORT=",
-  "ROCSOLVER_DEPRECATED_X(x)=",
-  "ROCSOLVER_DEPRECATED=",
-]
+defines = []
 extra_include_dirs = []

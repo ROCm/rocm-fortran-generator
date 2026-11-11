@@ -12,7 +12,5 @@ subdir = "hipfft"
 file   = "hipfftw.h"
 
 [clang]
-defines    = ["HIPFFT_EXPORT="]
-# size_t, otherwise missing when parsing as C.
-extra_args = ["-include", "stddef.h"]
+defines = []
 extra_include_dirs = []

@@ -18,5 +18,5 @@ subdir = "rocprofiler-sdk-roctx"
 file   = "roctx.h"
 
 [clang]
-defines    = ["ROCTX_API=", "ROCTX_NONNULL(...)="]
+defines = []
 extra_include_dirs = []

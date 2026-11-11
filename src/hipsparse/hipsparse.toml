@@ -34,9 +34,6 @@ opaque_handles = [
 ]
 
 [clang]
-defines = [
-  "HIPSPARSE_EXPORT=",
-  "__HIP_PLATFORM_AMD__=1",
-  # HIPSPARSE_WITH_* feature flags are detected by auto_feature_defines.
-]
+# HIPSPARSE_WITH_* feature flags are detected by auto_feature_defines.
+defines = []
 extra_include_dirs = []

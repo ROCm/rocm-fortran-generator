@@ -22,8 +22,5 @@ subdir = "hipfft"
 file   = "hipfftMp.h"
 
 [clang]
-defines = [
-  "HIPFFT_EXPORT=",
-  "__HIP_PLATFORM_AMD__=1",
-]
+defines = []
 extra_include_dirs = []

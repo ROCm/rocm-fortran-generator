@@ -35,8 +35,7 @@ include("../common/fortran_gen.jl")
 # (explain_metadata.jl).
 function main(run = run_library_generator)
   run(@__DIR__;
-    # hipfft.h includes <cstddef>, a C++ header: src/hipfft/cstddef stands in.
-    argshook = (args, include_dir, hdrs) -> push!(args, "-I$(dirname(hdrs[1]))", "-I$(@__DIR__)"))
+    argshook = (args, include_dir, hdrs) -> push!(args, "-I$(dirname(hdrs[1]))"))
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__

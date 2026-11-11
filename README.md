@@ -176,7 +176,7 @@ If the generator finds far fewer functions than expected, check the `prefix` spe
 | `[library] own_headers` | `[name]` | header-path markers of the files whose enums, structs and macros are this library's |
 | `[library] uses` | `[]` | modules `use`d whole, so the module re-exports them; their headers' enums, constants and types are not redeclared (hipfftxt: `["hipfft"]`, as CUDA Fortran's cufftXt includes cufft) |
 | `[library] function_prefixes` | `[]` | when set, the functions bound are those starting with one of them, whatever header declares them (hipfftxt: `["hipfftXt", "hipfftMp"]`) |
-| `[library] skip_function_prefixes` | `[]` | functions starting with one of them are not bound: another library binds them (hipfft: `["hipfftXt", "hipfftMp"]`) |
+| `[library] skip_function_prefixes` | `[]` | functions starting with one of them are not bound: another library binds them (hipfft: `["hipfftXt", "hipfftMp"]`), or they are deprecated aliases of another library's (rocSOLVER: `rocsolver_create_handle` and the other rocBLAS auxiliary functions of `rocsolver-aliases.h`) |
 | `[library] reexport_enums` | `[]` | sibling libraries whose enums are `use`d from the sibling module instead of copied (rocSOLVER: `["rocblas"]`) |
 | `[library] keep_structs` | `[]` | HIP vector types to emit anyway, when a function takes one by value (rocRAND: `["uint4"]`) |
 | `[library] pointer_mode` | `false` | the handle has a pointer mode: a `const` pointer named `alpha` or `beta` is `scalar-pointer-mode` (BLAS, SPARSE) |
@@ -221,7 +221,7 @@ Most of the time the generation has already said so.
    rocsolver_dsyevj: src/rocsolver/metadata/rocsolver.toml
      ["rocsolver_{s,d}syevj"]
        residual = "scalar-device"
-     C signature (/opt/rocm/include/rocsolver/rocsolver-functions.h):
+     C signature (/opt/rocm/include/rocsolver/rocsolver.h):
        info = "scalar-device"   (default: solver: its last integer output, the info the kernel writes)
    ```
 
@@ -402,7 +402,7 @@ Every function with a data buffer gets them otherwise.
 
   rocsolver_dgetrf: src/rocsolver/metadata/rocsolver.toml
     no table: the C declaration alone
-    C signature (/opt/rocm/include/rocsolver/rocsolver-functions.h):
+    C signature (/opt/rocm/include/rocsolver/rocsolver.h):
       info = "scalar-device"   (default: solver: its last integer output, the info the kernel writes)
   ```
 

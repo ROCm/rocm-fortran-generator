@@ -23,11 +23,15 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-/* Force-included before rocrand.h, which includes C++ HIP headers (hip_fp16.h,
- * hip_runtime.h, hip_vector_types.h) that libclang cannot parse as C: their
- * include guards are pre-defined and the few types the public API uses are
- * stubbed. __half is `unsigned short`, so half values map to integer(c_short) as
- * in hipfort.
+/* Force-included before rocrand.h, for rocrand_set_seed_uint4, which takes a
+ * uint4 by value. Parsed as C, the HIP headers rocrand.h includes declare uint4,
+ * but in hip/amd_detail/: not a rocRAND header, so the generator would not emit
+ * the type and would leave the function out. Declared here, under src/rocrand/,
+ * uint4 is rocRAND's (keep_structs lets it past the HIP vector type filter). For
+ * HIP's declaration not to clash with it, the include guards of hip_fp16.h,
+ * hip_runtime.h and hip_vector_types.h are pre-defined, and the few HIP types
+ * the public API uses are stubbed. __half is `unsigned short`, so half values
+ * map to integer(c_short) as in hipfort.
  */
 #ifndef ROCRAND_COMPAT_H
 #define ROCRAND_COMPAT_H

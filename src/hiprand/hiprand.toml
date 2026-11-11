@@ -9,7 +9,5 @@ opaque_handles = [
 ]
 
 [clang]
-defines = [
-  "HIPRANDAPI=",
-]
+defines = []
 extra_include_dirs = []
