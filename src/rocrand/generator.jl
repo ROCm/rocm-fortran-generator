@@ -34,7 +34,7 @@ include("../common/fortran_gen.jl")
 # (explain_metadata.jl).
 function main(run = run_library_generator)
   run(@__DIR__;
-    # rocrand_compat.h stubs out the C++ HIP headers rocrand.h includes.
+    # rocrand_compat.h declares uint4 as rocRAND's, for rocrand_set_seed_uint4.
     argshook = function (args, include_dir, hdrs)
       push!(args, "-I$(@__DIR__)")
       push!(args, "-include", "rocrand_compat.h")
