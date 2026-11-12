@@ -58,6 +58,7 @@ const MD = [
   ("hip",       "# HIP API Support",       ["hipfort_hipmalloc", "hipfort_hipmemcpy", "hipfort_hiphostregister", "hipfort_auxiliary", "hipfort"]),
   ("hipblas",   "# hipBLAS API support",   ["hipfort_hipblas"]),
   ("hipfft",    "# hipFFT API Support",    ["hipfort_hipfft"]),
+  ("hipfftxt",  "# hipFFT Xt API Support", ["hipfort_hipfftxt"]),
   ("hipfftw",   "# hipFFTW API Support",   ["hipfort_hipfftw"]),
   ("hiprand",   "# hipRAND API Support",   ["hipfort_hiprand"]),
   ("hipsolver", "# hipSOLVER API support", ["hipfort_hipsolver"]),

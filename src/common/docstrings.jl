@@ -62,8 +62,8 @@ end
 # forwarder's comment. Since ROCm 10.2, HIP documents `static inline
 # hipGetDeviceProperties` (and hipChooseDevice), which forwards to an undocumented
 # hipGetDevicePropertiesR0600; through ROCm 10.1 a #define made the comment the
-# R0600 declaration's. Every header's forwarders: only the functions already in
-# DOCS are touched, whatever the path of the headers (no "rocm" needed in it).
+# R0600 declaration's. Only the functions collect_funcs kept are targets, so any
+# header may hold the forwarder.
 function inherit_forwarder_docs!(root)
   fwd = collect_inline_forwarders(root; own = nothing)   # LONG => SHORT
   short_of = Dict(v => k for (k, v) in fwd)

@@ -413,8 +413,8 @@ end
 # parameters, `static inline hipError_t hipChooseDevice(int* device, ...)
 # { return hipChooseDeviceR0600(device, ...); }`: the newer HIP headers spell their
 # versioned names this way instead of with a #define. The inline function has no
-# symbol, so it becomes an alias of its target. Returns LONG => SHORT. `own =
-# nothing` takes the forwarders of every header.
+# symbol, so it becomes an alias of its target. Returns LONG => SHORT.
+# `own = nothing` reads every header.
 function collect_inline_forwarders(root; own::Union{Nothing,Vector{String}} = String[]) :: Dict{String,String}
   out = Dict{String,String}()
   sources = Dict{String,String}()

@@ -58,11 +58,13 @@ using Clang.Generators: get_default_args
 
 const SRC = abspath(joinpath(@__DIR__, ".."))
 
-# Enums module of each library that has a USE_CUDA_NAMES branch.
+# Enums modules of each library that has a USE_CUDA_NAMES branch (hipFFT's Xt enums
+# share hipfft_enums_cuda.txt).
 const ENUM_FILES = ["hip" => "hipfort_enums.F90", "hipblas" => "hipfort_hipblas_enums.F90",
                     "hipsolver" => "hipfort_hipsolver_enums.F90",
                     "hipsparse" => "hipfort_hipsparse_enums.F90",
-                    "hipfft" => "hipfort_hipfft_enums.F90", "hiprand" => "hipfort_hiprand_enums.F90"]
+                    "hipfft" => ["hipfort_hipfft_enums.F90", "hipfort_hipfftxt_enums.F90"],
+                    "hiprand" => "hipfort_hiprand_enums.F90"]
 
 const PREFIXES = Dict(
   "hipblas"   => ["HIPBLAS_" => "CUBLAS_"],
@@ -261,10 +263,11 @@ function main()
   names = hipnv_names(hipnv, cudavals)
   println("CUDA $(ver): $(length(cudavals)) enumerators | hipnv: $(length(names)) hip -> cuda names\n")
 
-  for (lib, file) in ENUM_FILES
-    path = joinpath(layout, file)
-    isfile(path) || (@warn "missing $(path)"; continue)
-    over, (nmapped, nalias, nmoved) = cuda_overrides(lib, hip_enums(path), cudavals, enum_of, members, names)
+  for (lib, files) in ENUM_FILES
+    paths = [joinpath(layout, f) for f in (files isa String ? [files] : files)]
+    missing_paths = filter(!isfile, paths)
+    isempty(missing_paths) || (@warn "missing $(join(missing_paths, ", "))"; continue)
+    over, (nmapped, nalias, nmoved) = cuda_overrides(lib, reduce(vcat, hip_enums.(paths)), cudavals, enum_of, members, names)
     dest = joinpath(SRC, lib, "metadata", "$(lib)_enums_cuda.txt")
     open(dest, "w") do io
       println(io, "# USE_CUDA_NAMES values of the enumerators that differ from HIP, from the CUDA $(ver) headers.")

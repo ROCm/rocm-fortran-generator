@@ -186,9 +186,9 @@ function hipfort_scope_uses(f::FuncInfo, meta::LibMeta) :: Vector{String}
 end
 
 # On the NVIDIA backend a HIP routine may map to the CUDA driver API (cu[A-Z]...,
-# libcuda) rather than the runtime. hipfort links only the runtime there, which
-# holds as long as no module procedure calls a driver entry point: under
-# USE_CUDA_NAMES such a routine keeps its bind(C) specific only.
+# libcuda) rather than the runtime. Under USE_CUDA_NAMES such a routine has no
+# _typed or _devptr form, but keeps its _opt form: its generic needs it to mean
+# the same as on ROCm. hipfort's CMake package links libcuda (CUDA::cuda_driver).
 maps_to_cuda_driver(f::FuncInfo, meta::LibMeta) =
   (cu = get(meta.cuda_names, f.name, nothing); cu !== nothing && occursin(r"^cu[A-Z]", cu))
 

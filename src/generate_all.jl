@@ -137,7 +137,7 @@ for lib in LIBS_RUN
     push!(generated, lib)
     # Earlier runs wrote rocm-systems' modules to one shared rocm-systems/fortran/:
     # drop that copy, which check_mods.sh would compile as a second module.
-    if repo_of(lib) == "rocm-systems"
+    if !HIPFORT_LAYOUT && repo_of(lib) == "rocm-systems"
       flat = joinpath(OUTPUT_ROOT, "rocm-systems", "fortran")
       rm(joinpath(flat, "$(lib).F90"); force=true)
       isdir(flat) && isempty(readdir(flat)) && rm(flat)

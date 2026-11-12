@@ -91,7 +91,7 @@ const HIPFORT     = get(ENV, "HIPFORT", joinpath(REPO, "hipfort"))
 # module name coincide and this one list serves as the test keys, the module
 # names and the recognizer for sibling `use` lines.
 const LIBS = ["rocblas", "hipblas", "rocsolver", "hipsolver", "rocsparse",
-  "hipsparse", "rocfft", "hipfft", "hipfftw", "rocrand", "hiprand", "hip", "roctx"]
+  "hipsparse", "rocfft", "hipfft", "hipfftxt", "hipfftw", "rocrand", "hiprand", "hip", "roctx"]
 
 # hipfort layout: the same libraries (each has a hipfort::<lib> CMake target,
 # roctx included), with the HIP runtime first. "hip" is the runtime core (module
