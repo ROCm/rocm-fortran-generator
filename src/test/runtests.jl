@@ -1295,15 +1295,19 @@ overlong_fortran_lines(s::AbstractString) =
         @test lib_include(s, "rocblas") == joinpath(libs, "projects", "rocblas", "library", "include")
         @test hip_installed_include(s) == "" && hip_version(s) == "7.17.3"
 
-        # Metadata: a checkout's bindings/fortran/<proj>/metadata/ replaces src/<lib>/metadata/.
+        # Metadata: a checkout's bindings/fortran/<proj>/metadata/ (rocm-libraries) or
+        # bindings/fortran/<lib>/metadata/ (rocm-systems) replaces src/<lib>/metadata/.
         gen_meta(lib) = joinpath(GEN_ROOT, lib, "metadata")
         mkpath(joinpath(libs, "bindings", "fortran", "hipfft", "metadata"))
-        mkpath(joinpath(sys, "bindings", "fortran", "metadata"))
+        mkpath(joinpath(sys, "bindings", "fortran", "hip", "metadata"))
+        mkpath(joinpath(sys, "bindings", "fortran", "metadata"))   # the flat layout: not read
         @test lib_metadata(s, "hipfft")  == joinpath(libs, "bindings", "fortran", "hipfft", "metadata")
         @test lib_metadata(s, "hipfftw") == joinpath(libs, "bindings", "fortran", "hipfft", "metadata")
         @test lib_metadata(s, "hipfftxt") == joinpath(libs, "bindings", "fortran", "hipfft", "metadata")
-        @test lib_metadata(s, "roctx")   == joinpath(sys, "bindings", "fortran", "metadata")
-        @test lib_metadata(s, "hip")     == joinpath(sys, "bindings", "fortran", "metadata")
+        @test lib_metadata(s, "hip")     == joinpath(sys, "bindings", "fortran", "hip", "metadata")
+        @test lib_metadata(s, "roctx")   == gen_meta("roctx")     # no bindings/fortran/roctx/metadata/
+        mkpath(joinpath(sys, "bindings", "fortran", "roctx", "metadata"))
+        @test lib_metadata(s, "roctx")   == joinpath(sys, "bindings", "fortran", "roctx", "metadata")
         @test lib_metadata(s, "rocblas") == gen_meta("rocblas")   # no metadata in the checkout
         let (si, _) = header_sources(Dict{String,String}(), [inst, out])
             @test lib_metadata(si, "hipfft") == gen_meta("hipfft")   # installed: never a checkout
@@ -1330,7 +1334,14 @@ overlong_fortran_lines(s::AbstractString) =
             mkpath(joinpath(libs, "bindings", "fortran", "rocblas"))
             @test check_overwrite(sl, ["rocblas", "hipfftw"]) === nothing
         end
-        @test overwrite_target(s, "roctx") == joinpath(sys, "bindings", "fortran", "roctx.F90")
+        @test overwrite_target(s, "roctx") == joinpath(sys, "bindings", "fortran", "roctx", "roctx.F90")
+        @test overwrite_target(s, "hip") == joinpath(sys, "bindings", "fortran", "hip", "hip.F90")
+        let (ss, _) = header_sources(Dict("ROCM_SYSTEMS" => sys), [out])
+            # Each library's own directory: hip's does not stand for roctx's.
+            rm(joinpath(sys, "bindings", "fortran", "roctx"); recursive=true)
+            @test_throws ArgumentError check_overwrite(ss, ["hip", "roctx"])
+            @test check_overwrite(ss, ["hip"]) === nothing
+        end
         let (si, _) = header_sources(Dict{String,String}(), [inst, out])
             @test_throws ArgumentError check_overwrite(si, ["rocblas"])   # installed: no checkout
         end

@@ -38,7 +38,10 @@ trap 'rm -rf "$TMP"' EXIT
 
 LIBS="$TMP/rocm-libraries"
 INST="$TMP/include"
+SYS="$TMP/rocm-systems"
 mkdir -p "$LIBS/projects/rocblas/library/include" "$INST/hip" "$TMP/empty"
+# The old flat layout: bindings/fortran/ alone is no binding directory for hip.
+mkdir -p "$SYS/projects/hip/include" "$SYS/bindings/fortran/metadata"
 # Never the developer's fortran/, even if a check below regressed and generated.
 export ROCM_FORTRAN_OUT="$TMP/out"
 
@@ -67,6 +70,8 @@ expect 1 "--overwrite needs ROCM_LIBRARIES or ROCM_SYSTEMS" \
   env ROCM_INCLUDE="$INST" ./gen.sh --overwrite rocblas
 expect 1 "bindings/fortran/rocblas does not exist" \
   env ROCM_INCLUDE="$INST" ROCM_LIBRARIES="$LIBS" ./gen.sh --overwrite rocblas
+expect 1 "bindings/fortran/hip does not exist" \
+  env -u ROCM_INCLUDE ROCM_SYSTEMS="$SYS" ./gen.sh --overwrite hip
 expect 0 "C signature: headers not read; no HIP headers" \
   env ROCM_INCLUDE="$TMP/empty" ./gen.sh --explain rocblas_srot_64
 expect 2 "needs a C function name" ./gen.sh --explain

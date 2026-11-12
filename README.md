@@ -40,8 +40,8 @@ Every shell script prints its options with `-h`.
 
 `gen.sh` writes one module per library, named after the library (`use hip`, `use rocblas`),
 with its enums, types and, when the library has a status type, a `<lib>Check` routine,
-into `fortran/rocm-systems/fortran/` (HIP, ROCTx) and `fortran/rocm-libraries/<lib>/` (the math libraries).
-Upstream, they are committed as `bindings/fortran/<lib>.F90` in rocm-systems and
+into `fortran/rocm-systems/<lib>/` (HIP, ROCTx) and `fortran/rocm-libraries/<lib>/` (the math libraries).
+Upstream, they are committed as `bindings/fortran/<lib>/<lib>.F90` in rocm-systems and
 `bindings/fortran/<proj>/<lib>.F90` in rocm-libraries (`--overwrite` copies them there).
 `fortran/.provenance` records the libraries generated, the headers read (installed ROCm or checkouts),
 the HIP version, the array-interface setting and the generator commit that produced it.
@@ -61,7 +61,7 @@ julia --project=src src/rocblas/generator.jl /opt/rocm/include <output-dir>
 
 This writes `<output-dir>/rocblas.F90`, byte-for-byte what `./gen.sh` produces for rocBLAS.
 
-All libraries at once, nested by upstream repository (`<output>/rocm-systems/fortran/hip.F90`, `<output>/rocm-libraries/rocblas/rocblas.F90`, ...):
+All libraries at once, nested by upstream repository (`<output>/rocm-systems/hip/hip.F90`, `<output>/rocm-libraries/rocblas/rocblas.F90`, ...):
 
 ```bash
 julia --project=src src/generate_all.jl /opt/rocm/include <output-dir>
@@ -112,8 +112,8 @@ Run from this repository:
 
 | Library | Command | Writes |
 |---|---|---|
-| HIP | `ROCM_SYSTEMS=<rocm-systems> ./gen.sh --overwrite hip` | `bindings/fortran/hip.F90` |
-| ROCTx | `ROCM_SYSTEMS=<rocm-systems> ./gen.sh --overwrite roctx` | `bindings/fortran/roctx.F90` |
+| HIP | `ROCM_SYSTEMS=<rocm-systems> ./gen.sh --overwrite hip` | `bindings/fortran/hip/hip.F90` |
+| ROCTx | `ROCM_SYSTEMS=<rocm-systems> ./gen.sh --overwrite roctx` | `bindings/fortran/roctx/roctx.F90` |
 | rocBLAS | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite rocblas` | `bindings/fortran/rocblas/rocblas.F90` |
 | hipBLAS | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite hipblas` | `bindings/fortran/hipblas/hipblas.F90` |
 | rocSOLVER | `ROCM_LIBRARIES=<rocm-libraries> ./gen.sh --overwrite rocsolver` | `bindings/fortran/rocsolver/rocsolver.F90` |
@@ -136,7 +136,7 @@ checkout instead.
 
 The module is identical to the one a full `./gen.sh` run produces for that
 library. `--overwrite` checks that the binding's directory (`bindings/fortran/<proj>/`
-in rocm-libraries, `bindings/fortran/` in rocm-systems) exists in the checkout before generating anything, and copies a module only once it has
+in rocm-libraries, `bindings/fortran/<lib>/` in rocm-systems) exists in the checkout before generating anything, and copies a module only once it has
 generated, so a failure leaves the checkout as it was. Without `--overwrite`, the
 module is written to `fortran/` only. Then review the change with `git diff` in
 the checkout, and compile it with `bash check_mods.sh`.
@@ -317,7 +317,7 @@ Without it, `alpha` and `beta` would be buffers: arrays of one element.
 
 | | |
 |---|---|
-| **where** | `src/<lib>/metadata/<lib>.toml` in the generator; when a run reads a checkout, the checkout's own `metadata/` next to the module replaces it (`bindings/fortran/metadata/` in rocm-systems, `bindings/fortran/<proj>/metadata/` in rocm-libraries) |
+| **where** | `src/<lib>/metadata/<lib>.toml` in the generator; when a run reads a checkout, the checkout's own `metadata/` next to the module replaces it (`bindings/fortran/<lib>/metadata/` in rocm-systems, `bindings/fortran/<proj>/metadata/` in rocm-libraries) |
 | **none** | a missing or empty file means no metadata: the C declarations alone |
 | **`format = 1`** | required as soon as there is an entry; the version of this schema, not of the generator |
 | **tables** | one per C function, keyed by its arguments' names as the C header spells them |

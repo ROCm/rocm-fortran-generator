@@ -39,7 +39,7 @@ env:   ROCM_PATH   | /opt/rocm | ROCm install to link against
 env:   HIPCC       | $ROCM_PATH/bin/hipcc | HIP C++ compiler for the kernel
 exit:  0 | binary at tests/build/vecadd/vecadd
 exit:  1 | fortran/ not generated, or a compile or link step failed
-note:  Only the HIP module (rocm-systems/fortran/hip.F90) is linked: the driver calls no library.
+note:  Only the HIP module (rocm-systems/hip/hip.F90) is linked: the driver calls no library.
 note:
 note:  -DUSE_ASSUMED_SHAPE=1 enables the pointer-shaped hipMalloc/hipMemcpy the
 note:  driver calls.
@@ -56,7 +56,7 @@ GUARDS="-DUSE_ASSUMED_SHAPE=1"
 ROCM=${ROCM_PATH:-/opt/rocm}
 HIPCC=${HIPCC:-$ROCM/bin/hipcc}
 
-fort_scan_srcdirs "$DIR/rocm-systems/fortran" || die_need_gen "No Fortran sources under $DIR"
+fort_scan_srcdirs "$DIR/rocm-systems/hip" || die_need_gen "No Fortran sources under $DIR"
 
 on_fail() {
   printf 'COMPILE FAILED: %s\n' "$(fort_modname "$1")"
