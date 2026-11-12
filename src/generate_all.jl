@@ -25,7 +25,7 @@
 
 # Run every selected library generator, each in its own Julia process. Each module
 # goes under the output root (default ../fortran), by upstream repository:
-#   <root>/rocm-systems/fortran/{hip,roctx}.F90   <root>/rocm-libraries/<lib>/<lib>.F90
+#   <root>/rocm-systems/<lib>/<lib>.F90 (hip, roctx)   <root>/rocm-libraries/<lib>/<lib>.F90
 # and <root>/.provenance records what was generated, from which headers.
 #
 # The library set and the header sources are decided in common/header_sources.jl,
@@ -42,11 +42,12 @@
 #   --libs=<lib>[,<lib>...]  generate only these libraries (each must be one the run selects)
 #   --overwrite              also copy each generated module into its checkout, as
 #                            <rocm-libraries>/bindings/fortran/<proj>/<lib>.F90 or
-#                            <rocm-systems>/bindings/fortran/<lib>.F90; needs a checkout,
+#                            <rocm-systems>/bindings/fortran/<lib>/<lib>.F90; needs a checkout,
 #                            and that directory must already exist
 #
 # Each library's metadata files come from its checkout's bindings/fortran/<proj>/metadata/
-# when the run reads that checkout and the directory exists, else from src/<lib>/metadata/.
+# (rocm-libraries) or bindings/fortran/<lib>/metadata/ (rocm-systems) when the run
+# reads that checkout and the directory exists, else from src/<lib>/metadata/.
 
 if any(in(("-h", "--help")), ARGS)
   # The usage is the comment block after the license, which ends at the second rule.
@@ -81,9 +82,8 @@ end
 const OUTPUT_ROOT = abspath(isempty(REST) ? joinpath(@__DIR__, "..", "fortran") : REST[1])
 const HIP_VERSION = hip_version(SOURCES)
 
-# rocm-systems' modules share one directory, as they share bindings/fortran/ upstream.
-outdir_of(lib) = repo_of(lib) == "rocm-systems" ? joinpath(OUTPUT_ROOT, "rocm-systems", "fortran") :
-                                                   joinpath(OUTPUT_ROOT, "rocm-libraries", lib)
+# One directory per library, under its upstream repository.
+outdir_of(lib) = joinpath(OUTPUT_ROOT, repo_of(lib), lib)
 
 @info "Headers: $(describe_sources(SOURCES)) (HIP $(HIP_VERSION))"
 mkpath(OUTPUT_ROOT)
@@ -123,6 +123,13 @@ for lib in LIBS_RUN
     run(addenv(cmd, "ROCM_FORTRAN_HIP_INCLUDE"  => hip_installed_include(SOURCES),
                     "ROCM_FORTRAN_METADATA_DIR" => lib_metadata(SOURCES, lib)))
     push!(generated, lib)
+    # Earlier runs wrote rocm-systems' modules to one shared rocm-systems/fortran/:
+    # drop that copy, which check_mods.sh would compile as a second module.
+    if repo_of(lib) == "rocm-systems"
+      flat = joinpath(OUTPUT_ROOT, "rocm-systems", "fortran")
+      rm(joinpath(flat, "$(lib).F90"); force=true)
+      isdir(flat) && isempty(readdir(flat)) && rm(flat)
+    end
     # Copied only once generated, so a failure leaves the checkout's module as it was.
     if OVERWRITE
       cp(joinpath(out, "$(lib).F90"), overwrite_target(SOURCES, lib); force=true)

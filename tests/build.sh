@@ -71,7 +71,7 @@ fi
 DEP_DIRS=(); DEP_LIBS=()
 for m in ${DEPS[@]+"${DEPS[@]}"}; do DEP_DIRS+=("$DIR/rocm-libraries/$m"); DEP_LIBS+=("-l$m"); done
 
-fort_scan_srcdirs "$DIR/rocm-systems/fortran" "$DIR/rocm-libraries/$LIB" \
+fort_scan_srcdirs "$DIR/rocm-systems/hip" "$DIR/rocm-libraries/$LIB" \
                   ${DEP_DIRS[@]+"${DEP_DIRS[@]}"} || die_need_gen "No Fortran sources under $DIR"
 
 on_fail() {
@@ -89,7 +89,7 @@ fort_build_tree
 $FC -c $FFLAGS -I"$BUILD" -o "$BUILD/$base.o" "$TEST"
 echo "COMPILE OK: $base"
 
-# Only the objects the test needs: rocm-systems/fortran/ also holds roctx.
+# Only the objects the test needs.
 OBJS=("$BUILD/$base.o" "$BUILD/hip.o" "$BUILD/$LIB.o")
 for m in ${DEPS[@]+"${DEPS[@]}"}; do OBJS+=("$BUILD/$m.o"); done
 if $FC -no-pie -o "$BUILD/$base" "${OBJS[@]}" -L"$ROCM/lib" -l"$LIB" ${DEP_LIBS[@]+"${DEP_LIBS[@]}"} -lamdhip64 2>"$BUILD/link.err"; then

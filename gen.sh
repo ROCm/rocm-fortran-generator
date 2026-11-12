@@ -55,11 +55,11 @@ note:  Libraries named on the command line (hip, roctx, rocblas, hipfft, ...) ar
 note:  only ones generated; each must come from a header source the run reads.
 note:  --overwrite also copies each generated module into its checkout:
 note:  <ROCM_LIBRARIES>/bindings/fortran/<proj>/<lib>.F90, or
-note:  <ROCM_SYSTEMS>/bindings/fortran/<lib>.F90. It needs a checkout, the binding's
+note:  <ROCM_SYSTEMS>/bindings/fortran/<lib>/<lib>.F90. It needs a checkout, the binding's
 note:  directory must already exist there, and a library that fails is not copied.
-note:  A run rewrites only the modules it generates: fortran/rocm-systems/fortran/
+note:  A run rewrites only the modules it generates: fortran/rocm-systems/<lib>/
 note:  (HIP, ROCTx) and fortran/rocm-libraries/<lib>/ (the math libraries).
-note:  A checkout's metadata/<lib>.toml (rocm-systems: bindings/fortran/metadata/;
+note:  A checkout's metadata/<lib>.toml (rocm-systems: bindings/fortran/<lib>/metadata/;
 note:  rocm-libraries: bindings/fortran/<proj>/metadata/), when present, replaces the
 note:  generator's src/<lib>/metadata/ for that library.
 note:  The Julia dependencies are installed on the first run (Pkg.instantiate).

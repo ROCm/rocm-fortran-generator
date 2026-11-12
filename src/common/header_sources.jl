@@ -125,10 +125,10 @@ function lib_include(s::HeaderSources, lib)
   return from_checkouts(s) ? inc : s.installed
 end
 
-# The directory of a library's Fortran module in its checkout: one shared
-# bindings/fortran/ in rocm-systems, bindings/fortran/<proj>/ in rocm-libraries.
+# The directory of a library's Fortran module in its checkout:
+# bindings/fortran/<lib>/ in rocm-systems, bindings/fortran/<proj>/ in rocm-libraries.
 fortran_dir(s::HeaderSources, lib) =
-  repo_of(lib) == "rocm-systems" ? joinpath(s.systems, "bindings", "fortran") :
+  repo_of(lib) == "rocm-systems" ? joinpath(s.systems, "bindings", "fortran", lib) :
                                    joinpath(s.libraries, "bindings", "fortran", proj_of(lib))
 
 # The path --overwrite writes a library's module to, in its checkout.
@@ -198,7 +198,7 @@ end
 # A library's metadata file (metadata/<lib>.toml): the checkout's
 # <fortran_dir>/metadata/ when it exists, else the generator's own
 # src/<lib>/metadata/. The file names carry the library name, so the modules sharing
-# a binding directory (hip and roctx; hipfft, hipfftxt and hipfftw) share one metadata/.
+# a binding directory (hipfft, hipfftxt and hipfftw) share one metadata/.
 function lib_metadata(s::HeaderSources, lib)
   if from_checkouts(s)
     d = joinpath(fortran_dir(s, lib), "metadata")

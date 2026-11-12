@@ -32,7 +32,7 @@ usage_spec() { cat <<'SPEC'
 name:  check_mods.sh
 brief: compile the generated Fortran modules with gfortran to verify they are valid
 usage: bash check_mods.sh [--mod]
-flag:  --mod | keep the .mod files, all in the first source directory (fortran/rocm-systems/fortran/), instead of a throwaway dir
+flag:  --mod | keep the .mod files, all in the first source directory (fortran/rocm-systems/hip/), instead of a throwaway dir
 env:   ROCM_FORTRAN_DIR | - | compile this directory instead of fortran/rocm-systems/ and fortran/rocm-libraries/ (e.g. an out-of-tree generation)
 exit:  0 | every module compiled
 exit:  1 | a module failed, or fortran/ has not been generated yet
