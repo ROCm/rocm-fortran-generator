@@ -128,6 +128,7 @@ end
 
 function collect_funcs(root, prefix::String) :: Vector{FuncInfo}
   reset_unmapped_cptr!()
+  EMIT_DOCS && (DOCS[] = Dict{String,String}())
   reset_func_docs!()
   carried = Pair{String,String}[]   # the last doc block's @params (function_docs!)
   funcs = FuncInfo[]
@@ -188,7 +189,9 @@ function collect_funcs(root, prefix::String) :: Vector{FuncInfo}
     end
 
     push!(funcs, FuncInfo(name, ret_ft, is_void, args))
+    EMIT_DOCS && (DOCS[][name] = cursor_comment(child))
   end
+  EMIT_DOCS && inherit_forwarder_docs!(root)
   isempty(skipped_variadic) ||
     @info "  skipped $(length(skipped_variadic)) variadic function(s) (no portable Fortran interface):" sort!(unique(skipped_variadic))
   return funcs
@@ -411,14 +414,15 @@ end
 # { return hipChooseDeviceR0600(device, ...); }`: the newer HIP headers spell their
 # versioned names this way instead of with a #define. The inline function has no
 # symbol, so it becomes an alias of its target. Returns LONG => SHORT.
-function collect_inline_forwarders(root; own::Vector{String} = String[]) :: Dict{String,String}
+# `own = nothing` reads every header.
+function collect_inline_forwarders(root; own::Union{Nothing,Vector{String}} = String[]) :: Dict{String,String}
   out = Dict{String,String}()
   sources = Dict{String,String}()
   for c in Clang.children(root)
     Clang.kind(c) == Clang.CXCursor_FunctionDecl || continue
     Clang.LibClang.clang_Cursor_isFunctionInlined(c.cursor) == 0 && continue
     file = cursor_file(c)
-    (isempty(file) || !owns_decl(file, own)) && continue
+    (isempty(file) || !(own === nothing || owns_decl(file, own))) && continue
     short  = Clang.spelling(c)
     params = String[Clang.spelling(p) for p in Clang.children(c)
                     if Clang.kind(p) == Clang.CXCursor_ParmDecl]
@@ -684,7 +688,8 @@ function collect_structs(root; skip::Vector{String} = String[],
         dep = emitname(dep)
         push!(deps, dep)
       end
-      push!(fields, FieldInfo(safe_ident(Clang.spelling(fc)), ft, dims, ""))
+      push!(fields, FieldInfo(safe_ident(Clang.spelling(fc)), ft, dims,
+                              EMIT_DOCS ? field_doc(cursor_comment(fc)) : ""))
     end
 
     if ok && !isempty(fields)

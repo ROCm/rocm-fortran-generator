@@ -24,3 +24,14 @@ file   = "hipfftMp.h"
 [clang]
 defines = []
 extra_include_dirs = []
+
+# hipfort layout: the Doxygen groups the docstrings' \ingroup name (see emit_doxygen_groups).
+[doxygen]
+# hipfftXt.h opens hipfftXtExecDescriptor in a standalone comment attached to no
+# declaration, which libclang never hands us, while the hipfftXtExecDescriptor*
+# functions' comments carry `@ingroup hipfftXtExecDescriptor`. Defined here, in the
+# module of its members (hipfort_hipfftxt), not in hipfort_hipfft. The title is
+# hipfftXt.h's; the brief condenses its description.
+groups = [
+  { name = "hipfftXtExecDescriptor", title = "Multi-device descriptor execution", brief = "Executes multi-device transforms using hipLibXtDesc descriptors as input and output. In-place transforms require input == output." },
+]

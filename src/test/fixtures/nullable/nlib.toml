@@ -1,0 +1,17 @@
+# Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+
+[general]
+name = "nlib"
+
+[library]
+prefix = "nlib"
+opaque_handles = ["nlibModule"]
+
+[headers]
+subdir = "nlib"
+file   = "nlib.h"
+
+[clang]
+defines = []
+extra_include_dirs = []

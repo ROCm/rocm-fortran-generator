@@ -1,7 +1,14 @@
+# Copyright span of a hipfort-layout module: hipfort's modules date from 2020,
+# hipFFTW's and hipFFT Xt's from 2026 and ROCTx's from 2024. The packaged modules are 2026.
+const LICENSE_YEARS = Dict("hipfftw" => "2026", "hipfftxt" => "2026", "roctx" => "2024-2026")
+license_years(name::AbstractString) =
+  HIPFORT ? get(LICENSE_YEARS, String(name), "2020-2026") : "2026"
+license_years(cfg::Dict) = license_years(cfg["general"]["name"])
+
 # MIT notice with an SPDX line, as in hipfort (ROCm/hipfort#563).
-function emit_license_header(io)
+function emit_license_header(io; years::String = "2026")
   println(io, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-  println(io, "! Copyright (C) 2026 Advanced Micro Devices, Inc. All rights reserved.")
+  println(io, "! Copyright (C) $(years) Advanced Micro Devices, Inc. All rights reserved.")
   println(io, "!")
   println(io, "! SPDX-License-Identifier: MIT")
   println(io, "!")

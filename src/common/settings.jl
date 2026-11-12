@@ -46,3 +46,25 @@ end
 const GUARDED_IFACES = ARRAY_IFACES === :all
 
 const GEN_ROOT = normpath(joinpath(@__DIR__, ".."))
+
+# Output layout, ROCM_FORTRAN_LAYOUT:
+#   packaged  one module per library (`use hip`, `use rocblas`), committed in the
+#             bindings/fortran/ tree of rocm-systems and rocm-libraries. Default.
+#   hipfort   hipfort's lib/hipfort/: `hipfort` and `hipfort_<lib>` modules with
+#             separate `_enums` / `_types` modules, one `hipfort_check` for every
+#             library, CUDA branches under USE_CUDA_NAMES and Doxygen docstrings.
+#             What regenerate.sh writes into a hipfort checkout.
+const LAYOUT = let l = lowercase(get(ENV, "ROCM_FORTRAN_LAYOUT", "packaged"))
+  l in ("packaged", "hipfort") ||
+    error("ROCM_FORTRAN_LAYOUT must be packaged or hipfort, got \"$(l)\"")
+  l
+end
+const HIPFORT = LAYOUT == "hipfort"
+
+# Opt-out flags of the hipfort layout (on unless set to 0/false/no/off). The
+# packaged layout has neither docstrings nor CUDA branches.
+_flag(name) = lowercase(get(ENV, name, "1")) ∉ ("0", "false", "no", "off")
+# Doxygen comments of the C headers as `!>` docstrings.
+const EMIT_DOCS = HIPFORT && _flag("ROCM_FORTRAN_DOCSTRINGS")
+# The NVIDIA backend: `#ifdef USE_CUDA_NAMES` bind pairs, enum values and types.
+const EMIT_CUDA = HIPFORT && _flag("ROCM_FORTRAN_CUDA")
