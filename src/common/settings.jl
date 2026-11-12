@@ -48,8 +48,8 @@ const GUARDED_IFACES = ARRAY_IFACES === :all
 const GEN_ROOT = normpath(joinpath(@__DIR__, ".."))
 
 # Output layout, ROCM_FORTRAN_LAYOUT:
-#   packaged  one module per library (`use hip`, `use rocblas`), committed next to
-#             the C headers in rocm-systems and rocm-libraries. Default.
+#   packaged  one module per library (`use hip`, `use rocblas`), committed in the
+#             bindings/fortran/ tree of rocm-systems and rocm-libraries. Default.
 #   hipfort   hipfort's lib/hipfort/: `hipfort` and `hipfort_<lib>` modules with
 #             separate `_enums` / `_types` modules, one `hipfort_check` for every
 #             library, CUDA branches under USE_CUDA_NAMES and Doxygen docstrings.

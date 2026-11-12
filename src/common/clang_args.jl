@@ -546,8 +546,9 @@ function run_library_generator(dir::AbstractString;
     sib_enums  = GC.@preserve ctx tu collect_enums(root; own=[sib])
     sib_macros = GC.@preserve ctx tu collect_macros(root; own=[sib])
     append!(sibling_enums, sib_enums)
-    # The hipfort layout's sibling enums are a module of their own.
-    m = HIPFORT ? "hipfort_$(sib)_enums" : sib
+    # The hipfort layout's sibling enums are a module of their own; a used module
+    # is `use`d whole, and brings them.
+    m = !HIPFORT ? sib : sib in uses ? "hipfort_$(sib)" : "hipfort_$(sib)_enums"
     for e in sib_enums, c in e.constants; sibling_enum_mod[first(c)] = m; end
     for mm in sib_macros; sibling_enum_mod[first(mm)] = m; end
   end

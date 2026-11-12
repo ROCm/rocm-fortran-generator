@@ -61,6 +61,7 @@ function emit_named_interface(io, f::FuncInfo, meta::LibMeta;
                               module_procs_assumed::Vector{String} = String[],
                               module_procs_always::Vector{String} = String[],
                               always_rocm_only::Bool = false,
+                              module_procs_always_cuda::Vector{String} = String[],
                               alias_of::Union{Nothing,String} = nothing,
                               raw_in_generic::Bool = true)
   if EMIT_DOCS
@@ -132,20 +133,20 @@ function emit_named_interface(io, f::FuncInfo, meta::LibMeta;
   # Plain F2003 forms (_typed, _opt, _devptr), listed outside the array guard.
   # They are module procedures, not second bind(C) specifics: F2018 19.2 allows one
   # interface per binding label.
-  # A routine bound to the CUDA driver API has no module procedure under
-  # USE_CUDA_NAMES (see maps_to_cuda_driver): there the generic lists its bind(C)
-  # specific instead, which `procedure` (F2003) may name.
+  # A routine bound to the CUDA driver API keeps only module_procs_always_cuda (its
+  # _opt form) under USE_CUDA_NAMES (see maps_to_cuda_driver).
   if !isempty(module_procs_always)
     println(io, "")
-    if always_rocm_only && !raw_in_generic
+    rocm_only = always_rocm_only && module_procs_always_cuda != module_procs_always
+    if rocm_only && !isempty(module_procs_always_cuda)
       println(io, "#ifdef USE_CUDA_NAMES")
-      println(io, "    procedure $(alias_of === nothing ? sub : alias_of * "_")")
+      _emit_module_procedure(io, module_procs_always_cuda)
       println(io, "#else")
     else
-      always_rocm_only && println(io, "#ifndef USE_CUDA_NAMES")
+      rocm_only && println(io, "#ifndef USE_CUDA_NAMES")
     end
     _emit_module_procedure(io, module_procs_always)
-    always_rocm_only && println(io, "#endif")
+    rocm_only && println(io, "#endif")
   end
   # Array overloads, guarded by tier: USE_ASSUMED_SHAPE selects the per-rank set
   # (F2008), USE_ASSUMED_RANK the dimension(..) form (F2018). The two cannot coexist
@@ -459,13 +460,14 @@ function gen_module_file(io, cfg::Dict, meta::LibMeta,
   sibling_consts = Dict{String,Set{String}}()
   for (c, m) in meta.sibling_enum_mod; push!(get!(sibling_consts, m, Set{String}()), c); end
   if HIPFORT
-    host_mods = Set{String}(extra_modules)
+    used = ["hipfort_$(u)" for u in meta.uses]
+    host_mods = Set{String}(vcat(used, extra_modules))
     meta.has_enums && push!(host_mods, "$(mb)_enums")
     meta.has_types && push!(host_mods, "$(mb)_types")
-    # A types module, the HIP families and an enums module with parameters
-    # re-export iso_c_binding.
+    # A types module, the HIP families, a used library module and an enums module
+    # with parameters re-export iso_c_binding.
     iso_exported = mb == "hipfort" || meta.has_types || !isempty(extra_modules) ||
-                   (meta.has_enums && enums_have_iso) ||
+                   !isempty(used) || (meta.has_enums && enums_have_iso) ||
                    !(meta.has_enums || meta.has_types || !isempty(extra_modules))
   else
     host_mods = Set(["iso_c_binding"])
@@ -485,11 +487,13 @@ function gen_module_file(io, cfg::Dict, meta::LibMeta,
       println(io, "  use hipfort_cuda_errors")
       println(io, "#endif")
     end
+    # A used library module first: `use hipfort_hipfftxt` alone gives hipFFT too.
+    for m in used; println(io, "  use $(m)"); end
     meta.has_enums && println(io, "  use $(mb)_enums")
     meta.has_types && println(io, "  use $(mb)_types")
     for m in extra_modules; println(io, "  use $(m)"); end
     # Otherwise an enums or types module brings iso_c_binding.
-    (meta.has_enums || meta.has_types || !isempty(extra_modules)) ||
+    (meta.has_enums || meta.has_types || !isempty(extra_modules) || !isempty(used)) ||
       println(io, "  use, intrinsic :: iso_c_binding")
   else
     # The interface bodies IMPORT from this module, so names borrowed from a sibling
@@ -691,12 +695,28 @@ function emit_doxygen_groups(io, cfg::Dict)
       println(io, "  !>")
     end
     if haskey(g, "brief")
-      println(io, "  !>   $(g["brief"])")
+      println_doc_wrapped(io, "  !>   ", g["brief"])
       println(io, "  !>")
     end
     if haskey(g, "note")
-      println(io, "  !>   @note  $(g["note"])")
+      println_doc_wrapped(io, "  !>   ", "@note  " * g["note"])
       println(io, "  !>")
     end
   end
+end
+
+# Print `text` as `!>` comment lines starting with `prefix`, wrapped at word
+# boundaries to stay within FORTRAN_MAX_COL, as the function docstrings are.
+function println_doc_wrapped(io, prefix::String, text::AbstractString)
+  cur = prefix
+  for w in split(text)
+    cand = cur == prefix ? cur * w : cur * " " * w
+    if length(cand) > FORTRAN_MAX_COL && cur != prefix
+      println(io, cur)
+      cur = prefix * w
+    else
+      cur = cand
+    end
+  end
+  cur != prefix && println(io, cur)
 end

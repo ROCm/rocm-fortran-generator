@@ -214,7 +214,10 @@ function emit_generic(io, f::FuncInfo, meta::LibMeta; alias::String = "")
   let ep = get(meta.extra_procs, f.name, nothing)
     ep === nothing || (append!(procs, ep[1]); append!(procs_ar, ep[2]))
   end
-  # Plain F2003 forms, listed outside the USE_ASSUMED_* guards.
+  # Plain F2003 forms, listed outside the USE_ASSUMED_* guards. _opt comes first:
+  # a routine bound to the CUDA driver API keeps it alone under USE_CUDA_NAMES, so
+  # that its generic means the same on both backends (the bind(C) specific takes
+  # the nullable arguments by value, where _opt takes them by reference).
   procs_always = wants_opt(f, meta) ? [spec_name(f.name, "_opt")] : String[]
   wants_typed(f, meta) && push!(procs_always, spec_name(f.name, "_typed"))
   wants_devptr(f, meta) && push!(procs_always, spec_name(f.name, "_devptr"))
@@ -224,6 +227,7 @@ function emit_generic(io, f::FuncInfo, meta::LibMeta; alias::String = "")
                        module_procs=procs, module_procs_assumed=procs_ar,
                        module_procs_always=procs_always,
                        always_rocm_only=maps_to_cuda_driver(f, meta),
+                       module_procs_always_cuda=wants_opt(f, meta) ? procs_always[1:1] : String[],
                        raw_in_generic=!wants_opt(f, meta))
 end
 
@@ -411,13 +415,20 @@ end
 function emit_typed_body(io, funcs::Vector{FuncInfo}, meta::LibMeta)
   for f in funcs
     (wants_typed(f, meta) || wants_opt(f, meta)) || continue
-    # A routine bound to the CUDA driver API keeps its bind(C) specific only there.
-    guard = hip_only(f, meta) || (!isempty(meta.cuda_names) && maps_to_cuda_driver(f, meta))
-    guard && println(io, "#ifndef USE_CUDA_NAMES")
-    wants_opt(f, meta)    && emit_rank_wrapper(io, f, meta; opt=true)
-    wants_typed(f, meta)  && emit_rank_wrapper(io, f, meta; typed=true)
-    wants_devptr(f, meta) && emit_rank_wrapper(io, f, meta; typed=true, devptr=true)
-    guard && println(io, "#endif")
+    # A routine bound to the CUDA driver API has no _typed or _devptr form under
+    # USE_CUDA_NAMES (see maps_to_cuda_driver), but keeps its _opt form there: its
+    # generic resolves to _opt on both backends (see emit_generic).
+    hip = hip_only(f, meta)
+    drv = !isempty(meta.cuda_names) && maps_to_cuda_driver(f, meta)
+    hip && println(io, "#ifndef USE_CUDA_NAMES")
+    wants_opt(f, meta) && emit_rank_wrapper(io, f, meta; opt=true)
+    if wants_typed(f, meta) || wants_devptr(f, meta)
+      drv && println(io, "#ifndef USE_CUDA_NAMES")
+      wants_typed(f, meta)  && emit_rank_wrapper(io, f, meta; typed=true)
+      wants_devptr(f, meta) && emit_rank_wrapper(io, f, meta; typed=true, devptr=true)
+      drv && println(io, "#endif")
+    end
+    hip && println(io, "#endif")
   end
 end
 

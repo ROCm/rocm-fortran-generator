@@ -73,9 +73,14 @@ function gen_files(output_dir::String, cfg::Dict, funcs::Vector{FuncInfo},
   emit_types = !isempty(structs) && any(refs_derived_type, funcs)
 
   # The CUDA tables of the hipfort layout's NVIDIA backend.
-  cuda_names = EMIT_CUDA ? load_symbol_map(joinpath(libdir, "$(libname).txt"))            : Dict{String,String}()
-  enum_cuda  = EMIT_CUDA ? load_symbol_map(joinpath(libdir, "$(libname)_enums_cuda.txt")) : Dict{String,String}()
-  type_cuda  = EMIT_CUDA ? load_type_overrides(libdir)                                    : Dict{String,String}()
+  # A library extending a used one (hipfftxt) shares its maps: they are keyed by prefix.
+  cuda_map(suffix) = merge(Dict{String,String}(),
+    (load_symbol_map(let f = joinpath(libdir, "$(l)$(suffix)")
+                       isfile(f) ? f : joinpath(GEN_ROOT, l, "metadata", "$(l)$(suffix)")
+                     end) for l in vcat(uses, libname))...)
+  cuda_names = EMIT_CUDA ? cuda_map(".txt")            : Dict{String,String}()
+  enum_cuda  = EMIT_CUDA ? cuda_map("_enums_cuda.txt") : Dict{String,String}()
+  type_cuda  = EMIT_CUDA ? load_type_overrides(libdir) : Dict{String,String}()
   if !isempty(cuda_names)
     nderived = derive_ilp64_cuda_names!(cuda_names, funcs)
     nderived > 0 && @info "  Derived $(nderived) ILP64 (_64) CUDA name(s) from base map"

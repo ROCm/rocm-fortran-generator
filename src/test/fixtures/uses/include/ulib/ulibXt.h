@@ -19,6 +19,17 @@ typedef struct ulibXtDesc_t {
   void* data[8];
 } ulibXtDesc;
 
+/** @defgroup ulibXtMem Multi-device memory
+ *
+ * A group opened in a standalone comment attached to no declaration, as
+ * hipfftXt.h's hipfftXtExecDescriptor: libclang never reports it, so ulibxt.toml
+ * declares it in its [doxygen] groups.
+ */
+
+/**
+ * @ingroup ulibXtMem
+ * @brief Allocate a descriptor.
+ */
 ulibStatus ulibXtMalloc(ulibHandle plan, ulibXtDesc** desc, ulibXtFormat format);
 ulibStatus ulibXtFree(ulibXtDesc* desc);
 
