@@ -1294,12 +1294,18 @@ overlong_fortran_lines(s::AbstractString) =
         mkpath(joinpath(sys, "projects", "rocprofiler-sdk", "source", "include"))
         write(joinpath(sys, "projects", "hip", "VERSION"),
               "#HIP_VERSION_MAJOR\n7\n#HIP_VERSION_MINOR\n17\n#HIP_VERSION_PATCH\n3\n")
+        rccl = joinpath(sys, "projects", "rccl")
+        mkpath(joinpath(rccl, "src")); mkpath(joinpath(rccl, "makefiles"))
+        write(joinpath(rccl, "src", "nccl.h.in"),
+              "#define NCCL_MAJOR \${NCCL_MAJOR}\n#define NCCL_SUFFIX \"\${NCCL_SUFFIX}\"\n" *
+              "#define NCCL_VERSION_CODE \${NCCL_VERSION}\n")
+        write(joinpath(rccl, "makefiles", "version.mk"),
+              "NCCL_MAJOR   := 2\nNCCL_MINOR   := 32\nNCCL_PATCH   := 6\nNCCL_SUFFIX  :=\n")
         mkpath(joinpath(inst, "hip")); mkpath(joinpath(inst, "rocblas"))
         write(joinpath(inst, "hip", "hip_version.h"),
               "#define HIP_VERSION_MAJOR 7\n#define HIP_VERSION_MINOR 16\n#define HIP_VERSION_PATCH 26385\n")
         math = filter(l -> repo_of(l) == "rocm-libraries", LIBS)
         @test length(math) == 12 && filter(l -> repo_of(l) == "rocm-systems", LIBS) == ["hip", "roctx", "rccl"]
-        @test INSTALLED_ONLY == ("rccl",)
         @test repo_of("hipfftw") == "rocm-libraries" && proj_of("hipfftw") == "hipfft"
         @test repo_of("hipfftxt") == "rocm-libraries" && proj_of("hipfftxt") == "hipfft"
 
@@ -1312,11 +1318,13 @@ overlong_fortran_lines(s::AbstractString) =
 
         # ROCM_SYSTEMS alone: hip and roctx from the checkout; no include dir is read.
         s, rest = header_sources(Dict("ROCM_SYSTEMS" => sys), [out])
-        @test rest == [out] && selected_libs(s) == ["hip", "roctx"] && s.installed == ""
+        @test rest == [out] && selected_libs(s) == ["hip", "roctx", "rccl"] && s.installed == ""
         @test lib_include(s, "hip") == joinpath(sys, "projects", "hip", "include")
         @test lib_include(s, "roctx") == joinpath(sys, "projects", "rocprofiler-sdk", "source", "include")
-        # RCCL's header is a template in the checkout: not selected, no include dir.
-        @test lib_include(s, "rccl") === nothing
+        # RCCL's header is configured from its template, as RCCL's CMake does.
+        rinc = lib_include(s, "rccl")
+        @test read(joinpath(rinc, "rccl", "rccl.h"), String) ==
+              "#define NCCL_MAJOR 2\n#define NCCL_SUFFIX \"\"\n#define NCCL_VERSION_CODE 23206\n"
         @test hip_installed_include(s) == "" && hip_version(s) == "7.17.3"
         @test_throws ArgumentError header_sources(Dict("ROCM_SYSTEMS" => sys), [inst, out])
 
@@ -1332,7 +1340,7 @@ overlong_fortran_lines(s::AbstractString) =
 
         # Both: every library but RCCL from the checkouts, nothing installed.
         s, rest = header_sources(Dict("ROCM_LIBRARIES" => libs, "ROCM_SYSTEMS" => sys), String[])
-        @test isempty(rest) && selected_libs(s) == filter(!=("rccl"), LIBS) && s.installed == ""
+        @test isempty(rest) && selected_libs(s) == LIBS && s.installed == ""
         @test lib_include(s, "rocblas") == joinpath(libs, "projects", "rocblas", "library", "include")
         @test hip_installed_include(s) == "" && hip_version(s) == "7.17.3"
 

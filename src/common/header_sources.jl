@@ -29,12 +29,10 @@
 #
 #   ROCM_SYSTEMS  ROCM_LIBRARIES  generated            headers
 #   -             -               all 15               the installed include dir
-#   set           -               hip, roctx           the rocm-systems checkout
+#   set           -               hip, roctx, rccl     the rocm-systems checkout
 #   -             set             the math libraries   the rocm-libraries checkout; HIP
 #                                                      from the installed include dir
-#   set           set             all but rccl         the two checkouts
-#
-# RCCL is read from the installed headers only: in a checkout, rccl.h is a template.
+#   set           set             all 15               the two checkouts
 #
 # The installed include dir is a positional argument, read only when ROCM_SYSTEMS
 # is unset: with it, HIP comes from the checkout.
@@ -109,13 +107,9 @@ from_checkouts(s::HeaderSources) = !isempty(s.libraries) || !isempty(s.systems)
 
 checkout_of(s::HeaderSources, lib) = repo_of(lib) == "rocm-systems" ? s.systems : s.libraries
 
-# Libraries read from the installed include dir only (see the table above).
-const INSTALLED_ONLY = ("rccl",)
-
 # With a checkout, a run generates only the libraries of the checkouts it has.
 selected_libs(s::HeaderSources) =
-  from_checkouts(s) ? filter(lib -> !isempty(checkout_of(s, lib)) && !(lib in INSTALLED_ONLY), LIBS) :
-                      LIBS
+  from_checkouts(s) ? filter(lib -> !isempty(checkout_of(s, lib)), LIBS) : LIBS
 
 # The include dir a selected library's generator reads, or nothing when absent.
 function lib_include(s::HeaderSources, lib)
@@ -125,13 +119,31 @@ function lib_include(s::HeaderSources, lib)
     joinpath(s.systems, "projects", "hip", "include")
   elseif lib == "roctx"
     joinpath(s.systems, "projects", "rocprofiler-sdk", "source", "include")
-  elseif lib in INSTALLED_ONLY
-    return nothing
+  elseif lib == "rccl"
+    return rccl_checkout_include(s.systems)
   else
     joinpath(s.libraries, "projects", proj_of(lib), "library", "include")
   end
   isdir(inc) || return nothing
   return from_checkouts(s) ? inc : s.installed
+end
+
+# A checkout has no rccl/rccl.h: RCCL's build configures it from src/nccl.h.in with
+# the version in makefiles/version.mk. Do the same in a scratch include dir.
+function rccl_checkout_include(systems)
+  proj = joinpath(systems, "projects", "rccl")
+  template, mk = joinpath(proj, "src", "nccl.h.in"), joinpath(proj, "makefiles", "version.mk")
+  (isfile(template) && isfile(mk)) || return nothing
+  version = read(mk, String)
+  field(k) = (m = match(Regex("^\\s*$(k)\\s*:=\\s*(\\d*)", "m"), version); m === nothing ? "" : m[1])
+  vars = Dict(k => field(k) for k in ("NCCL_MAJOR", "NCCL_MINOR", "NCCL_PATCH", "NCCL_SUFFIX"))
+  patch = vars["NCCL_PATCH"]
+  vars["NCCL_VERSION"] = vars["NCCL_MAJOR"] * vars["NCCL_MINOR"] * (length(patch) >= 2 ? patch : "0" * patch)
+  header = replace(read(template, String), r"\$\{(\w+)\}" => m -> get(vars, m[3:end-1], m))
+  dir = mktempdir(; prefix = "rocm-fortran-generator-rccl-")
+  mkpath(joinpath(dir, "rccl"))
+  write(joinpath(dir, "rccl", "rccl.h"), header)
+  return dir
 end
 
 # The directory of a library's Fortran module in its checkout:
