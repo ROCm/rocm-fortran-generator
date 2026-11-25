@@ -407,6 +407,12 @@ overlong_fortran_lines(s::AbstractString) =
         s = String(take!(io))
         @test occursin("enum, bind(c)", s)
         @test occursin("enumerator :: HIPBLAS_STATUS_SUCCESS = 0", s)
+        # INT_MIN is no valid literal (unary minus on an out-of-range 2147483648).
+        io = IOBuffer()
+        emit_enum_decls(io, [EnumInfo("zzMode_t", ["ZZ_DEFAULT" => Int64(-2147483648), "ZZ_ON" => Int64(1)])])
+        s = String(take!(io))
+        @test occursin("enumerator :: ZZ_DEFAULT = -2147483647 - 1", s)
+        @test !occursin("-2147483648", s) && occursin("enumerator :: ZZ_ON = 1", s)
 
         structs = [StructInfo("hipDeviceArch_t",
                               [FieldInfo("hasGlobalInt32Atomics", "integer(c_int)", "", "")], String[])]
