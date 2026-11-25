@@ -1096,6 +1096,15 @@ overlong_fortran_lines(s::AbstractString) =
         @test !occursin("optional", s)
     end
 
+    @testset "doc comments that only open or close a section" begin
+        @test doc_control_only("/*! @endcond */")
+        @test doc_control_only("/*! @cond       include_hidden */")
+        @test doc_control_only("/*! @} */") && doc_control_only("/** \\{ */")
+        @test !doc_control_only("/*! @brief Returns the version. */")
+        @test !doc_control_only("/*! @endcond */ /*! Frees the communicator. */")
+        @test !doc_control_only("")
+    end
+
     @testset "argument overrides (handle-array)" begin
         d = mktempdir()
         write(joinpath(d, "zz.toml"), """
