@@ -69,7 +69,8 @@ end
 
 # A buffer is a typed data pointer mapped to an assumed-size array `x(*)`: a c_ptr
 # in the bind(C) specific, a Fortran array in the array overloads. An assumed-size
-# array of a derived type (`struct-array`) is not one: it stays `type(T) :: x(*)`.
+# array of a derived type (`struct-array`) or of handles (`handle-array`) is not one:
+# it stays `type(T) :: x(*)`.
 is_buffer(a::ArgInfo) = a.suffix == "(*)" && !startswith(a.ftype, "type(")
 
 fdecl(ftype::AbstractString, suffix::AbstractString, name::AbstractString) =

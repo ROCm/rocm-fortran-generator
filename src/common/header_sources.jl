@@ -28,11 +28,13 @@
 # modules from its own checkout:
 #
 #   ROCM_SYSTEMS  ROCM_LIBRARIES  generated            headers
-#   -             -               all 14               the installed include dir
+#   -             -               all 15               the installed include dir
 #   set           -               hip, roctx           the rocm-systems checkout
 #   -             set             the math libraries   the rocm-libraries checkout; HIP
 #                                                      from the installed include dir
-#   set           set             all 14               the two checkouts
+#   set           set             all but rccl         the two checkouts
+#
+# RCCL is read from the installed headers only: in a checkout, rccl.h is a template.
 #
 # The installed include dir is a positional argument, read only when ROCM_SYSTEMS
 # is unset: with it, HIP comes from the checkout.
@@ -52,6 +54,7 @@ const LIBS = [
   "rocrand",
   "hiprand",
   "roctx",
+  "rccl",
 ]
 
 const DEFAULT_INCLUDE = "/opt/rocm/include"
@@ -61,7 +64,7 @@ proj_of(lib) = lib in ("hipfftxt", "hipfftw") ? "hipfft" :
                lib == "roctx" ? "rocprofiler-sdk-roctx" : lib
 
 # Upstream repository each module is committed to, in its bindings/fortran/ tree.
-repo_of(lib) = lib in ("hip", "roctx") ? "rocm-systems" : "rocm-libraries"
+repo_of(lib) = lib in ("hip", "roctx", "rccl") ? "rocm-systems" : "rocm-libraries"
 
 # Each field is an absolute path, or "" when not used by the run.
 struct HeaderSources
@@ -106,9 +109,13 @@ from_checkouts(s::HeaderSources) = !isempty(s.libraries) || !isempty(s.systems)
 
 checkout_of(s::HeaderSources, lib) = repo_of(lib) == "rocm-systems" ? s.systems : s.libraries
 
+# Libraries read from the installed include dir only (see the table above).
+const INSTALLED_ONLY = ("rccl",)
+
 # With a checkout, a run generates only the libraries of the checkouts it has.
 selected_libs(s::HeaderSources) =
-  from_checkouts(s) ? filter(lib -> !isempty(checkout_of(s, lib)), LIBS) : LIBS
+  from_checkouts(s) ? filter(lib -> !isempty(checkout_of(s, lib)) && !(lib in INSTALLED_ONLY), LIBS) :
+                      LIBS
 
 # The include dir a selected library's generator reads, or nothing when absent.
 function lib_include(s::HeaderSources, lib)
@@ -118,6 +125,8 @@ function lib_include(s::HeaderSources, lib)
     joinpath(s.systems, "projects", "hip", "include")
   elseif lib == "roctx"
     joinpath(s.systems, "projects", "rocprofiler-sdk", "source", "include")
+  elseif lib in INSTALLED_ONLY
+    return nothing
   else
     joinpath(s.libraries, "projects", proj_of(lib), "library", "include")
   end

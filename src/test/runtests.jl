@@ -1096,6 +1096,38 @@ overlong_fortran_lines(s::AbstractString) =
         @test !occursin("optional", s)
     end
 
+    @testset "argument overrides (handle-array)" begin
+        d = mktempdir()
+        write(joinpath(d, "zz.toml"), """
+            format = 1
+            [zz_init_all]
+            comm = "handle-array"
+            [zz_destroy]
+            comm = "handle-array"
+            [zz_plan]
+            plan = "struct-array"
+            """)
+        fs = [FuncInfo("zz_init_all", "integer(c_int)", false,
+                       [ArgInfo("comm", "type(c_ptr)", "", false),
+                        ArgInfo("ndev", "integer(c_int)", ", value", false)]),
+              FuncInfo("zz_destroy", "integer(c_int)", false,
+                       [ArgInfo("comm", "type(c_ptr)", ", value", false)]),
+              FuncInfo("zz_plan", "integer(c_int)", false,
+                       [ArgInfo("plan", "type(c_ptr)", "", false)])]
+        zz = load_metadata(joinpath(d, "zz.toml"))
+        # A handle passed by value is one handle, and struct-array is for structs.
+        withenv("ROCM_FORTRAN_STRICT" => "1") do
+            @test_throws r"zz_destroy comm = \"handle-array\" \(not a pointer to a handle\)" check_metadata_applies(fs, zz)
+            @test_throws r"zz_plan plan = \"struct-array\" \(not a pointer to a struct\)" check_metadata_applies(fs[[1, 3]], zz)
+        end
+        # A pointer to a handle becomes an array of handles.
+        out = Dict(f.name => f for f in apply_arg_overrides(fs[1:1], zz))
+        comm = out["zz_init_all"].args[1]
+        @test (comm.ftype, comm.suffix) == ("type(c_ptr)", "(*)")
+        @test fdecl(comm.ftype, comm.suffix, comm.name) == "type(c_ptr) :: comm(*)"
+        @test !is_buffer(comm)
+    end
+
     @testset "clang_args.jl (config-driven)" begin
         fx      = joinpath(@__DIR__, "fixtures")
         featdir = joinpath(fx, "featlib")
@@ -1266,7 +1298,8 @@ overlong_fortran_lines(s::AbstractString) =
         write(joinpath(inst, "hip", "hip_version.h"),
               "#define HIP_VERSION_MAJOR 7\n#define HIP_VERSION_MINOR 16\n#define HIP_VERSION_PATCH 26385\n")
         math = filter(l -> repo_of(l) == "rocm-libraries", LIBS)
-        @test length(math) == 12 && filter(l -> repo_of(l) == "rocm-systems", LIBS) == ["hip", "roctx"]
+        @test length(math) == 12 && filter(l -> repo_of(l) == "rocm-systems", LIBS) == ["hip", "roctx", "rccl"]
+        @test INSTALLED_ONLY == ("rccl",)
         @test repo_of("hipfftw") == "rocm-libraries" && proj_of("hipfftw") == "hipfft"
         @test repo_of("hipfftxt") == "rocm-libraries" && proj_of("hipfftxt") == "hipfft"
 
@@ -1282,6 +1315,8 @@ overlong_fortran_lines(s::AbstractString) =
         @test rest == [out] && selected_libs(s) == ["hip", "roctx"] && s.installed == ""
         @test lib_include(s, "hip") == joinpath(sys, "projects", "hip", "include")
         @test lib_include(s, "roctx") == joinpath(sys, "projects", "rocprofiler-sdk", "source", "include")
+        # RCCL's header is a template in the checkout: not selected, no include dir.
+        @test lib_include(s, "rccl") === nothing
         @test hip_installed_include(s) == "" && hip_version(s) == "7.17.3"
         @test_throws ArgumentError header_sources(Dict("ROCM_SYSTEMS" => sys), [inst, out])
 
@@ -1295,9 +1330,9 @@ overlong_fortran_lines(s::AbstractString) =
         @test describe_sources(s) == "rocm-libraries checkout $libs, HIP headers from installed $inst"
         @test_throws ArgumentError header_sources(Dict("ROCM_LIBRARIES" => libs), [libs, out])
 
-        # Both: every library from the checkouts, nothing installed.
+        # Both: every library but RCCL from the checkouts, nothing installed.
         s, rest = header_sources(Dict("ROCM_LIBRARIES" => libs, "ROCM_SYSTEMS" => sys), String[])
-        @test isempty(rest) && selected_libs(s) == LIBS && s.installed == ""
+        @test isempty(rest) && selected_libs(s) == filter(!=("rccl"), LIBS) && s.installed == ""
         @test lib_include(s, "rocblas") == joinpath(libs, "projects", "rocblas", "library", "include")
         @test hip_installed_include(s) == "" && hip_version(s) == "7.17.3"
 

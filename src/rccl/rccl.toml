@@ -1,0 +1,22 @@
+[general]
+name = "rccl"
+
+[library]
+prefix = "nccl"
+opaque_handles = ["ncclComm"]
+# ncclAllToAll and ncclAllToAllv are deprecated aliases of ncclAlltoAll and
+# ncclAlltoAllv: Fortran names are case-insensitive, so they would clash.
+skip_function_prefixes = ["ncclAllToAll"]
+
+[headers]
+subdir = "rccl"
+file   = "rccl.h"
+
+[check]
+# The library is RCCL, but its API and status codes keep NCCL's names.
+name    = "ncclCheck"
+success = "ncclSuccess"
+
+[clang]
+defines = []
+extra_include_dirs = []
