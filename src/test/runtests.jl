@@ -407,6 +407,12 @@ overlong_fortran_lines(s::AbstractString) =
         s = String(take!(io))
         @test occursin("enum, bind(c)", s)
         @test occursin("enumerator :: HIPBLAS_STATUS_SUCCESS = 0", s)
+        # INT_MIN is no valid literal (unary minus on an out-of-range 2147483648).
+        io = IOBuffer()
+        emit_enum_decls(io, [EnumInfo("zzMode_t", ["ZZ_DEFAULT" => Int64(-2147483648), "ZZ_ON" => Int64(1)])])
+        s = String(take!(io))
+        @test occursin("enumerator :: ZZ_DEFAULT = -2147483647 - 1", s)
+        @test !occursin("-2147483648", s) && occursin("enumerator :: ZZ_ON = 1", s)
 
         structs = [StructInfo("hipDeviceArch_t",
                               [FieldInfo("hasGlobalInt32Atomics", "integer(c_int)", "", "")], String[])]
@@ -1090,6 +1096,47 @@ overlong_fortran_lines(s::AbstractString) =
         @test !occursin("optional", s)
     end
 
+    @testset "doc comments that only open or close a section" begin
+        @test doc_control_only("/*! @endcond */")
+        @test doc_control_only("/*! @cond       include_hidden */")
+        @test doc_control_only("/*! @} */") && doc_control_only("/** \\{ */")
+        @test !doc_control_only("/*! @brief Returns the version. */")
+        @test !doc_control_only("/*! @endcond */ /*! Frees the communicator. */")
+        @test !doc_control_only("")
+    end
+
+    @testset "argument overrides (handle-array)" begin
+        d = mktempdir()
+        write(joinpath(d, "zz.toml"), """
+            format = 1
+            [zz_init_all]
+            comm = "handle-array"
+            [zz_destroy]
+            comm = "handle-array"
+            [zz_plan]
+            plan = "struct-array"
+            """)
+        fs = [FuncInfo("zz_init_all", "integer(c_int)", false,
+                       [ArgInfo("comm", "type(c_ptr)", "", false),
+                        ArgInfo("ndev", "integer(c_int)", ", value", false)]),
+              FuncInfo("zz_destroy", "integer(c_int)", false,
+                       [ArgInfo("comm", "type(c_ptr)", ", value", false)]),
+              FuncInfo("zz_plan", "integer(c_int)", false,
+                       [ArgInfo("plan", "type(c_ptr)", "", false)])]
+        zz = load_metadata(joinpath(d, "zz.toml"))
+        # A handle passed by value is one handle, and struct-array is for structs.
+        withenv("ROCM_FORTRAN_STRICT" => "1") do
+            @test_throws r"zz_destroy comm = \"handle-array\" \(not a pointer to a handle\)" check_metadata_applies(fs, zz)
+            @test_throws r"zz_plan plan = \"struct-array\" \(not a pointer to a struct\)" check_metadata_applies(fs[[1, 3]], zz)
+        end
+        # A pointer to a handle becomes an array of handles.
+        out = Dict(f.name => f for f in apply_arg_overrides(fs[1:1], zz))
+        comm = out["zz_init_all"].args[1]
+        @test (comm.ftype, comm.suffix) == ("type(c_ptr)", "(*)")
+        @test fdecl(comm.ftype, comm.suffix, comm.name) == "type(c_ptr) :: comm(*)"
+        @test !is_buffer(comm)
+    end
+
     @testset "clang_args.jl (config-driven)" begin
         fx      = joinpath(@__DIR__, "fixtures")
         featdir = joinpath(fx, "featlib")
@@ -1256,11 +1303,18 @@ overlong_fortran_lines(s::AbstractString) =
         mkpath(joinpath(sys, "projects", "rocprofiler-sdk", "source", "include"))
         write(joinpath(sys, "projects", "hip", "VERSION"),
               "#HIP_VERSION_MAJOR\n7\n#HIP_VERSION_MINOR\n17\n#HIP_VERSION_PATCH\n3\n")
+        rccl = joinpath(sys, "projects", "rccl")
+        mkpath(joinpath(rccl, "src")); mkpath(joinpath(rccl, "makefiles"))
+        write(joinpath(rccl, "src", "nccl.h.in"),
+              "#define NCCL_MAJOR \${NCCL_MAJOR}\n#define NCCL_SUFFIX \"\${NCCL_SUFFIX}\"\n" *
+              "#define NCCL_VERSION_CODE \${NCCL_VERSION}\n")
+        write(joinpath(rccl, "makefiles", "version.mk"),
+              "NCCL_MAJOR   := 2\nNCCL_MINOR   := 32\nNCCL_PATCH   := 6\nNCCL_SUFFIX  :=\n")
         mkpath(joinpath(inst, "hip")); mkpath(joinpath(inst, "rocblas"))
         write(joinpath(inst, "hip", "hip_version.h"),
               "#define HIP_VERSION_MAJOR 7\n#define HIP_VERSION_MINOR 16\n#define HIP_VERSION_PATCH 26385\n")
         math = filter(l -> repo_of(l) == "rocm-libraries", LIBS)
-        @test length(math) == 12 && filter(l -> repo_of(l) == "rocm-systems", LIBS) == ["hip", "roctx"]
+        @test length(math) == 12 && filter(l -> repo_of(l) == "rocm-systems", LIBS) == ["hip", "roctx", "rccl"]
         @test repo_of("hipfftw") == "rocm-libraries" && proj_of("hipfftw") == "hipfft"
         @test repo_of("hipfftxt") == "rocm-libraries" && proj_of("hipfftxt") == "hipfft"
 
@@ -1273,9 +1327,13 @@ overlong_fortran_lines(s::AbstractString) =
 
         # ROCM_SYSTEMS alone: hip and roctx from the checkout; no include dir is read.
         s, rest = header_sources(Dict("ROCM_SYSTEMS" => sys), [out])
-        @test rest == [out] && selected_libs(s) == ["hip", "roctx"] && s.installed == ""
+        @test rest == [out] && selected_libs(s) == ["hip", "roctx", "rccl"] && s.installed == ""
         @test lib_include(s, "hip") == joinpath(sys, "projects", "hip", "include")
         @test lib_include(s, "roctx") == joinpath(sys, "projects", "rocprofiler-sdk", "source", "include")
+        # RCCL's header is configured from its template, as RCCL's CMake does.
+        rinc = lib_include(s, "rccl")
+        @test read(joinpath(rinc, "rccl", "rccl.h"), String) ==
+              "#define NCCL_MAJOR 2\n#define NCCL_SUFFIX \"\"\n#define NCCL_VERSION_CODE 23206\n"
         @test hip_installed_include(s) == "" && hip_version(s) == "7.17.3"
         @test_throws ArgumentError header_sources(Dict("ROCM_SYSTEMS" => sys), [inst, out])
 
@@ -1289,7 +1347,7 @@ overlong_fortran_lines(s::AbstractString) =
         @test describe_sources(s) == "rocm-libraries checkout $libs, HIP headers from installed $inst"
         @test_throws ArgumentError header_sources(Dict("ROCM_LIBRARIES" => libs), [libs, out])
 
-        # Both: every library from the checkouts, nothing installed.
+        # Both: every library but RCCL from the checkouts, nothing installed.
         s, rest = header_sources(Dict("ROCM_LIBRARIES" => libs, "ROCM_SYSTEMS" => sys), String[])
         @test isempty(rest) && selected_libs(s) == LIBS && s.installed == ""
         @test lib_include(s, "rocblas") == joinpath(libs, "projects", "rocblas", "library", "include")

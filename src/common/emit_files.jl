@@ -159,6 +159,10 @@ end
 
 # The enum declarations of the module's specification part: one `enum, bind(c)`
 # block per C enum, plus integer parameters for the #define constants.
+
+# `-2147483648` overflows before the minus applies, so INT_MIN is `-2147483647 - 1`.
+c_int_literal(val) = val == -2147483648 ? "-2147483647 - 1" : string(val)
+
 function emit_enum_decls(io, enums::Vector{EnumInfo},
                          macros::Vector{Pair{String,Int64}} = Pair{String,Int64}[])
   # Fortran names are case-insensitive: drop the #defines that clash with an enumerator.
@@ -170,7 +174,7 @@ function emit_enum_decls(io, enums::Vector{EnumInfo},
     !isempty(e.name) && println(io, "  ! $(e.name)")
     println(io, "  enum, bind(c)")
     for (nm, val) in e.constants
-      println(io, "    enumerator :: $(nm) = $(val)")
+      println(io, "    enumerator :: $(nm) = $(c_int_literal(val))")
     end
     println(io, "  end enum")
     println(io, "")
@@ -183,10 +187,9 @@ function emit_enum_decls(io, enums::Vector{EnumInfo},
       elseif 0 < val <= 4294967295
         # An `unsigned int` flag with the top bit set (hipHostMallocNonCoherent, ...):
         # emit the same 32 bits as a signed c_int so it can be passed to the
-        # `integer(c_int), value :: flags` dummy. `-2147483648` is not a valid literal
-        # (unary minus applied to an out-of-range 2147483648), hence `-2147483647 - 1`.
+        # `integer(c_int), value :: flags` dummy, INT_MIN spelled as c_int_literal does.
         signed = val - 4294967296
-        lit = signed == -2147483648 ? "-2147483647 - 1" : string(signed)
+        lit = c_int_literal(signed)
         println(io, "  integer(c_int), parameter :: $(nm) = $(lit)  ! 0x$(string(val, base=16))")
       else
         println(io, "  integer(c_int64_t), parameter :: $(nm) = $(val)_c_int64_t")

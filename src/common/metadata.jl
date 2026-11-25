@@ -93,6 +93,8 @@ list of values that answer different questions:
     buffer                 a data buffer, where a default would take it for a
                            pointer to one value
     struct-array           a pointer to a C struct that is an array, not one element
+    handle-array           a pointer to an opaque handle that is an array of handles
+                           (RCCL's ncclCommInitAll), not one handle
     function-pointer       a function pointer declared void*
   How is it passed? (at most one; by default, what its C type says)
     by-value               by value although its C type is a pointer
@@ -149,14 +151,14 @@ end
 const METADATA_FORMAT = 1
 const ANY_RANK = -1
 const KIND_VALUES = ("scalar-host", "scalar-device", "scalar-pointer-mode", "buffer",
-                     "struct-array", "function-pointer")
+                     "struct-array", "handle-array", "function-pointer")
 const SCALAR_VALUES = ("scalar-host", "scalar-device", "scalar-pointer-mode")
 const PASSING_VALUES = ("by-value", "by-reference")
 const DIM_VALUES = Dict("1d" => 1, "2d" => 2, "3d" => 3, "any-rank" => ANY_RANK)
 const ADJUST_VALUES = ("nullable", "always-c-ptr", "devptr")
 const ARG_VALUES = (KIND_VALUES..., PASSING_VALUES..., "1d", "2d", "3d", "any-rank", ADJUST_VALUES...)
 # Values that describe the whole argument: listed with another, it would be ignored.
-const ALONE_VALUES = ("struct-array", "function-pointer", PASSING_VALUES..., "any-rank")
+const ALONE_VALUES = ("struct-array", "handle-array", "function-pointer", PASSING_VALUES..., "any-rank")
 
 function empty_metadata(path::String="")
   d() = Dict{String,Set{String}}()
@@ -241,6 +243,7 @@ function load_metadata(path::String) :: Metadata
         x == "by-value"         && add!(md.byvalue, fn, a)
         x == "function-pointer" && add!(md.funptr, fn, a)
         x == "struct-array"     && add!(md.arrays, fn, a)
+        x == "handle-array"     && add!(md.arrays, fn, a)
         x == "by-reference"     && add!(md.byref, fn, a)
         x == "devptr"           && add!(md.devptr, fn, a)
         haskey(DIM_VALUES, x)   && (get!(md.dims, fn, Dict{String,Int}())[a] = DIM_VALUES[x])
@@ -342,6 +345,7 @@ wants_fullrank(f::FuncInfo, meta::LibMeta) = native_maxrank(f, meta) == 1
 #                     type(c_ptr),value, the module procedures take it OPTIONAL
 #                     (see wants_opt).
 #   struct-array      pointer to an emitted derived type is an array, `type(T) :: x(*)`.
+#   handle-array      pointer to an opaque handle is an array, `type(c_ptr) :: x(*)`.
 #   by-reference      an array of pointers stays `type(c_ptr)` by reference
 #                     (rocfft_execute).
 function apply_arg_overrides(funcs::Vector{FuncInfo}, md::Metadata) :: Vector{FuncInfo}
@@ -366,7 +370,7 @@ function apply_arg_overrides(funcs::Vector{FuncInfo}, md::Metadata) :: Vector{Fu
       if a.name in r
         startswith(a.ftype, "type(") && a.suffix == "" &&
           return ArgInfo(a.name, a.ftype, "(*)", a.is_string)
-        push!(rejected, "$(f.name) $(a.name) (struct-array: not a pointer to an emitted struct)")
+        push!(rejected, "$(f.name) $(a.name) (struct-array or handle-array: not a pointer to a struct or a handle)")
       end
       if a.name in o
         a.suffix == "" && return ArgInfo(a.name, a.ftype, ", optional", a.is_string)
@@ -587,7 +591,10 @@ function value_misfit(x, a::ArgInfo, vals)
     (a.suffix == "" || (ptr_to_value && any(startswith("scalar-"), vals))) ||
       return "not a pointer to one value or struct"
   elseif x == "struct-array"
-    (startswith(a.ftype, "type(") && a.suffix == "") || return "not a pointer to a struct"
+    (startswith(a.ftype, "type(") && a.ftype != "type(c_ptr)" && a.suffix == "") ||
+      return "not a pointer to a struct"
+  elseif x == "handle-array"
+    (a.ftype == "type(c_ptr)" && a.suffix == "") || return "not a pointer to a handle"
   elseif x == "by-reference"
     (a.ftype == "type(c_ptr)" && a.suffix == ", value") || return "not an array of pointers"
   elseif x == "by-value"

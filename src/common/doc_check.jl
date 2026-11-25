@@ -156,13 +156,20 @@ function function_docs!(docs::Dict{String,Dict{String,String}}, name::AbstractSt
   return carried
 end
 
+# A comment that only opens or closes a Doxygen section documents nothing, but
+# libclang attaches it to the next declaration (RCCL's `/*! @endcond */`).
+function doc_control_only(s::AbstractString)
+  rest = replace(s, r"[@\\]cond\b[ \t]*\w*" => "", r"[@\\]endcond\b" => "", r"[@\\][{}]" => "")
+  return !isempty(strip(s)) && isempty(strip(rest, ['/', '*', '!', '<', ' ', '\t', '\n', '\r']))
+end
+
 # The raw comment libclang attaches to a cursor, or "".
 function raw_comment(cursor)
   s = Clang.LibClang.clang_Cursor_getRawCommentText(cursor.cursor)
   p = Clang.LibClang.clang_getCString(s)
   txt = p == C_NULL ? "" : unsafe_string(p)
   Clang.LibClang.clang_disposeString(s)
-  return txt
+  return doc_control_only(txt) ? "" : txt
 end
 
 # What the binding takes the typed pointer `arg` of `fn` for, after the signature

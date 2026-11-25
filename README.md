@@ -357,6 +357,7 @@ Without an answer, the generator goes by the C declaration, as above.
 | `buffer` | a data buffer, where a default above would take it for a pointer to one value | a getter's integer output that is an array |
 | `scalar-pointer-mode` | a pointer to one value, on the host or the device as the handle's pointer mode says (`<lib>_set_pointer_mode`) | BLAS `alpha`, `beta` |
 | `struct-array` | a pointer to a C struct that is an array, `type(T) :: x(*)`, not one element | hipFFTW's `dims` |
+| `handle-array` | a pointer to an opaque handle that is an array of handles, `type(c_ptr) :: x(*)`, not one handle | RCCL's `ncclCommInitAll` `comm` |
 | `function-pointer` | a function pointer declared `void*`: `type(c_funptr), value` | a kernel |
 
 **How is it passed?**
@@ -409,7 +410,7 @@ Every function with a data buffer gets them otherwise.
 - A malformed file stops the generation: an unknown value, two answers to one question,
   a function named twice, entries without `format = 1`,
   and values that make no sense together, since one of them would be ignored:
-  `by-value`, `by-reference`, `function-pointer`, `struct-array` and `any-rank` take no other value;
+  `by-value`, `by-reference`, `function-pointer`, `struct-array`, `handle-array` and `any-rank` take no other value;
   a rank (`1d`, `2d`, `3d`) or `always-c-ptr` does not go with a scalar, and a rank does not go with `always-c-ptr`;
   `nullable` goes with nothing but `scalar-host` or `scalar-pointer-mode`;
   `devptr` goes with nothing but a data buffer (`buffer`, or no kind) and a rank `1d`, `2d` or `3d`.
@@ -422,7 +423,7 @@ Every function with a data buffer gets them otherwise.
 - A value that does not apply to the C argument it names (a header that changed, or a `_64`/`_spt` variant that inherits a table):
   the argument's entry is ignored for that function, which binds the argument as its C declaration says:
   `buffer`, `devptr`, `always-c-ptr` or a rank on what is not a data buffer (a handle, a `void*`),
-  a `scalar-*` on what is not a pointer to a value, `struct-array` on what is not a pointer to a struct,
+  a `scalar-*` on what is not a pointer to a value, `struct-array` on what is not a pointer to a struct, `handle-array` on what is not a pointer to a handle,
   `by-reference` on what is not an array of pointers, `by-value` on what is already passed by value,
   `function-pointer` on what is not a `void*`,
   `nullable` on what is not a pointer to one value or struct (a data buffer, a by-value argument, a `void*`;
