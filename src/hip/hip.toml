@@ -34,3 +34,39 @@ defines = []
 # hipLibraryPropertyType enums the math library bindings use.
 extra_args = ["-include", "hip/library_types.h"]
 extra_include_dirs = []
+
+# hipfort layout: the Doxygen groups the docstrings' \ingroup name (see emit_doxygen_groups).
+[doxygen]
+# The complete HIP group taxonomy — the single place it is declared.
+#
+# hip_runtime_api.h declares its groups two ways, and neither reaches us intact:
+#
+#   * On the comment of the first function in the group (\defgroup Device ... then
+#     \brief Waits on ...). Doxygen reads that whole comment as the GROUP's
+#     documentation, so the function never becomes a member and its \brief is
+#     swallowed into the group page — most HIP groups rendered empty. The generator
+#     now rewrites those openers to a plain \ingroup (strip_group_openers).
+#   * In a standalone comment attached to no declaration (Memory, MemoryD), which
+#     libclang never hands us at all, leaving the \ingroup references dangling.
+#
+# Titles and descriptions are taken from hip_runtime_api.h; the parent links
+# reproduce the \ingroup that sat inside each opening block. Two upstream typos are
+# fixed here ("initializtion", "developement").
+groups = [
+  { name = "API",              title = "HIP API",                                    brief = "Defines the HIP API. See the individual sections for more information." },
+  { name = "Driver",           title = "Initialization and Version",                 brief = "This section describes the initialization and version functions of HIP runtime API." },
+  { name = "Device",           title = "Device Management",                          brief = "This section describes the device management functions of HIP runtime API." },
+  { name = "Execution",        title = "Execution Control",                          brief = "This section describes the execution control functions of HIP runtime API." },
+  { name = "Error",            title = "Error Handling",                             brief = "This section describes the error handling functions of HIP runtime API." },
+  { name = "Event",            title = "Event Management",                           brief = "This section describes the event management functions of HIP runtime API." },
+  { name = "External",         title = "External Resource Interoperability",         parent = "API",    brief = "This section describes the external resource interoperability functions of HIP runtime API." },
+  { name = "PeerToPeer",       title = "PeerToPeer Device Memory Access",            parent = "API",    brief = "This section describes the PeerToPeer device memory access functions of HIP runtime API." },
+  { name = "ExecutionContext", title = "Execution Context Management",               brief = "This section describes execution context management functions of HIP runtime API." },
+  { name = "Module",           title = "Module Management",                          parent = "API",    brief = "This section describes the module management functions of HIP runtime API." },
+  { name = "Occupancy",        title = "Occupancy",                                  brief = "This section describes the occupancy functions of HIP runtime API." },
+  { name = "Clang",            title = "Launch API to support the triple-chevron syntax", brief = "This section describes the API to support the triple-chevron syntax." },
+  { name = "Callback",         title = "Callback Activity APIs",                     brief = "This section describes the callback/Activity of HIP runtime API." },
+  { name = "Memory",           title = "Memory Management",                          parent = "API",    brief = "Memory management functions of the HIP runtime API." },
+  { name = "MemoryD",          title = "Memory Management [Deprecated]",             parent = "Memory", brief = "Deprecated memory management functions of the HIP runtime API." },
+  { name = "MemoryM",          title = "Managed Memory",                             parent = "Memory", brief = "This section describes the managed memory management functions of HIP runtime API.", note = "The managed memory management APIs are implemented on Linux, under development on Windows." },
+]

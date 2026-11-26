@@ -18,3 +18,10 @@ file   = "ulibXt.h"
 [clang]
 defines = []
 extra_include_dirs = []
+
+# ulibXt.h's ulibXtMem, opened in a comment libclang never reports (as hipfftXt.h's
+# hipfftXtExecDescriptor).
+[doxygen]
+groups = [
+  { name = "ulibXtMem", title = "Multi-device memory", brief = "Descriptor allocation." },
+]

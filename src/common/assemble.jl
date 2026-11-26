@@ -34,6 +34,7 @@ function gen_files(output_dir::String, cfg::Dict, funcs::Vector{FuncInfo},
                    sibling_enum_mod::Dict{String,String} = Dict{String,String}(),
                    sibling_enums::Vector{EnumInfo} = EnumInfo[],
                    uses::Vector{String} = String[],
+                   extra_modules::Vector{String} = String[],
                    extra_generics::Union{Nothing,Function} = nothing,
                    extra_wrappers::Union{Nothing,Function} = nothing,
                    extra_procs::Dict{String,Tuple{Vector{String},Vector{String}}} =
@@ -66,6 +67,26 @@ function gen_files(output_dir::String, cfg::Dict, funcs::Vector{FuncInfo},
   own_consts = Set{String}(nm for e in enums for (nm, _) in e.constants)
   for (nm, _) in macros; push!(own_consts, nm); end
 
+  has_enums = !isempty(enums) || !isempty(macros)
+  # Types are emitted only if some binding references one (complex/half structs map
+  # to intrinsics or c_ptr); then all of them are, so shared types are never dropped.
+  emit_types = !isempty(structs) && any(refs_derived_type, funcs)
+
+  # The CUDA tables of the hipfort layout's NVIDIA backend.
+  # A library extending a used one (hipfftxt) shares its maps: they are keyed by prefix.
+  cuda_map(suffix) = merge(Dict{String,String}(),
+    (load_symbol_map(let f = joinpath(libdir, "$(l)$(suffix)")
+                       isfile(f) ? f : joinpath(GEN_ROOT, l, "metadata", "$(l)$(suffix)")
+                     end) for l in vcat(uses, libname))...)
+  cuda_names = EMIT_CUDA ? cuda_map(".txt")            : Dict{String,String}()
+  enum_cuda  = EMIT_CUDA ? cuda_map("_enums_cuda.txt") : Dict{String,String}()
+  type_cuda  = EMIT_CUDA ? load_type_overrides(libdir) : Dict{String,String}()
+  if !isempty(cuda_names)
+    nderived = derive_ilp64_cuda_names!(cuda_names, funcs)
+    nderived > 0 && @info "  Derived $(nderived) ILP64 (_64) CUDA name(s) from base map"
+    @info "  CUDA map: $(length(cuda_names)) symbols, $(length(enum_cuda)) enum, $(length(type_cuda)) type overrides"
+  end
+
   meta = LibMeta(; dims = md.dims,
                  no_arrays_by = Dict(fn => fn in md.no_arrays for fn in keys(md.tables)),
                  scalar_ptrs, ptrmode,
@@ -76,12 +97,18 @@ function gen_files(output_dir::String, cfg::Dict, funcs::Vector{FuncInfo},
                  devonly = md.devonly,
                  string_args = get(cfg["library"], "string_args", false),
                  own_consts, sibling_enum_mod, uses,
-                 bind_names = copy(BIND_NAMES[]), extra_procs)
+                 bind_names = copy(BIND_NAMES[]), extra_procs,
+                 modbase = modbase(cfg),
+                 has_enums = HIPFORT && has_enums,
+                 has_types = HIPFORT && emit_types,
+                 cuda_names, enum_cuda, type_cuda,
+                 enum_rename = String.(get(cfg["library"], "enum_rename", String[])),
+                 docs = EMIT_DOCS ? copy(DOCS[]) : Dict{String,String}(),
+                 # Doxygen cannot link a Fortran enumerator or parameter.
+                 doc_deny = own_consts)
 
   # Must precede all emission.
   funcs = neutralize_funcs(funcs, meta)
-
-  has_enums = !isempty(enums) || !isempty(macros)
 
   # [check] success names a status borrowed from a sibling (rocSOLVER uses rocBLAS's).
   success = let cs = get(get(cfg, "check", Dict()), "success", nothing)
@@ -91,15 +118,15 @@ function gen_files(output_dir::String, cfg::Dict, funcs::Vector{FuncInfo},
   # status is borrowed (they are then `use`d from the sibling).
   check_names = success === nothing ? String[] : status_names(vcat(enums, sibling_enums), success)
 
-  # Types are emitted only if some binding references one (complex/half structs map
-  # to intrinsics or c_ptr); then all of them are, so shared types are never dropped.
-  emit_types = !isempty(structs) && any(refs_derived_type, funcs)
-
   content = ModuleContent(; cfg, meta, funcs, enums, structs, macros, aliases,
                           has_enums, emit_types, success, check_names,
-                          extra_generics, extra_wrappers)
-  module_path = write_library_module(output_dir, content)
-  apply_enum_rename(cfg, module_path)
+                          extra_modules, extra_generics, extra_wrappers)
+  if HIPFORT
+    module_path = write_hipfort_modules(output_dir, content)
+  else
+    module_path = write_library_module(output_dir, content)
+    apply_enum_rename(cfg, [module_path])
+  end
 
   success === nothing && @warn "No success constant found for $(libname), no check helper"
 
@@ -135,6 +162,7 @@ Base.@kwdef struct ModuleContent
   emit_types::Bool
   success::Union{Nothing,String}           # the status success constant, if any
   check_names::Vector{String}              # the other status names, for the check routine
+  extra_modules::Vector{String}            # hipfort layout: modules the library module `use`s
   extra_generics::Union{Nothing,Function}
   extra_wrappers::Union{Nothing,Function}
 end
@@ -185,10 +213,11 @@ end
 
 # [library] enum_rename = ["FROM_", "TO_"]: hipSOLVER #defines its enums as
 # hipBLAS ones; respelling them HIPSOLVER_* avoids clashing with hipblas when a
-# program uses both.
-function apply_enum_rename(cfg::Dict, module_path::String)
+# program uses both. `paths`: the files written, the one declaring the enums first.
+function apply_enum_rename(cfg::Dict, paths::Vector{String})
   ren = get(get(cfg, "library", Dict{String,Any}()), "enum_rename", String[])
   length(ren) == 2 || return
+  module_path = first(paths)
   # When a header already declares both names (HIPSOLVER_DIRECT_FORWARD =
   # HIPBLAS_DIRECT_FORWARD), renaming would duplicate it: drop the FROM_ twin.
   txt  = read(module_path, String)
@@ -203,7 +232,43 @@ function apply_enum_rename(cfg::Dict, module_path::String)
   end
   if !isempty(dropped)
     txt = join(keep, "\n") * "\n"
+    # A dropped twin leaves its #ifdef USE_CUDA_NAMES / #else / #endif empty.
+    txt = replace(txt, r"^#ifdef \w+\n#else\n#endif\n"m => "")
     @info "  Dropped $(length(dropped)) $(ren[1])* declaration(s) the header already aliases as $(ren[2])*:" dropped
   end
   write(module_path, replace(txt, ren[1] => ren[2]))
+  for p in paths[2:end]
+    isfile(p) && write(p, replace(read(p, String), ren[1] => ren[2]))
+  end
+end
+
+# The hipfort layout: `<mb>` with the interfaces, and the enums and types in
+# `<mb>_enums` / `<mb>_types`, which it re-exports. The check routine goes into
+# hipfort_check (generate_all.jl) through <lib>.checkmeta. Returns the module path.
+function write_hipfort_modules(output_dir::String, c::ModuleContent)
+  (; cfg, meta, funcs, enums, structs, macros, aliases,
+     has_enums, emit_types, success, check_names, extra_modules, extra_generics, extra_wrappers) = c
+  mb = meta.modbase
+  module_path = write_module_file(output_dir, mb) do io
+    gen_module_file(io, cfg, meta, funcs, aliases;
+                    extra_generics, extra_wrappers, extra_modules, decls = io -> nothing,
+                    enums_have_iso = has_enums && enums_need_iso(enums, macros))
+  end
+  paths = String[]
+  if has_enums
+    push!(paths, write_module_file(io -> gen_hipfort_enums_file(io, cfg, enums, macros, meta),
+                                   output_dir, "$(mb)_enums"))
+    @info "Wrote $(mb)_enums.F90 ($(length(enums)) enums, $(length(macros)) macros) to $(output_dir)"
+  end
+  push!(paths, module_path)
+  if emit_types
+    push!(paths, write_module_file(io -> gen_hipfort_types_file(io, structs, meta),
+                                   output_dir, "$(mb)_types"))
+    @info "Wrote $(mb)_types.F90 ($(length(structs)) types) to $(output_dir)"
+  end
+  apply_enum_rename(cfg, paths)
+  # rocSOLVER's status names come from rocBLAS's enums (borrowed by hipfort_check).
+  success === nothing ||
+    write_check_meta(output_dir, cfg, success, status_names(enums, success), meta)
+  return module_path
 end
